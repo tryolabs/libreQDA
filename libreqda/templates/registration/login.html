@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block body %}
+    <div id="login-container" class="login-container with-border white-background">
+        <form action="{% url login %}" method="post" id="login-form" class="form-horizontal">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ next }}" />
+            <div class="control-group">
+                <label class="control-label" for="login-name">Usuario</label>
+                <div class="controls">
+                    {{ form.username }}
+                    {{ form.username.errors }}
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="login-password">Contraseña</label>
+                <div class="controls">
+                    {{ form.password }}
+                    {{ form.password.errors }}
+                </div>
+            </div>
+            <div class="control-group">
+                <div class="controls">
+                    <label class="checkbox">
+                        <input type="checkbox"> Recordarme
+                    </label>
+                    <button type="submit" class="btn">Entrar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+{% endblock %}

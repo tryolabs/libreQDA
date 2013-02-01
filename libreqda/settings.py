@@ -157,6 +157,8 @@ LOGGING = {
     }
 }
 
+LOGIN_URL = '/accounts/login'
+LOGOUT_REDIRECT_URL = '/'
 
 try:
     from local_settings import *
