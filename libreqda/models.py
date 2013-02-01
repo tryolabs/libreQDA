@@ -55,6 +55,8 @@ class Code(models.Model):
 class Category(models.Model):
     name = models.TextField(max_length=250)
     creation_date = models.DateTimeField(auto_now_add=True)
+    modified_date = models.DateTimeField(auto_now=True)
+    created_by = models.ForeignKey(User)
     project = models.ForeignKey(Project, related_name='categories')
     codes = models.ManyToManyField(Code, related_name='categories')
     citations = models.ManyToManyField(Citation, related_name='categories')
