@@ -1,0 +1,14 @@
+DEBUG = True
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'libreqda',
+        'USER': '***',
+        'PASSWORD': '***',
+        'HOST': 'localhost',
+        'PORT': '5432',
+    }
+}
+
+SECRET_KEY = 'type your secret key here'
