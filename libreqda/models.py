@@ -44,6 +44,7 @@ class Code(models.Model):
     project = models.ForeignKey(Project, related_name='codes')
     weight = models.IntegerField()
     created_by = models.ForeignKey(User)
+    color = models.TextField(max_length=6)
     comment = models.TextField(null=True, blank=True)
     modified_date = models.DateTimeField(auto_now=True)
     creation_date = models.DateTimeField(auto_now_add=True)
