@@ -25,7 +25,7 @@ class Document(models.Model):
 
 
 class Annotation(models.Model):
-    document = models.ForeignKey(Document, related_name='citations')
+    document = models.ForeignKey(Document, related_name='annotations')
     creation_date = models.DateTimeField(auto_now_add=True)
     modified_date = models.DateTimeField(auto_now=True)
     created_by = models.ForeignKey(User)
@@ -65,7 +65,7 @@ class UserProyectPermissions(models.Model):
                           ('e', 'Editor'),
                           ('g', 'Guest'))
     user = models.ForeignKey(User)
-    proyect = models.ForeignKey(Project)
+    project = models.ForeignKey(Project)
     permissions = models.CharField(max_length=1, choices=PROJECT_PERMISSIONS)
 
     class Meta:
