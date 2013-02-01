@@ -42,6 +42,7 @@ class Citation(models.Model):
 
 class Code(models.Model):
     project = models.ForeignKey(Project, related_name='codes')
+    name = models.TextField(max_length=250)
     weight = models.IntegerField()
     created_by = models.ForeignKey(User)
     color = models.TextField(max_length=6)
