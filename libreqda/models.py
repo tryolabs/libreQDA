@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 
 class Project(models.Model):
     name = models.CharField(max_length=250)
-    owner = models.ForeignKey(User)
+    owner = models.ForeignKey(User, related_name='projects')
     version = models.PositiveIntegerField(default=1)
     creation_date = models.DateTimeField(auto_now_add=True)
 

@@ -1,3 +1,4 @@
+from django.contrib import admin
 from django.conf.urls import patterns, include, url
 
 # Uncomment the next two lines to enable the admin:
@@ -5,6 +6,12 @@ from django.conf.urls import patterns, include, url
 # admin.autodiscover()
 
 urlpatterns = patterns('',
+    # admin
+    url(r'^admin/', include(admin.site.urls)),
+    # projects
+    url(r'^project/$',
+        'libreqda.views.browse_projects',
+        name='browse_projects'),
     # accounts
     url(r'^accounts/login/$',
         'django.contrib.auth.views.login',
@@ -12,5 +19,5 @@ urlpatterns = patterns('',
     url(r'^accounts/logout/$',
         'django.contrib.auth.views.logout',
         name='logout',
-        kwargs={'next_page': '/projects/'}),
+        kwargs={'next_page': '/accounts/login'}),
 )
