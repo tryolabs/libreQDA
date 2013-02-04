@@ -16,8 +16,9 @@ def get_new_document_path(instance, filename):
 
 
 class Document(models.Model):
-    project = models.ForeignKey(Project, related_name='projects')
+    project = models.ManyToManyField(Project, related_name='documents')
     name = models.CharField(max_length=250)
+    type = models.CharField(max_length=250)
     creation_date = models.DateTimeField(auto_now_add=True)
     modified_date = models.DateTimeField(auto_now=True)
     uploaded_by = models.ForeignKey(User)
@@ -25,11 +26,12 @@ class Document(models.Model):
 
 
 class Annotation(models.Model):
-    document = models.ForeignKey(Document, related_name='annotations')
+    document = models.ForeignKey(Project, related_name='annotations')
     creation_date = models.DateTimeField(auto_now_add=True)
     modified_date = models.DateTimeField(auto_now=True)
     created_by = models.ForeignKey(User)
     text = models.TextField(null=True, blank=True)
+    documents = models.ManyToManyField(Document, related_name='annotations')
 
 
 class Citation(models.Model):
@@ -50,6 +52,7 @@ class Code(models.Model):
     modified_date = models.DateTimeField(auto_now=True)
     creation_date = models.DateTimeField(auto_now_add=True)
     citations = models.ManyToManyField(Citation, related_name='codes')
+    parent_code = models.ForeignKey('self', null=True, related_name='sub_codes')
 
 
 class Category(models.Model):
