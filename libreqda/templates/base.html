@@ -15,11 +15,21 @@
 
   <body>
     {% block topbar %}
-    <div class="navbar navbar-inverse">
-      <div class="navbar-inner">
-        <a class="brand" href="/">LibreQDA</a> 
+      <div class="navbar navbar-inverse">
+        <div class="navbar-inner">
+          <a class="brand" href="/">LibreQDA</a> 
+        </div>
       </div>
-    </div>
+      {% block topbar_extra %}
+      {% endblock topbar_extra %}
+      {% if user.is_authenticated %}
+        <a class="btn btn-danger pull-right"href="{%url logout %}"><i class="icon-off icon-white"></i> Salir</a>
+        {% if user.is_staff %}
+        <ul class="nav pull-right"><li><a target="_blank" href="{% url admin:index %}">Bienvenido, {{user.username}}</a></li></ul>
+        {% else %}
+        <ul class="nav pull-right"><li><a>Bienvenido, {{user.username}}</a></li></ul>
+        {% endif %}
+      {% endif %}
     {% endblock topbar %}
 
     {% block body %} 
