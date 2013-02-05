@@ -41,3 +41,14 @@ def new_project(request, template='new_project.html'):
                   {'project_form': form,
                    'form_action': form_action,
                    'back_url': reverse('browse_projects')})
+
+
+@login_required
+def delete_project(request, pid):
+    p = get_object_or_404(Project, pk=pid)
+    if p.owner == request.user:
+        p.delete()
+    else:
+        raise Http404
+
+    return redirect('browse_projects')
