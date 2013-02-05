@@ -9,6 +9,11 @@ from libreqda.models import Project
 
 
 @login_required
+def home(request):
+    return redirect('browse_projects')
+
+
+@login_required
 def browse_projects(request, template='browse_projects.html'):
     user = request.user
     projects = user.projects.all()

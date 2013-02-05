@@ -7,6 +7,9 @@ urlpatterns = patterns('',
     # admin
     url(r'^admin/', include(admin.site.urls)),
     # projects
+    url(r'^$',
+        'libreqda.views.home',
+        name='home'),
     url(r'^project/$',
         'libreqda.views.browse_projects',
         name='browse_projects'),
