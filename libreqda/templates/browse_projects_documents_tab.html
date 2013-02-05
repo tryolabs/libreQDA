@@ -1,0 +1,36 @@
+<div class="toolbar-small">
+  <a class="btn btn-small btn-success pull-right" href="/project/{{project.id}}/document/add"><i class="icon-file icon-white"></i> Agregar documento</a>
+</div>
+{% if project.documents.all %}
+  <table class="table table-condensed table-striped table-hover">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Nombre</th>
+        <th>Tipo</th>
+        <th>Fecha</th>
+        <th>Añadido por</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for doc in project.documents.all %}
+        <tr>
+          <td>{{ forloop.counter }}</td>
+          <td>{{ doc.name }}</td>
+          <td>{{ doc.type }}</td>
+          <td>{{ doc.creation_date }}</td>
+          <td>{{ doc.uploaded_by }}</td>
+          <td>
+            <a class="btn btn-small btn-primary pull-right left-group-button" href="/project/{{project.id}}/document/{{doc.id}}"><i class="icon-eye-open icon-white"></i>  Ver</a>
+            <a class="btn btn-small btn-danger pull-right" href="/project/{{project.id}}/document/{{doc.id}}/delete"><i class="icon-trash icon-white"></i>  Eliminar</a>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% else %}
+  <div class="alert alert-info">
+    <strong>¡No hay documentos!</strong>
+  </div>
+{% endif %}

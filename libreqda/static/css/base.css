@@ -32,3 +32,45 @@ body {
 .white-background {
     background-color: White;
 }
+
+.acordion-project-name {
+    font-size: 17.5px
+}
+
+.tight-tab-content {
+    padding-left: 1%;
+    padding-right: 1%;
+}
+
+.key-value-table {
+    table-layout: fixed;
+    width:98%;
+}
+
+.key-value-table .key {
+    width: 24%
+}
+
+.key-value-table .value {
+    width: 74%
+}
+
+.toolbar {
+    width: 100%;
+    display: table;
+    margin-bottom: 20px;
+}
+
+.toolbar-small {
+    width: 100%;
+    display: table;
+    margin-bottom: 9px;
+}
+
+.right-button {
+    margin-left: 25px;
+}
+
+.left-group-button {
+    margin-left: 4px;
+}

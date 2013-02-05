@@ -9,6 +9,6 @@ from libreqda.models import Project
 @login_required
 def browse_projects(request, template='browse_projects.html'):
     user = request.user
-    projects = user.projects
+    projects = user.projects.all()
 
     return render(request, template, {'projects': projects})

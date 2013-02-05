@@ -2,14 +2,61 @@
 
 {% block head %}
   {{ block.super }}
-
-
 {% endblock head %}
 
 {% block topbar_extra %}
-
 {% endblock topbar_extra %}
 
-{% block body %}
+{% load filters %}
 
+{% block body %}
+  <div class="row-fluid">
+    <div class="span10 offset1">
+      <div class="toolbar">
+        <a class="btn btn-success pull-right" href="/project/add"><i class="icon-plus icon-white"></i>  Nuevo proyecto</a>
+      </div>
+      {% if projects %}
+        <div class="accordion white-background" id="accordion">
+          {% for project in projects %}
+            <div class="accordion-group">
+              <div class="accordion-heading">
+                <a class="accordion-toggle acordion-project-name" data-toggle="collapse" data-parent="#accordion" href="#collapse{{project.id}}">
+                  {{ project.name}}
+                </a>
+              </div>
+              <div id="collapse{{project.id}}" class="accordion-body collapse">
+                <div class="accordion-inner">
+                  <div class="toolbar-small">
+                    <a class="btn btn-info pull-right left-group-button" href="/project/{{project.id}}/copy"><i class="icon-repeat icon-white"></i>  Duplicar</a>
+                    <a class="btn btn-danger pull-right left-group-button" href="/project/{{project.id}}/delete"><i class="icon-trash icon-white"></i>  Eliminar</a>
+                  </div>
+                  <ul class="nav nav-tabs">
+                    <li class="active"><a href="#general{{project.id}}-tab" data-toggle="tab">General</a></li>
+                    <li><a href="#documents{{project.id}}-tab" data-toggle="tab">Documentos</a></li>
+                    <li><a href="#users{{project.id}}-tab" data-toggle="tab">Usuarios</a></li>
+                  </ul>
+                  <div class="tab-content">
+                    <div class="tab-pane tight-tab-content active" id="general{{project.id}}-tab">
+                      {% include "browse_projects_general_tab.html" %}
+                    </div>
+                    <div class="tab-pane tight-tab-content" id="documents{{project.id}}-tab">
+                      {% include "browse_projects_documents_tab.html" %}
+                    </div>
+                    <div class="tab-pane tight-tab-content" id="users{{project.id}}-tab">
+                      {% include "browse_projects_users_tab.html" %}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="alert alert-info">
+          <h4>¡No hay proyectos!</h4>
+          <p>No hay proyectos asignados a este usuario. Puede <strong><a href="/project/new">agregar uno</a></strong>.</p>
+        </div>
+      {% endif %}
+    </div>
+  </div>
 {% endblock %}
