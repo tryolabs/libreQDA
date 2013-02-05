@@ -6,6 +6,8 @@ class Project(models.Model):
     name = models.CharField(max_length=250)
     owner = models.ForeignKey(User, related_name='projects')
     version = models.PositiveIntegerField(default=1)
+    comment = models.TextField(null=True, blank=True)
+    modified_date = models.DateTimeField(auto_now=True)
     creation_date = models.DateTimeField(auto_now_add=True)
 
 
