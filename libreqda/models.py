@@ -79,8 +79,8 @@ class UserProyectPermissions(models.Model):
     PROJECT_PERMISSIONS = (('a', 'Administrator'),
                           ('e', 'Editor'),
                           ('g', 'Guest'))
-    user = models.ForeignKey(User)
-    project = models.ForeignKey(Project)
+    user = models.ForeignKey(User, related_name='permissions')
+    project = models.ForeignKey(Project, related_name='permissions')
     modified_date = models.DateTimeField(auto_now=True)
     creation_date = models.DateTimeField(auto_now_add=True)
     permissions = models.CharField(max_length=1, choices=PROJECT_PERMISSIONS)
