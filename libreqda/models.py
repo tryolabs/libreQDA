@@ -10,6 +10,9 @@ class Project(models.Model):
     modified_date = models.DateTimeField(auto_now=True)
     creation_date = models.DateTimeField(auto_now_add=True)
 
+    def __unicode__(self):
+        return "Project %d-%s" % (self.id, self.name)
+
 
 def get_new_document_path(instance, filename):
     return '/'.join(['documents',
@@ -25,6 +28,9 @@ class Document(models.Model):
     modified_date = models.DateTimeField(auto_now=True)
     uploaded_by = models.ForeignKey(User)
     file = models.FileField(upload_to=get_new_document_path)
+
+    def __unicode__(self):
+        return "Document: %s" % (self.name)
 
 
 class Annotation(models.Model):
