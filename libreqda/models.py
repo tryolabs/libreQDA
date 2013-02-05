@@ -81,6 +81,8 @@ class UserProyectPermissions(models.Model):
                           ('g', 'Guest'))
     user = models.ForeignKey(User)
     project = models.ForeignKey(Project)
+    modified_date = models.DateTimeField(auto_now=True)
+    creation_date = models.DateTimeField(auto_now_add=True)
     permissions = models.CharField(max_length=1, choices=PROJECT_PERMISSIONS)
 
     class Meta:
