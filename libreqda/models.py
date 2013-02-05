@@ -3,10 +3,10 @@ from django.contrib.auth.models import User
 
 
 class Project(models.Model):
-    name = models.CharField(max_length=250)
+    name = models.CharField(max_length=250, blank=False, verbose_name="Nombre")
     owner = models.ForeignKey(User, related_name='projects')
     version = models.PositiveIntegerField(default=1)
-    comment = models.TextField(null=True, blank=True)
+    comment = models.TextField(null=True, blank=True, verbose_name="Comentario")
     modified_date = models.DateTimeField(auto_now=True)
     creation_date = models.DateTimeField(auto_now_add=True)
 

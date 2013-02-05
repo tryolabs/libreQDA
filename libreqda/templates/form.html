@@ -1,0 +1,21 @@
+<form action="{{form_action}}" method="post" class="form-horizontal">
+  {%csrf_token%}
+  {% for field in form %}
+    <div class="control-group{% if field.errors %} error{% endif %}">
+      {{ field.label }}
+      <div class="controls">
+        {{ field }}
+        {% if field.errors %}
+        <p class="help-block{% if field.css_classes %}
+          {{field.css_classes}}{%endif%}">{% if field.errors %}{{ field.errors.as_text }}{% else %}{{ field.help_text }}{% endif %}</p>
+        {% endif %}
+      </div>
+    </div>
+  {% endfor %}
+  <div class="form-actions">
+    {% if back_url %}
+      <a href="{{ back_url }}" class="btn left-group-button"><i class="icon-circle-arrow-left"></i> Cancelar</a>
+    {% endif %}
+    <button type="submit" class="btn btn-primary left-group-button"><i class="icon-ok icon-white"></i> Confirmar</button>
+  </div>
+</form>
