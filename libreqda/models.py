@@ -34,7 +34,7 @@ class Document(models.Model):
 
 
 class Annotation(models.Model):
-    document = models.ForeignKey(Project, related_name='annotations')
+    project = models.ForeignKey(Project, related_name='annotations')
     creation_date = models.DateTimeField(auto_now_add=True)
     modified_date = models.DateTimeField(auto_now=True)
     created_by = models.ForeignKey(User)
