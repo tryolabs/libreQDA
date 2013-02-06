@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block head %}
+  {{ block.super }}
+{% endblock head %}
+
+{% block topbar_extra %}
+{% endblock topbar_extra %}
+
+{% block body %}
+  <div class="row-fluid">
+    <div class="span10 offset1">
+      {% include "form.html" with form=project_form form_action=form_action back_url=back_url%}
+    </div>
+  </div>
+{% endblock %}

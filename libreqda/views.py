@@ -52,3 +52,28 @@ def delete_project(request, pid):
         raise Http404
 
     return redirect('browse_projects')
+
+
+@login_required
+def copy_project(request, pid, template='copy_project.html'):
+    p = get_object_or_404(Project, pk=pid)
+    if request.method == 'POST':
+        form = ProjectForm(request.POST, instance=p)
+
+        if form.is_valid():
+            p.owner = request.user
+            p.pk = None
+            p.save()
+
+            return redirect('browse_projects')
+    else:
+        form = ProjectForm()
+
+    form_action = reverse('copy_project',
+                          args=(pid,))
+    return render(request,
+                  template,
+                  {'project_form': form,
+                   'form_action': form_action,
+                   'back_url': reverse('browse_projects')})
+
