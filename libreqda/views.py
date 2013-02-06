@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 
 from libreqda.forms import ProjectForm
-from libreqda.models import Project
+from libreqda.models import Document, Project
 
 
 @login_required
@@ -77,3 +77,13 @@ def copy_project(request, pid, template='copy_project.html'):
                    'form_action': form_action,
                    'back_url': reverse('browse_projects')})
 
+
+@login_required
+def view_document(request, pid, did, template='view_document.html'):
+    p = get_object_or_404(Project, pk=pid)
+    d = get_object_or_404(Document, pk=did)
+
+    return render(request,
+                  template,
+                  {'project': p,
+                   'document': d})

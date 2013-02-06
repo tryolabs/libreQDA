@@ -1,0 +1,17 @@
+<div class="accordion white-background" id="accordion">
+  {% for doc in project.documents.all %}
+    <div class="accordion-group">
+      <div class="accordion-heading">
+        <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapse{{project.id}}">
+          {{ doc.name }}
+        </a>
+      </div>
+      <div id="collapse{{project.id}}" class="accordion-body collapse">
+        <div class="accordion-inner">
+          {{ doc.comment }}
+          <a class="btn btn-small btn-block btn-primary pull-right left-group-button menu-document-button" href="/project/{{project.id}}/document/{{doc.id}}"><i class="icon-eye-open icon-white"></i>  Ver</a>
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+</div>

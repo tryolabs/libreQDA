@@ -22,6 +22,10 @@ urlpatterns = patterns('',
     url(r'^project/(?P<pid>\d+)/copy/$',
         'libreqda.views.copy_project',
         name='copy_project'),
+    # documents
+    url(r'^project/(?P<pid>\d+)/document/(?P<did>\d+)/$',
+        'libreqda.views.view_document',
+        name='view_document'),
     # accounts
     url(r'^accounts/login/$',
         'django.contrib.auth.views.login',

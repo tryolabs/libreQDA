@@ -24,6 +24,7 @@ class Document(models.Model):
     project = models.ManyToManyField(Project, related_name='documents')
     name = models.CharField(max_length=250)
     type = models.CharField(max_length=250)
+    comment = models.CharField(blank=True, null=True, max_length=250)
     creation_date = models.DateTimeField(auto_now_add=True)
     modified_date = models.DateTimeField(auto_now=True)
     uploaded_by = models.ForeignKey(User)

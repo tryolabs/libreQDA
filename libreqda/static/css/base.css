@@ -74,3 +74,56 @@ body {
 .left-group-button {
     margin-left: 4px;
 }
+
+.menu-document-button {
+    padding-left: 20px;
+    padding-right: 20px;
+    margin-top: 10px;
+    margin-bottom: 5px;
+}
+
+.menu {
+    transition: all 0.4s;
+    -o-transition: all 0.4s;
+    -moz-transition: all 0.4s;
+    -webkit-transition: all 0.4s;
+}
+
+.menu {
+    top: 42px;
+    height: 100%;
+    background: #FFFFFF;
+    width: 400px;
+    padding: 30px;
+    position: fixed;
+    z-index: 100000;
+    box-shadow: 4px 0 10px rgba(0,0,0,0.25);
+    -moz-box-shadow: 4px 0 10px rgba(0,0,0,0.25);
+    -webkit-box-shadow: 4px 0 10px rgba(0,0,0,0.25);
+}
+
+.left {
+    left: 0;
+    border-right: 3px solid #000000;
+}
+
+.left:hover, .left:focus {
+    left: 0 !important;
+}
+
+.left .arrow {
+    right: 2px;
+}
+
+.right {
+    right: 0;
+    border-left: 3px solid #000000;
+}
+
+.right:hover, .right:focus {
+    right: 0 !important;
+}
+
+.right .arrow {
+    left: 2px;
+}
