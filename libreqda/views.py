@@ -1,11 +1,13 @@
+from datetime import datetime
+
 from django.http import HttpResponse, Http404
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 
-from libreqda.forms import ProjectForm
-from libreqda.models import Document, Project
+from libreqda.forms import ProjectForm, AddUserToProjectForm
+from libreqda.models import Document, Project, UserProyectPermissions
 
 
 @login_required
@@ -40,6 +42,39 @@ def new_project(request, template='new_project.html'):
                   template,
                   {'project_form': form,
                    'form_action': form_action,
+                   'back_url': reverse('browse_projects')})
+
+
+@login_required
+def add_user_to_project(request, pid, template='modal.html'):
+    if request.method == 'POST':
+        form = AddUserToProjectForm(request.POST)
+        p = get_object_or_404(Project, pk=pid)
+
+        if form.is_valid():
+            for u in form.cleaned_data['users']:
+                perm = UserProyectPermissions()
+                perm.creation_date = datetime.now()
+                perm.modified_date = datetime.now()
+                perm.user = u
+                perm.project = p
+                perm.permissions = 'g'
+                perm.save()
+            return redirect('browse_projects')
+    else:
+        p = get_object_or_404(Project, pk=pid)
+        form = AddUserToProjectForm()
+        existing_perms = UserProyectPermissions.objects.filter(project=p)
+        form.fields['users'].queryset = User.objects.exclude(
+                                            permissions__in=existing_perms
+                                            ).exclude(pk=p.owner.pk)
+
+    form_action = reverse('add_user_to_project', kwargs={'pid': pid})
+    return render(request,
+                  template,
+                  {'form': form,
+                   'form_action': form_action,
+                   'form_header': 'Asignar usuarios al proyecto',
                    'back_url': reverse('browse_projects')})
 
 
