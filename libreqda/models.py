@@ -89,7 +89,7 @@ class Category(models.Model):
     annotations = models.ManyToManyField(Annotation, related_name='categories')
 
 
-class UserProjectPermissions(models.Model):
+class UserProjectPermission(models.Model):
     PROJECT_PERMISSIONS = (('a', 'Administrator'),
                           ('e', 'Editor'),
                           ('g', 'Guest'))
