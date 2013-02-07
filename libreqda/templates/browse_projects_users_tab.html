@@ -1,7 +1,37 @@
 {% load filters %}
 
+<script>
+$(document).ready(function() {
+    $('.addUser').click(function(ev) { // for each edit contact url
+        ev.preventDefault(); // prevent navigation
+        var url = $(this).data("url"); // get the contact form url
+        $("#userModal").load(url, function() { // load the url into the modal
+            $(this).modal('show'); // display the modal on url load
+        });
+        return false; // prevent the click propagation
+    });
+
+    $('#userModal form').on('submit', function() {
+        $.ajax({ 
+            type: $(this).attr('method'), 
+            url: this.action, 
+            data: $(this).serialize(),
+            context: this,
+            success: function(data, status) {
+                $('#userModal').html(data);
+            }
+        });
+        return false;
+    });
+   
+   });
+</script>
+
+<div class="modal hide fade" id="userModal">
+</div>
+
 <div class="toolbar-small">
-  <a class="btn btn-small btn-success pull-right" href="/project/{{project.id}}/user/add"><i class="icon-user icon-white"></i> Agregar usuario</a>
+  <a data-url="/project/{{project.id}}/user/add" class="btn btn-small btn-success pull-right addUser"><i class="icon-user icon-white"></i> Agregar usuario</a>
 </div>
 <table class="table table-condensed table-striped table-hover">
   <thead>
