@@ -1,8 +1,11 @@
+import json
 from datetime import datetime
 
-from django.http import HttpResponse, Http404
-from django.shortcuts import render, get_object_or_404, redirect
+from django.http import Http404, HttpResponse
 from django.core.urlresolvers import reverse
+from django.template import RequestContext
+from django.template.loader import render_to_string
+from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 
@@ -71,22 +74,31 @@ def add_user_to_project(request, pid, template='modal.html'):
                 perm.project = p
                 perm.permissions = 'g'
                 perm.save()
-            return redirect('browse_projects')
+
+            # All OK, redirect to projects home
+            response_data = {'redirect': reverse('browse_projects')}
+            return HttpResponse(
+                        json.dumps(response_data),
+                        content_type="application/json")
     else:
         p = get_object_or_404(Project, pk=pid)
         form = AddUserToProjectForm()
-        existing_perms = UserProjectPermission.objects.filter(project=p)
-        form.fields['users'].queryset = User.objects.exclude(
-                                            permissions__in=existing_perms
-                                            ).exclude(pk=p.owner.pk)
 
     form_action = reverse('add_user_to_project', kwargs={'pid': pid})
-    return render(request,
-                  template,
-                  {'form': form,
-                   'form_action': form_action,
-                   'form_header': 'Asignar usuarios al proyecto',
-                   'back_url': reverse('browse_projects')})
+    form.fields['users'].queryset = User.objects.exclude(
+                                        permissions__in=p.permissions.all())
+    response_dict = {
+                     'form': form,
+                     'form_action': form_action,
+                     'form_header': 'Asignar usuarios al proyecto',
+                    }
+    html_response = render_to_string(
+                        template, response_dict, RequestContext(request))
+
+    response_data = {'html': html_response}
+    return HttpResponse(
+                json.dumps(response_data),
+                content_type="application/json")
 
 
 @login_required

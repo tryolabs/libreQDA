@@ -2,29 +2,32 @@
 
 <script>
 $(document).ready(function() {
-    $('.addUser').click(function(ev) { // for each edit contact url
-        ev.preventDefault(); // prevent navigation
-        var url = $(this).data("url"); // get the contact form url
-        $("#userModal").load(url, function() { // load the url into the modal
-            $(this).modal('show'); // display the modal on url load
-        });
-        return false; // prevent the click propagation
+  $('.addUser').click(function(ev) {
+    ev.preventDefault(); // prevent navigation
+    var url = $(this).data("url"); // get the form url
+    $.getJSON(url, function(data) { // load the url into the modal
+      $('#userModal').html(data.html);
+      $("#userModal").modal('show');
     });
+    return false; // prevent the click propagation
+  });
 
-    $('#userModal form').on('submit', function() {
-        $.ajax({ 
-            type: $(this).attr('method'), 
-            url: this.action, 
-            data: $(this).serialize(),
-            context: this,
-            success: function(data, status) {
-                $('#userModal').html(data);
-            }
-        });
-        return false;
+  $('#userModal').on('submit', 'form', function() {
+    $.ajax({ 
+      type: $(this).attr('method'), 
+      url: this.action, 
+      data: $(this).serialize(),
+      context: this,
+      success: function(data, status) {
+        if (data.redirect) {
+          window.location.replace(data.redirect);
+        }
+        $('#userModal').html(data.html);
+      }
     });
-   
-   });
+    return false;
+  });
+});
 </script>
 
 <div class="modal hide fade" id="userModal">
