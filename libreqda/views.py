@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 
 from libreqda.forms import ProjectForm, AddUserToProjectForm
-from libreqda.models import Document, Project, UserProyectPermissions
+from libreqda.models import Document, Project, UserProjectPermission
 
 
 @login_required
@@ -64,7 +64,7 @@ def add_user_to_project(request, pid, template='modal.html'):
 
         if form.is_valid():
             for u in form.cleaned_data['users']:
-                perm = UserProyectPermissions()
+                perm = UserProjectPermission()
                 perm.creation_date = datetime.now()
                 perm.modified_date = datetime.now()
                 perm.user = u
@@ -75,7 +75,7 @@ def add_user_to_project(request, pid, template='modal.html'):
     else:
         p = get_object_or_404(Project, pk=pid)
         form = AddUserToProjectForm()
-        existing_perms = UserProyectPermissions.objects.filter(project=p)
+        existing_perms = UserProjectPermission.objects.filter(project=p)
         form.fields['users'].queryset = User.objects.exclude(
                                             permissions__in=existing_perms
                                             ).exclude(pk=p.owner.pk)
