@@ -21,17 +21,27 @@ def get_new_document_path(instance, filename):
 
 
 class Document(models.Model):
-    projects = models.ManyToManyField(Project, related_name='documents')
     name = models.CharField(max_length=250)
     type = models.CharField(max_length=250)
     comment = models.CharField(blank=True, null=True, max_length=250)
-    creation_date = models.DateTimeField(auto_now_add=True)
-    modified_date = models.DateTimeField(auto_now=True)
-    uploaded_by = models.ForeignKey(User)
     file = models.FileField(upload_to=get_new_document_path)
+    uploaded_by = models.ForeignKey(User)
+    creation_date = models.DateTimeField(auto_now_add=True)
 
     def __unicode__(self):
         return "Document: %s" % (self.name)
+
+
+class DocumentInstance(models.Model):
+    project = models.ForeignKey(Project, related_name='documents')
+    name = models.CharField(max_length=250)
+    type = models.CharField(max_length=250)
+    comment = models.CharField(blank=True, null=True, max_length=250)
+    modified_date = models.DateTimeField(auto_now=True)
+    uploaded_by = models.ForeignKey(User)
+
+    def __unicode__(self):
+        return "DocumentInstance: %s" % (self.name)
 
 
 class Annotation(models.Model):
@@ -79,7 +89,7 @@ class Category(models.Model):
     annotations = models.ManyToManyField(Annotation, related_name='categories')
 
 
-class UserProyectPermissions(models.Model):
+class UserProjectPermissions(models.Model):
     PROJECT_PERMISSIONS = (('a', 'Administrator'),
                           ('e', 'Editor'),
                           ('g', 'Guest'))
