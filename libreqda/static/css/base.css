@@ -127,3 +127,7 @@ body {
 .right .arrow {
     left: 2px;
 }
+
+#userModal form {
+	margin: 0;
+}
