@@ -18,7 +18,8 @@ def home(request):
 @login_required
 def browse_projects(request, template='browse_projects.html'):
     user = request.user
-    projects = user.projects.all()
+    user_perms = UserProyectPermissions.objects.filter(user=user)
+    projects = Project.objects.filter(permissions__in=user_perms)
 
     return render(request, template, {'projects': projects})
 
@@ -30,8 +31,18 @@ def new_project(request, template='new_project.html'):
         form = ProjectForm(request.POST, instance=p)
 
         if form.is_valid():
+            # Create project and set owner
             p.owner = request.user
             p.save()
+
+            # Create an administrative privilege and assign it
+            perm = UserProyectPermissions()
+            perm.creation_date = datetime.now()
+            perm.modified_date = datetime.now()
+            perm.user = p.owner
+            perm.project = p
+            perm.permissions = 'a' # admin
+            perm.save()
 
             return redirect('browse_projects')
     else:
@@ -76,6 +87,25 @@ def add_user_to_project(request, pid, template='modal.html'):
                    'form_action': form_action,
                    'form_header': 'Asignar usuarios al proyecto',
                    'back_url': reverse('browse_projects')})
+
+
+@login_required
+def remove_user_from_project(request, pid, uid):
+    p = get_object_or_404(Project, pk=pid)
+    u = get_object_or_404(User, pk=uid)
+    admin_perm = UserProyectPermissions.objects.filter(
+                        user=request.user, project=p, permissions='a')
+
+    if u == p.owner:
+        raise Exception('No se puede remover del projecto a su propietario.')
+
+    if p.owner == request.user or admin_perm.exists():
+        perm = UserProyectPermissions.objects.get(user=u, project=p)
+        perm.delete()
+    else:
+        raise Exception('Permisos insuficientes.')
+
+    return redirect('browse_projects')
 
 
 @login_required

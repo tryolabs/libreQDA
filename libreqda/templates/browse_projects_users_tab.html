@@ -31,7 +31,9 @@ $(document).ready(function() {
 </div>
 
 <div class="toolbar-small">
-  <a data-url="/project/{{project.id}}/user/add" class="btn btn-small btn-success pull-right addUser"><i class="icon-user icon-white"></i> Agregar usuario</a>
+  {% if user in project.admin_users %}
+    <a data-url="{% url add_user_to_project pid=project.id %}" class="btn btn-small btn-success pull-right addUser"><i class="icon-user icon-white"></i> Agregar usuario</a>
+  {% endif %}
 </div>
 <table class="table table-condensed table-striped table-hover">
   <thead>
@@ -51,15 +53,18 @@ $(document).ready(function() {
         <td>{{ project.creation_date }}</td>
         <td></td>
       </tr>
-    {% for user in project.permissions.all %}
+    {% for user_perm in project.permissions.all %}
       <tr>
         <td>{{ forloop.counter }}</td>
-        <td>{{ user.user.username }}</td>
-        <td>{{ user|get_permission_text }}</td>
-        <td>{{ user.creation_date }}</td>
+        <td>{{ user_perm.user.username }}</td>
+        <td>{{ user_perm|get_permission_text }}</td>
+        <td>{{ user_perm.creation_date }}</td>        
         <td>
-          <a class="btn btn-small btn-danger pull-right" href="/project/{{project.id}}/user/{{user.id}}/delete"><i class="icon-trash icon-white"></i>  Eliminar</a>
+          {% if user in project.admin_users and user_perm.user != project.owner %}
+          <a class="btn btn-small btn-danger pull-right" href="{% url remove_user_from_project pid=project.id uid=user_perm.user.id %}"><i class="icon-trash icon-white"></i>  Eliminar</a>
+          {% endif %}
         </td>
+        
       </tr>
     {% endfor %}
   </tbody>
