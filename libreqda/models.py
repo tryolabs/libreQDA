@@ -13,6 +13,15 @@ class Project(models.Model):
     def __unicode__(self):
         return "Project %d-%s" % (self.id, self.name)
 
+    def admin_users(self):
+        '''
+        Return a list of users that have administration
+        privileges for the project.
+        '''
+        admin_perms = self.permissions.filter(permissions='a')
+        admins = User.objects.filter(permissions__in=admin_perms)
+        return set(list(admins) + [self.owner])
+
 
 def get_new_document_path(instance, filename):
     return '/'.join(['documents',
@@ -91,3 +100,6 @@ class UserProyectPermissions(models.Model):
 
     class Meta:
         unique_together = ('user', 'project')
+
+    def is_admin_permission(self):
+        return self.permissions == 'a'
