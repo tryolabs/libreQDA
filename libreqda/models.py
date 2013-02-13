@@ -25,13 +25,14 @@ class Project(models.Model):
 
 def get_new_document_path(instance, filename):
     return '/'.join(['documents',
-                     instance.project.id,
+                     #instance.project.id,
                      filename])
 
 
 class Document(models.Model):
     name = models.CharField(max_length=250)
     type = models.CharField(max_length=250)
+    text = models.TextField(blank=True)
     comment = models.CharField(blank=True, null=True, max_length=250)
     file = models.FileField(upload_to=get_new_document_path)
     uploaded_by = models.ForeignKey(User)
@@ -42,6 +43,7 @@ class Document(models.Model):
 
 
 class DocumentInstance(models.Model):
+    document = models.ForeignKey(Document, related_name='instances')
     project = models.ForeignKey(Project, related_name='documents')
     name = models.CharField(max_length=250)
     type = models.CharField(max_length=250)
