@@ -1,6 +1,8 @@
+# -*- coding: utf-8 -*-
 # Django settings for libreqda project.
 
 import os
+
 
 BASE_PATH = os.path.abspath(os.path.dirname(__file__))
 
@@ -93,8 +95,9 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 )
 
 MIDDLEWARE_CLASSES = (
-    'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware', # Translations
+    'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -121,9 +124,11 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-     'django.contrib.admin',
-    # Uncomment the next line to enable admin documentation:
-    # 'django.contrib.admindocs',
+    'django.contrib.admin',
+    # 'django.contrib.admindocs', # admin documentation
+    # 3rd party
+    'rosetta',
+    # Ours
     'libreqda',
 )
 
@@ -159,6 +164,14 @@ LOGGING = {
 LOGIN_URL = '/accounts/login'
 LOGIN_REDIRECT_URL = '/project/'
 LOGOUT_REDIRECT_URL = '/accounts/login'
+
+# Localization
+ugettext = lambda s: s
+LANGUAGES = (
+  ('en', ugettext('Inglés')),
+  ('es', ugettext('Español')),
+  ('pt', ugettext('Portugués')),
+)
 
 try:
     from local_settings import *

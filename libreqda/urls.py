@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.conf import settings
 from django.conf.urls import patterns, include, url
 
 admin.autodiscover()
@@ -41,3 +42,8 @@ urlpatterns = patterns('',
         name='logout',
         kwargs={'next_page': '/accounts/login'}),
 )
+
+if 'rosetta' in settings.INSTALLED_APPS:
+    urlpatterns += patterns('',
+        url(r'^rosetta/', include('rosetta.urls')),
+    )
