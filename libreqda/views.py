@@ -2,15 +2,16 @@ import json
 from datetime import datetime
 
 from django.http import Http404, HttpResponse
-from django.core.urlresolvers import reverse
 from django.template import RequestContext
-from django.template.loader import render_to_string
 from django.shortcuts import render, get_object_or_404, redirect
+from django.template.loader import render_to_string
+from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 
-from libreqda.forms import ProjectForm, AddUserToProjectForm
-from libreqda.models import Document, Project, UserProjectPermission
+from libreqda.forms import AddUserToProjectForm, ProjectForm, UploadDocumentForm
+from libreqda.models import Document, DocumentInstance, Project,\
+    UserProjectPermission
 
 
 @login_required
@@ -164,3 +165,73 @@ def view_document(request, pid, did, template='view_document.html'):
                   template,
                   {'project': p,
                    'document': d})
+
+
+#Uncomment this to enable file selection instead of uploading a new file
+#@login_required
+#def new_document(request, pid, template='new_document.html'):
+#    p = get_object_or_404(Project, pk=pid)
+#
+#    if request.method == 'POST':
+#        form = NewDocumentForm(request.POST)
+#        if form.is_valid():
+#            name = form.cleaned_data['name']
+#            comment = form.cleaned_data['comment']
+#            document_id = form.cleaned_data['document']
+#            document = get_object_or_404(Document, pk=document_id)
+#
+#            doc_instance = DocumentInstance(name=name,
+#                                            project=p,
+#                                            comment=comment,
+#                                            document=document,
+#                                            type=document.type,
+#                                            uploaded_by=request.user)
+#            doc_instance.save()
+#            return redirect('browse_projects')
+#    else:
+#        form = NewDocumentForm()
+#
+#    return render(request,
+#              template,
+#              {'project': p,
+#               'documents': Document.objects.all(),
+#               'form': form})
+
+
+@login_required
+def upload_document(request, pid, template='upload_document.html'):
+    p = get_object_or_404(Project, pk=pid)
+
+    if request.method == 'POST':
+        form = UploadDocumentForm(request.POST, request.FILES)
+        if form.is_valid():
+            name = form.cleaned_data['name']
+            comment = form.cleaned_data['comment']
+            document_file = request.FILES['document']
+            document = Document(name=name,
+                                comment=comment,
+                                uploaded_by=request.user,
+                                file=document_file)
+            document.save()
+
+            doc_instance = DocumentInstance(name=name,
+                                            project=p,
+                                            comment=comment,
+                                            document=document,
+                                            type=document.type,
+                                            uploaded_by=request.user)
+            doc_instance.save()
+
+            return redirect('browse_projects')
+    else:
+        form = UploadDocumentForm()
+
+    back_url = reverse('browse_projects')
+    form_action = reverse('upload_document', args=(pid,))
+    return render(request,
+              template,
+              {'project': p,
+               'documents': Document.objects.all(),
+               'form': form,
+               'form_action': form_action,
+               'back_url': back_url})
