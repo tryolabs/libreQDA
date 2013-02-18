@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load i18n %}
 
 {% block head %}
   {{ block.super }}
@@ -15,13 +16,13 @@
   <div class="row-fluid">
     <div class="span10 offset1">
       <div class="toolbar move-up">
-        <a class="btn left-group-button pull-right"><i class="icon-tags"></i> Categorías</a>
-        <a class="btn left-group-button pull-right"><i class="icon-file"></i> Informes</a>
-        <a class="btn left-group-button pull-right"><i class="icon-search"></i> Consultas</a>
-        <a class="btn left-group-button pull-right"><i class="icon-filter"></i> Filtros</a>
-        <a class="btn left-group-button pull-right"><i class="icon-comment"></i> Anotaciones</a>
-        <a class="btn left-group-button pull-right"><i class="icon-book"></i> Códigos</a>
-        <a class="btn left-group-button pull-right"><i class="icon-bookmark"></i> Citas</a>
+        <a class="btn left-group-button pull-right"><i class="icon-tags"></i> {% trans "Categorías" %}</a>
+        <a class="btn left-group-button pull-right"><i class="icon-file"></i> {% trans "Informes" %}</a>
+        <a class="btn left-group-button pull-right"><i class="icon-search"></i> {% trans "Consultas" %}</a>
+        <a class="btn left-group-button pull-right"><i class="icon-filter"></i> {% trans "Filtros" %}</a>
+        <a class="btn left-group-button pull-right"><i class="icon-comment"></i> {% trans "Anotaciones" %}</a>
+        <a class="btn left-group-button pull-right"><i class="icon-book"></i> {% trans "Códigos" %}</a>
+        <a class="btn left-group-button pull-right"><i class="icon-bookmark"></i> {% trans "Citas" %}</a>
       </div>
     </div>
   </div>

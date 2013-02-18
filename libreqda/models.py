@@ -1,12 +1,13 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils.translation import ugettext_lazy as _
 
 
 class Project(models.Model):
-    name = models.CharField(max_length=250, blank=False, verbose_name="Nombre")
+    name = models.CharField(max_length=250, blank=False, verbose_name=_("Nombre"))
     owner = models.ForeignKey(User, related_name='projects')
     version = models.PositiveIntegerField(default=1)
-    comment = models.TextField(null=True, blank=True, verbose_name="Comentario")
+    comment = models.TextField(null=True, blank=True, verbose_name=_("Comentario"))
     modified_date = models.DateTimeField(auto_now=True)
     creation_date = models.DateTimeField(auto_now_add=True)
 
@@ -101,9 +102,9 @@ class Category(models.Model):
 
 
 class UserProjectPermission(models.Model):
-    PROJECT_PERMISSIONS = (('a', 'Administrator'),
-                          ('e', 'Editor'),
-                          ('g', 'Guest'))
+    PROJECT_PERMISSIONS = (('a', _('Administrator')),
+                          ('e', _('Editor')),
+                          ('g', _('Guest')),)
     user = models.ForeignKey(User, related_name='permissions')
     project = models.ForeignKey(Project, related_name='permissions')
     modified_date = models.DateTimeField(auto_now=True)

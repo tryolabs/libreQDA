@@ -8,6 +8,7 @@ from django.template.loader import render_to_string
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
+from django.utils.translation import ugettext as _
 
 from libreqda.forms import ProjectForm, AddUserToProjectForm
 from libreqda.models import Document, Project, UserProjectPermission
@@ -90,7 +91,7 @@ def add_user_to_project(request, pid, template='modal.html'):
     response_dict = {
                      'form': form,
                      'form_action': form_action,
-                     'form_header': 'Asignar usuarios al proyecto',
+                     'form_header': _('Asignar usuarios al proyecto'),
                     }
     html_response = render_to_string(
                         template, response_dict, RequestContext(request))
@@ -109,13 +110,13 @@ def remove_user_from_project(request, pid, uid):
                         user=request.user, project=p, permissions='a')
 
     if u == p.owner:
-        raise Exception('No se puede remover del projecto a su propietario.')
+        raise Exception(_('No se puede remover del projecto a su propietario.'))
 
     if p.owner == request.user or admin_perm.exists():
         perm = UserProjectPermission.objects.get(user=u, project=p)
         perm.delete()
     else:
-        raise Exception('Permisos insuficientes.')
+        raise Exception(_('Permisos insuficientes.'))
 
     return redirect('browse_projects')
 
