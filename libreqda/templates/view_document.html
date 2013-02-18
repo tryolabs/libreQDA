@@ -43,21 +43,21 @@
             $('#documents-menu').css('left','-430px');
         }, 250);
         
-        Annotator.Plugin.HelloWorld = (function() {
-          function HelloWorld(element, options) {
-            this.element = element;
-            this.options = options;
-            console.log("Hello World!");
+        Annotator.Plugin.StoreLogger = function (element) {
+          return {
+            pluginInit: function () {
+              this.annotator
+                .subscribe("beforeAnnotationCreated", function (annotation) {
+                  
+                  
+                  
+                  console.info("The annotation: %o has just been created!", annotation)
+                });
+              }
           }
-          
-          HelloWorld.prototype.pluginInit = function() {
-            console.log("Initialized with annotator: ", this.annotator);
-          };
-          
-          return HelloWorld;
-        })();        
+        };
         
-        $('#doc-text-area').annotator().annotator('addPlugin', 'HelloWorld');
+        $('#doc-text-area').annotator().annotator('addPlugin', 'StoreLogger');
         
     });
   </script>
