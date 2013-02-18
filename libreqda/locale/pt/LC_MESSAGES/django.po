@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-18 15:55-0200\n"
+"POT-Creation-Date: 2013-02-18 16:39-0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,6 +22,26 @@ msgstr ""
 msgid "Usuarios"
 msgstr ""
 
+#: models.py:7
+msgid "Nombre"
+msgstr ""
+
+#: models.py:10
+msgid "Comentario"
+msgstr ""
+
+#: models.py:105
+msgid "Administrator"
+msgstr ""
+
+#: models.py:106 templatetags/filters.py:10
+msgid "Editor"
+msgstr ""
+
+#: models.py:107
+msgid "Guest"
+msgstr ""
+
 #: settings.py:171
 msgid "Inglés"
 msgstr ""
@@ -32,4 +52,61 @@ msgstr ""
 
 #: settings.py:173
 msgid "Portugués"
+msgstr ""
+
+#: views.py:95
+msgid "Asignar usuarios al proyecto"
+msgstr ""
+
+#: views.py:114
+msgid "No se puede remover del projecto a su propietario."
+msgstr ""
+
+#: views.py:120
+msgid "Permisos insuficientes."
+msgstr ""
+
+#: templates/base.html:7 templates/base.html.py:25
+msgid "LibreQDA"
+msgstr ""
+
+#: templates/base.html:35
+#, python-format
+msgid "Bienvenido, %(user.username)s"
+msgstr ""
+
+#: templates/view_document.html:19
+msgid "Categorías"
+msgstr ""
+
+#: templates/view_document.html:20
+msgid "Informes"
+msgstr ""
+
+#: templates/view_document.html:21
+msgid "Consultas"
+msgstr ""
+
+#: templates/view_document.html:22
+msgid "Filtros"
+msgstr ""
+
+#: templates/view_document.html:23
+msgid "Anotaciones"
+msgstr ""
+
+#: templates/view_document.html:24
+msgid "Códigos"
+msgstr ""
+
+#: templates/view_document.html:25
+msgid "Citas"
+msgstr ""
+
+#: templatetags/filters.py:9
+msgid "Administrador"
+msgstr ""
+
+#: templatetags/filters.py:11
+msgid "Invitado"
 msgstr ""
