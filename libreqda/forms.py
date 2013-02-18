@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 
-from libreqda.models import Project
+from libreqda.models import Document, Project
 
 
 class ProjectForm(forms.ModelForm):
@@ -15,3 +15,21 @@ class AddUserToProjectForm(forms.Form):
     users = forms.ModelMultipleChoiceField(
                         queryset=User.objects.all(),
                         label=_('Usuarios'))
+
+
+class NewDocumentForm(forms.Form):
+    document = forms.ModelChoiceField(
+                        queryset=Document.objects.all(),
+                        label="Documento")
+    name = forms.CharField(max_length=250, label='Nombre')
+    comment = forms.CharField(required=False,
+                              widget=forms.Textarea,
+                              label='Comentario')
+
+
+class UploadDocumentForm(forms.Form):
+    document = forms.FileField(label="Documento")
+    name = forms.CharField(max_length=250, label='Nombre')
+    comment = forms.CharField(required=False,
+                              widget=forms.Textarea,
+                              label='Comentario')
