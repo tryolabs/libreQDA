@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
+from django.utils.translation import ugettext_lazy as _
 
 from libreqda.models import Document, Project
 
@@ -13,7 +14,7 @@ class ProjectForm(forms.ModelForm):
 class AddUserToProjectForm(forms.Form):
     users = forms.ModelMultipleChoiceField(
                         queryset=User.objects.all(),
-                        label='Usuarios')
+                        label=_('Usuarios'))
 
 
 class NewDocumentForm(forms.Form):
