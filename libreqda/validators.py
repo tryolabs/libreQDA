@@ -3,7 +3,7 @@ from django.utils.translation import ugettext as _
 
 
 class DocumentValidator():
-    SUPPORTED_FILETYPES = ('.docx')
+    SUPPORTED_FILETYPES = ('.doc', '.docx', '.pdf', '.rtf', '.txt')
 
     def __call__(self, f):
         #TODO: python-magic

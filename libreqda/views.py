@@ -1,4 +1,5 @@
 import json
+
 from datetime import datetime
 
 from django.http import Http404, HttpResponse
@@ -9,6 +10,8 @@ from django.utils.translation import ugettext as _
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
+
+import libreqda.text_extraction
 
 from libreqda.forms import AddUserToProjectForm, ProjectForm, UploadDocumentForm
 from libreqda.models import Document, DocumentInstance, Project,\
@@ -160,7 +163,7 @@ def copy_project(request, pid, template='copy_project.html'):
 @login_required
 def view_document(request, pid, did, template='view_document.html'):
     p = get_object_or_404(Project, pk=pid)
-    d = get_object_or_404(Document, pk=did)
+    d = get_object_or_404(DocumentInstance, pk=did)
 
     return render(request,
                   template,
@@ -199,6 +202,10 @@ def view_document(request, pid, did, template='view_document.html'):
 #               'form': form})
 
 
+def extract_text(path, t):
+    return getattr(libreqda.text_extraction, t)(path)
+
+
 @login_required
 def upload_document(request, pid, template='upload_document.html'):
     p = get_object_or_404(Project, pk=pid)
@@ -222,6 +229,18 @@ def upload_document(request, pid, template='upload_document.html'):
                                             type=document.type,
                                             uploaded_by=request.user)
             doc_instance.save()
+            document.file.close()
+
+            try:
+                text = extract_text(document.file.name,
+                                    document.file.name[-3:].lower())
+                document.text = text
+                document.save()
+                doc_instance.save()
+            except:
+                doc_instance.delete()
+                document.file.delete()
+                document.delete()
 
             return redirect('browse_projects')
     else:
