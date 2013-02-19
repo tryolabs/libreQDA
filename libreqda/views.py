@@ -5,10 +5,10 @@ from django.http import Http404, HttpResponse
 from django.template import RequestContext
 from django.shortcuts import render, get_object_or_404, redirect
 from django.template.loader import render_to_string
+from django.utils.translation import ugettext as _
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
-from django.utils.translation import ugettext as _
 
 from libreqda.forms import AddUserToProjectForm, ProjectForm, UploadDocumentForm
 from libreqda.models import Document, DocumentInstance, Project,\

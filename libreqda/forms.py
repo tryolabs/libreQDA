@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 
 from libreqda.models import Document, Project
+from libreqda.validators import DocumentValidator
 
 
 class ProjectForm(forms.ModelForm):
@@ -28,7 +29,8 @@ class NewDocumentForm(forms.Form):
 
 
 class UploadDocumentForm(forms.Form):
-    document = forms.FileField(label="Documento")
+    document = forms.FileField(label="Documento",
+                               validators=[DocumentValidator()])
     name = forms.CharField(max_length=250, label='Nombre')
     comment = forms.CharField(required=False,
                               widget=forms.Textarea,
