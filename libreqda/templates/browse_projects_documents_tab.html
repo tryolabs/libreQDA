@@ -1,3 +1,4 @@
+{% load i18n %}
 <div class="toolbar-small">
   <a class="btn btn-small btn-success pull-right" href="/project/{{project.id}}/document/add"><i class="icon-file icon-white"></i> Agregar documento</a>
 </div>
@@ -28,7 +29,11 @@
         </tr>
         <tr>
           <td></td>
-          <td colspan="5">{{ doc.comment }}</td>
+          {% if doc.comment %}
+            <td colspan="5">{{ doc.comment }}</td>
+          {% else %}
+            <td colspan="5">{% trans "El documento no tiene descripción." %}</td>
+          {% endif %}
         </tr>
       {% endfor %}
     </tbody>
