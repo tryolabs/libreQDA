@@ -44,6 +44,20 @@ urlpatterns = patterns('',
         'django.contrib.auth.views.logout',
         name='logout',
         kwargs={'next_page': '/accounts/login'}),
+
+    # annotations
+    url(r'^annotations/$',
+        'libreqda.annotations_views.base',
+        name='annotations_base'),
+    url(r'^annotations/create/$',
+        'libreqda.annotations_views.create',
+        name='annotations_create'),
+    url(r'^annotations/read/(?P<aid>\d+)$',
+        'libreqda.annotations_views.read',
+        name='annotations_read'),
+    url(r'^annotations/read/$',
+        'libreqda.annotations_views.read',
+        name='annotations_read'),
 )
 
 if 'rosetta' in settings.INSTALLED_APPS:
