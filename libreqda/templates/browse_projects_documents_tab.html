@@ -1,3 +1,4 @@
+{% load i18n %}
 <div class="toolbar-small">
   <a class="btn btn-small btn-success pull-right" href="/project/{{project.id}}/document/add"><i class="icon-file icon-white"></i> Agregar documento</a>
 </div>
@@ -6,10 +7,10 @@
     <thead>
       <tr>
         <th>#</th>
-        <th>Nombre</th>
-        <th>Tipo</th>
-        <th>Fecha</th>
-        <th>Añadido por</th>
+        <th>{% trans "Nombre" %}</th>
+        <th>{% trans "Tipo" %}</th>
+        <th>{% trans "Fecha" %}</th>
+        <th>{% trans "Añadido por" %}</th>
         <th></th>
       </tr>
     </thead>
@@ -22,19 +23,23 @@
           <td>{{ doc.creation_date }}</td>
           <td>{{ doc.uploaded_by }}</td>
           <td>
-            <a class="btn btn-small btn-primary pull-right left-group-button" href="/project/{{project.id}}/document/{{doc.id}}"><i class="icon-eye-open icon-white"></i>  Ver</a>
-            <a class="btn btn-small btn-danger pull-right" href="/project/{{project.id}}/document/{{doc.id}}/delete"><i class="icon-trash icon-white"></i>  Eliminar</a>
+            <a class="btn btn-small btn-primary pull-right left-group-button" href="{% url view_document pid=project.id did=doc.id %}"><i class="icon-eye-open icon-white"></i> {% trans "Ver" %}</a>
+            <a class="btn btn-small btn-danger pull-right" href="{% url delete_document pid=project.id did=doc.id %}"><i class="icon-trash icon-white"></i>  {% trans "Eliminar" %}</a>
           </td>
         </tr>
         <tr>
           <td></td>
-          <td colspan="5">{{ doc.comment }}</td>
+          {% if doc.comment %}
+            <td colspan="5">{{ doc.comment }}</td>
+          {% else %}
+            <td colspan="5">{% trans "El documento no tiene descripción." %}</td>
+          {% endif %}
         </tr>
       {% endfor %}
     </tbody>
   </table>
 {% else %}
   <div class="alert alert-info">
-    <strong>¡No hay documentos!</strong>
+    <strong>¡{% trans "No hay documentos!" %}</strong>
   </div>
 {% endif %}
