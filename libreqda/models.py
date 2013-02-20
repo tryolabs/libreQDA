@@ -66,13 +66,17 @@ class Annotation(models.Model):
 
 
 class Citation(models.Model):
-    document = models.ForeignKey(Document, related_name='citations')
-    start = models.PositiveIntegerField()
-    end = models.PositiveIntegerField()
+    # TODO: Document instances are no longer needed, should we remove them ?
+    document = models.ForeignKey(DocumentInstance, related_name='citations')
+    created_by = models.ForeignKey(User)
     creation_date = models.DateTimeField(auto_now_add=True)
     modified_date = models.DateTimeField(auto_now=True)
     comment = models.TextField(null=True, blank=True)
-    created_by = models.ForeignKey(User)
+    start_paragraph = models.PositiveIntegerField()
+    end_paragraph = models.PositiveIntegerField()
+    start = models.PositiveIntegerField()
+    end = models.PositiveIntegerField()
+    serialized = models.TextField(null=True, blank=True)
 
 
 class Code(models.Model):
