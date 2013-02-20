@@ -4,4 +4,6 @@ argparse==1.2.1
 distribute==0.6.32
 django-rosetta==0.6.8
 ipython==0.13.1
+pdfminer==20110515
+slate==0.3
 wsgiref==0.1.2
