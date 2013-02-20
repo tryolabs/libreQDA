@@ -22,8 +22,8 @@
           <td>{{ doc.creation_date }}</td>
           <td>{{ doc.uploaded_by }}</td>
           <td>
-            <a class="btn btn-small btn-primary pull-right left-group-button" href="/project/{{project.id}}/document/{{doc.id}}"><i class="icon-eye-open icon-white"></i>  Ver</a>
-            <a class="btn btn-small btn-danger pull-right" href="/project/{{project.id}}/document/{{doc.id}}/delete"><i class="icon-trash icon-white"></i>  Eliminar</a>
+            <a class="btn btn-small btn-primary pull-right left-group-button" href="{% url view_document pid=project.id did=doc.id %}"><i class="icon-eye-open icon-white"></i>  Ver</a>
+            <a class="btn btn-small btn-danger pull-right" href="{% url delete_document pid=project.id did=doc.id %}"><i class="icon-trash icon-white"></i>  Eliminar</a>
           </td>
         </tr>
         <tr>

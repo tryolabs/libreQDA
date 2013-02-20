@@ -256,3 +256,17 @@ def upload_document(request, pid, template='upload_document.html'):
                'form': form,
                'form_action': form_action,
                'back_url': back_url})
+
+
+@login_required
+def delete_document(request, pid, did):
+    p = get_object_or_404(Project, pk=pid)
+    d = get_object_or_404(DocumentInstance, pk=did)
+
+    if p.owner == request.user:
+        d.document.delete()
+        d.delete()
+    else:
+        raise Http404
+
+    return redirect('browse_projects')
