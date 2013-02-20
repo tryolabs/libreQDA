@@ -7,3 +7,4 @@ ipython==0.13.1
 pdfminer==20110515
 slate==0.3
 wsgiref==0.1.2
+-e git+https://github.com/mikemaccana/python-docx.git@0c4379c6b89a7c745890e940a9be88b04147dfc2#egg=python-docx
