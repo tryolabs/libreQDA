@@ -1,5 +1,6 @@
 import json
 
+from os.path import splitext
 from datetime import datetime
 
 from django.http import Http404, HttpResponse
@@ -202,8 +203,8 @@ def view_document(request, pid, did, template='view_document.html'):
 #               'form': form})
 
 
-def extract_text(path, t):
-    return getattr(libreqda.text_extraction, t)(path)
+def extract_text(path, extension):
+    return getattr(libreqda.text_extraction, extension.lower()[1:])(path)
 
 
 @login_required
@@ -233,7 +234,7 @@ def upload_document(request, pid, template='upload_document.html'):
 
             try:
                 text = extract_text(document.file.name,
-                                    document.file.name[-3:].lower())
+                                    splitext(document.file.name)[1])
                 document.text = text
                 document.save()
                 doc_instance.save()
