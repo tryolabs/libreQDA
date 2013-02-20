@@ -1,9 +1,13 @@
 Django==1.4.3
 MySQL-python==1.2.4c1
+PIL==1.1.7
 argparse==1.2.1
 distribute==0.6.32
 django-rosetta==0.6.8
 ipython==0.13.1
+lxml==3.1.0
 pdfminer==20110515
+python-dateutil==2.1
+six==1.2.0
 slate==0.3
 wsgiref==0.1.2
