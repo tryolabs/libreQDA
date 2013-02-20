@@ -6,10 +6,10 @@
     <thead>
       <tr>
         <th>#</th>
-        <th>Nombre</th>
-        <th>Tipo</th>
-        <th>Fecha</th>
-        <th>Añadido por</th>
+        <th>{% trans "Nombre" %}</th>
+        <th>{% trans "Tipo" %}</th>
+        <th>{% trans "Fecha" %}</th>
+        <th>{% trans "Añadido por" %}</th>
         <th></th>
       </tr>
     </thead>
@@ -22,8 +22,8 @@
           <td>{{ doc.creation_date }}</td>
           <td>{{ doc.uploaded_by }}</td>
           <td>
-            <a class="btn btn-small btn-primary pull-right left-group-button" href="{% url view_document pid=project.id did=doc.id %}"><i class="icon-eye-open icon-white"></i>  Ver</a>
-            <a class="btn btn-small btn-danger pull-right" href="{% url delete_document pid=project.id did=doc.id %}"><i class="icon-trash icon-white"></i>  Eliminar</a>
+            <a class="btn btn-small btn-primary pull-right left-group-button" href="{% url view_document pid=project.id did=doc.id %}"><i class="icon-eye-open icon-white"></i> {% trans "Ver" %}</a>
+            <a class="btn btn-small btn-danger pull-right" href="{% url delete_document pid=project.id did=doc.id %}"><i class="icon-trash icon-white"></i>  {% trans "Eliminar" %}</a>
           </td>
         </tr>
         <tr>
@@ -35,6 +35,6 @@
   </table>
 {% else %}
   <div class="alert alert-info">
-    <strong>¡No hay documentos!</strong>
+    <strong>¡{% trans "No hay documentos!" %}</strong>
   </div>
 {% endif %}
