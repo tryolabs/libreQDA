@@ -24,13 +24,13 @@ Antes de poder comenzar es necesario instalar algunas dependencias.
 2. Instalar MySQL: `sudo apt-get install mysql-server libmysqlclient-dev`.
 3. El archivo `requirements.txt` contiene una lista de dependencias a instalar. Es posible instalar todas de forma automática con el comando `pip install -r requirements.txt`.
 
-Python-docx
+~~Python-docx~~
 -----------
-Para poder extraer el texto de archivos ``docx` es necesario instalar `python-docx`.
+~~Para poder extraer el texto de archivos ``docx` es necesario instalar `python-docx`.~~
 
-1. Obtener el código desde su [repositorio en Github](https://github.com/mikemaccana/python-docx): `git clone https://github.com/mikemaccana/python-docx.git`.
-2. Ir al directorio con el código: `cd python-docx`.
-3. Instalar con: `python setup.py install`.
+1. ~~Obtener el código desde su [repositorio en Github](https://github.com/mikemaccana/python-docx): `git clone https://github.com/mikemaccana/python-docx.git`.~~
+2. ~~Ir al directorio con el código: `cd python-docx`.~~
+3. ~~Instalar con: `python setup.py install`.~~
 
 Configurar y ejecutar
 ---------------------
