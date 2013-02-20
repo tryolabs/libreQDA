@@ -41,24 +41,35 @@
   <script type="text/javascript">
     $(document).ready(function() {
         setTimeout(function() {
-            $('#documents-menu').css('left','-430px');
+          $('#documents-menu').css('left','-430px');
         }, 250);
         
         Annotator.Plugin.StoreLogger = function (element) {
           return {
             pluginInit: function () {
               this.annotator
-                .subscribe("annotationCreated", function (annotation) {
-                  
-                  
-                  
+                .subscribe("annotationCreated", function (annotation) {                  
                   console.info("The annotation: %o has just been created!", annotation)
                 });
               }
           }
         };
         
-        $('#doc-text-area').annotator().annotator('addPlugin', 'StoreLogger');
+        $('#doc-text-area').annotator()
+          .annotator('addPlugin', 'StoreLogger')
+          .annotator('addPlugin', 'Store', {
+            prefix: '/annotations',
+            urls: {
+              create:  '/create/',
+              read:    '/read/:id',
+              update:  '/update/:id',
+              destroy: '/destroy/:id',
+              search:  '/search/'
+            },
+            annotationData: {
+              // Extra parameters
+            },
+          });
         
     });
   </script>
