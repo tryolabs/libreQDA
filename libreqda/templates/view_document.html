@@ -58,10 +58,10 @@
         $('#doc-text-area').annotator()
           .annotator('addPlugin', 'StoreLogger')
           .annotator('addPlugin', 'Store', {
-            prefix: '/annotations',
+            prefix: '',
             urls: {
-              create:  '/create/',
-              read:    '/read/:id',
+              create:  '{% url annotations_create pid=project.id did=document.id %}',
+              read:    '{% url annotations_read pid=project.id did=document.id %}:id',
               update:  '/update/:id',
               destroy: '/destroy/:id',
               search:  '/search/'
