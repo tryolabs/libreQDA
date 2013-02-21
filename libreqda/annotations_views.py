@@ -2,31 +2,27 @@ import re
 from datetime import datetime
 
 from django.http import HttpResponse
-from django.shortcuts import redirect
 from django.utils import simplejson as json
+from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 
 from libreqda.utils import JsonResponse
 from libreqda.models import DocumentInstance, Citation
 
-@login_required
-def base(request):
-    return redirect('browse_projects')
-
 
 @csrf_exempt #TODO: Fix this to include csrf token in Annotations post
 @login_required
-def create(request):
+def create(request, pid, did):
     try:
         print request.POST.keys()
         serialized_annotation = request.POST.keys()[0]
     except IndexError:
         raise Exception("Invalid annotation data in 'create'")
 
-    annotation = json.loads(serialized_annotation)
     user = request.user
-    doc = DocumentInstance.objects.get(pk=1) #TODO: just for testing, fix
+    doc = get_object_or_404(DocumentInstance, pk=did)
+    annotation = json.loads(serialized_annotation)
 
     c = Citation()
     c.document = doc
@@ -47,8 +43,8 @@ def create(request):
     return JsonResponse('OK')
 
 @login_required
-def read(request, aid=None):
-    doc = DocumentInstance.objects.get(pk=1) #TODO: just for testing, fix
+def read(request, pid, did, aid=None):
+    doc = get_object_or_404(DocumentInstance, pk=did)
 
     citations = [cit.serialized for cit in doc.citations.all()]
     if not citations:
@@ -56,6 +52,7 @@ def read(request, aid=None):
 
     content = '[%s]' % (','.join(citations),)
     return HttpResponse(content, mimetype='application/json; charset=utf8')
+
 
 #### Helper functions for annotations views
 
