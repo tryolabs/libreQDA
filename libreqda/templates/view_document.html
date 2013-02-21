@@ -62,8 +62,8 @@
             urls: {
               create:  '{% url annotations_create pid=project.id did=document.id %}',
               read:    '{% url annotations_read pid=project.id did=document.id %}:id',
-              update:  '/update/:id',
-              destroy: '/destroy/:id',
+              update:  '{% url annotations_update pid=project.id did=document.id %}:id',
+              destroy: '{% url annotations_destroy pid=project.id did=document.id %}:id',
               search:  '/search/'
             },
             annotationData: {
