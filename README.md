@@ -39,3 +39,22 @@ Configurar y ejecutar
 3. Abrir el nuevo archivo, `local_settings.py` y editar según sea necesario.
 4. Crear la base de datos con django: `python manage.py syncdb`.
 5. Ejecutar con: `python manage.py runserver`
+
+
+Cómo agregar soporte para otros tipos de archivos
+=================================================
+Agregar soporte para otros tipos de archivos es relativamente simple. Existen dos archivos a modificar:
+* `validators.py`: Contiene código para permitir o no la subida de un tipo de archivo en particular.
+* `text_extraction.py`: Contiene el código para extraer el texto de cada uno de los distintos tipos de archivo permitidos.
+
+1. Abrir el archivo `validators.py`.
+2. En la tupla `SUPPORTED_FILETYPES` agregar un `string` con el tipo de archivo. Por ejemplo, para archivos Postscript, agregar `'.ps'` a la tupla.
+3. Abrir el archivo `tex_extraction.py.
+4. Agregar una nueva función con la extensión de archivo como nombre. Por ejemplo, para procesar archivos Postscript, agregar una función llamada `ps`.
+
+  La nueva función va a recibir un solo parámetro, siendo éste el path al nuevo archivo subido. 
+  La función debe abrir el archivo y extraer el texto, para finalmente retornar un objeto del tipo `string` con el contenido de archivo. Éste valor será el que se guarde en la base de datos.
+
+TODO
+----
+Actualmente para determinar el tipo de archivo, LibreQDA se basa en la extensión. La dentificación de tipos de archivos debería realizarse utilizando [`python-magic`](https://github.com/ahupp/python-magic).
