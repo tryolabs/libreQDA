@@ -52,6 +52,7 @@ class DocumentInstance(models.Model):
     comment = models.CharField(blank=True, null=True, max_length=250)
     modified_date = models.DateTimeField(auto_now=True)
     uploaded_by = models.ForeignKey(User)
+    creation_date = models.DateTimeField(auto_now_add=True)
 
     def __unicode__(self):
         return "DocumentInstance: %s" % (self.name)
