@@ -8,7 +8,7 @@ Instalación
 ------------------------------------------------------
 Para mayor comodidad se recomienda utilizar un virtualenv.
 
-1. Instalar Virtualenv: (`sudo apt-get install virtualenv` en Debian/Ubuntu).
+1. Instalar Virtualenv: (`sudo apt-get install python-virtualenv` en Debian/Ubuntu).
 2. Una vez instalado, crear un Virtualenv: `virtualenv libreqda`.
 3. Activar el Virtualenv: `cd libreqda` y luego `source bin/activate`.
 
