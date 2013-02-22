@@ -44,6 +44,8 @@ Actualizar
 ----------
 Para actualizar LibreQDA simplemente es necesario hacer un pull del repositorio con `git pull` y luego actualizar la base de datos con `python manage.py reset libreqda`.
 
+FIXME: no hay que revisar requerimientos?
+
 NOTA: Los datos son eliminados de la base de datos cuando se hace un `reset`. Es posible utilizar 
 [`dumpdata`](https://docs.djangoproject.com/en/dev/ref/django-admin/#dumpdata-appname-appname-appname-model) y 
 [`loaddata`](https://docs.djangoproject.com/en/dev/ref/django-admin/#loaddata-fixture-fixture) para exportar e importar datos fácilmente.
