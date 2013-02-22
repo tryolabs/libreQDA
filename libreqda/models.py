@@ -1,6 +1,7 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils.translation import ugettext_lazy as _
+from django.contrib.auth.models import User
 
 
 class Project(models.Model):
@@ -80,12 +81,24 @@ class Citation(models.Model):
 
 
 class Code(models.Model):
+    CODE_COLORS = (('d', _('Grey')),
+                   ('e', _('Red')),
+                   ('w', _('Yellow')),
+                   ('s', _('Green')),
+                   ('i', _('Blue')),
+                   ('b', _('Black')),)
     project = models.ForeignKey(Project, related_name='codes')
-    name = models.TextField(max_length=250)
-    weight = models.IntegerField()
+    name = models.TextField(max_length=250, verbose_name=_('Nombre'))
+    weight = models.IntegerField(validators=[MinValueValidator(-100),
+                                             MaxValueValidator(100)],
+                                 verbose_name=_('Peso'))
     created_by = models.ForeignKey(User)
-    color = models.TextField(max_length=6)
-    comment = models.TextField(null=True, blank=True)
+    color = models.CharField(max_length=1,
+                             choices=CODE_COLORS,
+                             verbose_name=_('Color'))
+    comment = models.TextField(null=True,
+                               blank=True,
+                               verbose_name=_('Comentario'))
     modified_date = models.DateTimeField(auto_now=True)
     creation_date = models.DateTimeField(auto_now_add=True)
     citations = models.ManyToManyField(Citation, related_name='codes')

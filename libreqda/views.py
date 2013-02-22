@@ -14,8 +14,9 @@ from django.contrib.auth.decorators import login_required
 
 import libreqda.text_extraction
 
-from libreqda.forms import AddUserToProjectForm, ProjectForm, UploadDocumentForm
-from libreqda.models import Document, DocumentInstance, Project,\
+from libreqda.forms import AddUserToProjectForm, CodeForm, ProjectForm,\
+    UploadDocumentForm
+from libreqda.models import Code, Document, DocumentInstance, Project,\
     UserProjectPermission
 
 
@@ -266,6 +267,57 @@ def delete_document(request, pid, did):
     if p.owner == request.user:
         d.document.delete()
         d.delete()
+    else:
+        raise Http404
+
+    return redirect('browse_projects')
+
+
+@login_required
+def browse_codes(request, pid, template='browse_codes.html'):
+    p = get_object_or_404(Project, pk=pid)
+
+    return render(request,
+              template,
+              {'project': p})
+
+
+@login_required
+def new_code(request, pid, template='new_code.html'):
+    p = get_object_or_404(Project, pk=pid)
+
+    try:
+        back_or_success = request.META.get("HTTP_REFERER")
+    except KeyError:
+        back_or_success = reverse('browse_projects')
+
+    if request.method == 'POST':
+        c = Code()
+        form = CodeForm(request.POST, instance=c)
+        if form.is_valid():
+            c.created_by = request.user
+            c.project = p
+            c.save()
+
+            return redirect(back_or_success)
+    else:
+        form = CodeForm()
+
+    form_action = reverse('new_code', args=(pid,))
+    return render(request,
+              template,
+              {'form': form,
+               'form_action': form_action,
+               'back_url': back_or_success})
+
+
+@login_required
+def delete_code(request, pid, cid):
+    p = get_object_or_404(Project, pk=pid)
+    c = get_object_or_404(Code, pk=cid)
+
+    if c.project == p and c.created_by == request.user:
+        c.delete()
     else:
         raise Http404
 

@@ -22,7 +22,7 @@ body {
     padding: 4px;
     border-radius: 5px 5px 5px 5px;
     -webkit-border-radius: 5px 5px 5px 5px;
-    border: 1px solid #CCC;
+    border: 1px solid #DDD;
 }
 
 .grey-background {
@@ -33,6 +33,12 @@ body {
     background-color: White;
 }
 
+.lone-container {
+    padding-top: 20px;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-bottom: 20px;
+}
 .acordion-project-name {
     font-size: 17.5px
 }

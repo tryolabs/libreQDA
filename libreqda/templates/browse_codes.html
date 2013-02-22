@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+
+{% block head %}
+  {{ block.super }}
+{% endblock head %}
+
+{% block topbar_extra %}
+{% endblock topbar_extra %}
+
+{% load filters %}
+
+{% block body %}
+  <div class="row-fluid">
+    <div class="span10 offset1">
+      <div class="toolbar">
+        <a class="btn btn-success pull-right" href="{% url new_code pid=project.id %}"><i class="icon-book icon-white"></i>  {% trans "Agregar código" %}</a>
+      </div>
+      <div class="white-background with-border lone-container0">
+        {% if project.codes.all %}
+          <table class="table table-condensed table-striped table-hover">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>{% trans "Etiqueta" %}</th>
+                <th>{% trans "Citas" %}</th>
+                <th>{% trans "Códigos" %}</th>
+                <th>{% trans "Peso" %}</th>
+                <th>{% trans "Añadido por" %}</th>
+                <th>{% trans "Fecha" %}</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for code in project.codes.all %}
+                <tr>
+                  <td>{{ forloop.counter}}</td>
+                  <td>{{ code|pretty_print_code_name|safe }}</td>
+                  <td>{{ code.citations.count }}</td>
+                  <td>TODO</td>
+                  <td>{{ code.weight }}</td>
+                  <td>{{ code.created_by }}</td>
+                  <td>{{ code.creation_date }}</td>
+                  <td><a class="btn btn-small btn-danger pull-right" href="{% url delete_code pid=project.id cid=code.id %}"><i class="icon-trash icon-white"></i>  {% trans "Eliminar" %}</a></td>
+                </tr>
+                <tr>
+                  {% if code.comment %}
+                    <td colspan="8">{{ code.comment }}</td>
+                  {% else %}
+                    <td colspan="8">{% trans "El código no tiene descripción." %}</td>
+                  {% endif %}
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        {% else %}
+          <div class="alert alert-info">
+            <h4>{% trans "¡No hay códigos!" %}</h4>
+            <p>{% trans "No hay códigos para el proyecto. Puede " %}<strong><a href="{% url new_code pid=project.id %}">{% trans "agregar uno" %}</a></strong>.</p>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+{% endblock %}

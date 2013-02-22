@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 
-from libreqda.models import Document, Project
+from libreqda.models import Code, Document, Project
 from libreqda.validators import DocumentValidator
 
 
@@ -35,3 +35,14 @@ class UploadDocumentForm(forms.Form):
     comment = forms.CharField(required=False,
                               widget=forms.Textarea,
                               label='Comentario')
+
+
+class CodeForm(forms.ModelForm):
+    class Meta:
+        WEIGHTS = [(i, i) for i in range(-100, 101)][::-1]
+
+        model = Code
+        exclude = ('created_by', 'creation_date', 'modified_date', 'project',
+                   'citations', 'parent_code')
+        widgets = {'name': forms.TextInput(),
+                   'weight': forms.Select(choices=WEIGHTS)}
