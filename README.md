@@ -21,7 +21,7 @@ Dependencias
 Antes de poder comenzar es necesario instalar algunas dependencias.
 
 1. Instalar `build-essential`: `sudo apt-get install build-essential`.
-2. Instalar MySQL: `sudo apt-get install mysql-server libmysqlclient-dev`.
+2. Instalar MySQL: `sudo apt-get install mysql-server libmysqlclient-dev libevent-dev libxml2-dev libxslt1-dev`.
 3. El archivo `requirements.txt` contiene una lista de dependencias a instalar. Es posible instalar todas de forma automática con el comando `pip install -r requirements.txt`.
 
 ~~Python-docx~~
