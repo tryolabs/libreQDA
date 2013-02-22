@@ -8,7 +8,7 @@ Instalación
 ------------------------------------------------------
 Para mayor comodidad se recomienda utilizar un virtualenv.
 
-1. Instalar Virtualenv: (`sudo apt-get install virtualenv` en Debian/Ubuntu).
+1. Instalar Virtualenv: (`sudo apt-get install python-virtualenv` en Debian/Ubuntu).
 2. Una vez instalado, crear un Virtualenv: `virtualenv libreqda`.
 3. Activar el Virtualenv: `cd libreqda` y luego `source bin/activate`.
 
@@ -40,6 +40,13 @@ Configurar y ejecutar
 4. Crear la base de datos con django: `python manage.py syncdb`.
 5. Ejecutar con: `python manage.py runserver`
 
+Actualizar
+----------
+Para actualizar LibreQDA simplemente es necesario hacer un pull del repositorio con `git pull` y luego actualizar la base de datos con `python manage.py reset libreqda`.
+
+NOTA: Los datos son eliminados de la base de datos cuando se hace un `reset`. Es posible utilizar 
+[`dumpdata`](https://docs.djangoproject.com/en/dev/ref/django-admin/#dumpdata-appname-appname-appname-model) y 
+[`loaddata`](https://docs.djangoproject.com/en/dev/ref/django-admin/#loaddata-fixture-fixture) para exportar e importar datos fácilmente.
 
 Cómo agregar soporte para otros tipos de archivos
 =================================================
