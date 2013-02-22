@@ -50,6 +50,8 @@ NOTA: Los datos son eliminados de la base de datos cuando se hace un `reset`. Es
 [`dumpdata`](https://docs.djangoproject.com/en/dev/ref/django-admin/#dumpdata-appname-appname-appname-model) y 
 [`loaddata`](https://docs.djangoproject.com/en/dev/ref/django-admin/#loaddata-fixture-fixture) para exportar e importar datos fácilmente.
 
+FIXME: Ojo, hice un dumpdata y un loaddata y me da error: `Problem installing fixture 'proyectos': dump is not a known serialization format.`
+
 Cómo agregar soporte para otros tipos de archivos
 =================================================
 Agregar soporte para otros tipos de archivos es relativamente simple. Existen dos archivos a modificar:
