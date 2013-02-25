@@ -34,7 +34,8 @@ Antes de poder comenzar es necesario instalar algunas dependencias.
 
 Configurar y ejecutar
 ---------------------
-1. Crear una base de datos para LibreQDA.
+1. Crear una base de datos para LibreQDA. El encoding de la base de datos debe ser **UTF-8** para evitar problemas al subir documentos.
+  `CREATE DATABASE libreqda CHARACTER SET utf8 COLLATE utf8_general_ci;`
 2. Copiar el archivo `local_settings.py.template` que se encuentra junto al código a `local_settings.py`.
 3. Abrir el nuevo archivo, `local_settings.py` y editar según sea necesario.
 4. Crear la base de datos con django: `python manage.py syncdb`.
