@@ -286,10 +286,7 @@ def browse_codes(request, pid, template='browse_codes.html'):
 def new_code(request, pid, template='new_code.html'):
     p = get_object_or_404(Project, pk=pid)
 
-    try:
-        back_or_success = request.META.get("HTTP_REFERER")
-    except KeyError:
-        back_or_success = reverse('browse_projects')
+    back_or_success = reverse('browse_codes', args=(pid,))
 
     if request.method == 'POST':
         c = Code()
