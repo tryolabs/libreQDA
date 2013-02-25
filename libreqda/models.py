@@ -53,6 +53,7 @@ class DocumentInstance(models.Model):
     modified_date = models.DateTimeField(auto_now=True)
     uploaded_by = models.ForeignKey(User)
     creation_date = models.DateTimeField(auto_now_add=True)
+    annotations = models.ManyToManyField(Document, related_name='documents')
 
     def __unicode__(self):
         return "DocumentInstance: %s" % (self.name)
@@ -63,8 +64,7 @@ class Annotation(models.Model):
     creation_date = models.DateTimeField(auto_now_add=True)
     modified_date = models.DateTimeField(auto_now=True)
     created_by = models.ForeignKey(User)
-    text = models.TextField(null=True, blank=True)
-    documents = models.ManyToManyField(Document, related_name='annotations')
+    text = models.TextField()
 
 
 class Citation(models.Model):
