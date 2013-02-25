@@ -8,7 +8,7 @@
       </div>
       <div id="collapse{{doc.id}}" class="accordion-body collapse">
         <div class="accordion-inner">
-          {{ doc.comment }}
+          {{ doc.comment|linebreaks }}
           <a class="btn btn-small btn-block btn-primary pull-right left-group-button menu-document-button" href="/project/{{project.id}}/document/{{doc.id}}"><i class="icon-eye-open icon-white"></i>  Ver</a>
         </div>
       </div>

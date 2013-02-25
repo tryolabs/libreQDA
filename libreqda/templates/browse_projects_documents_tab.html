@@ -30,7 +30,7 @@
         <tr>
           <td></td>
           {% if doc.comment %}
-            <td colspan="5">{{ doc.comment }}</td>
+            <td colspan="5">{{ doc.comment|linebreaks }}</td>
           {% else %}
             <td colspan="5">{% trans "El documento no tiene descripción." %}</td>
           {% endif %}
