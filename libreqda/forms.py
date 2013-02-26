@@ -53,8 +53,10 @@ class CodeForm(forms.ModelForm):
 class AnnotationForm(forms.ModelForm):
     class Meta:
         model = Annotation
-        exclude = ('created_by', 'creation_date', 'modified_date', 'project')
+        exclude = ('codes', 'created_by', 'creation_date', 'modified_date',\
+                   'project')
 
 
 class AddCodeToAnnotation(forms.Form):
-    codes = forms.ModelMultipleChoiceField(label=_('Códigos'))
+    codes = forms.ModelMultipleChoiceField(queryset=Code.objects.none(),
+                                           label=_('Códigos'))

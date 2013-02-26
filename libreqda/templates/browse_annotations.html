@@ -34,12 +34,12 @@
                   <a class="btn btn-danger pull-right left-group-button" href="{% url delete_annotation pid=project.id aid=annotation.id %}"><i class="icon-trash icon-white"></i>  Eliminar</a>
                 </div>
                 <ul class="nav nav-tabs">
-                  <li class="active"><a href="#general{{project.id}}-tab" data-toggle="tab">General</a></li>
-                  <li><a href="#citations{{project.id}}-tab" data-toggle="tab">Citas</a></li>
-                  <li><a href="#codes{{project.id}}-tab" data-toggle="tab">Códigos</a></li>
+                  <li class="active"><a href="#general{{annotation.id}}-tab" data-toggle="tab">General</a></li>
+                  <li><a href="#citations{{annotation.id}}-tab" data-toggle="tab">Citas</a></li>
+                  <li><a href="#codes{{annotation.id}}-tab" data-toggle="tab">Códigos</a></li>
                 </ul>
                 <div class="tab-content">
-                  <div class="tab-pane tight-tab-content active" id="general{{annotarion.id}}-tab">
+                  <div class="tab-pane tight-tab-content active" id="general{{annotation.id}}-tab">
                     {% include "browse_annotations_general_tab.html" with annotation=annotation %}
                   </div>
                   <div class="tab-pane tight-tab-content" id="citations{{annotation.id}}-tab">

@@ -379,8 +379,13 @@ def add_code_to_annotation(request, pid, aid, template='modal.html'):
 
     if request.method == 'POST':
         form = AddCodeToAnnotation(request.POST)
+        form.fields['codes'].queryset = p.codes.all()
 
         if form.is_valid():
+            for code in form.cleaned_data['codes']:
+                a.codes.add(code)
+            a.save()
+
             response_data = {'redirect': reverse('browse_annotations',
                                                  args=(pid,))}
             return HttpResponse(json.dumps(response_data),
@@ -389,7 +394,8 @@ def add_code_to_annotation(request, pid, aid, template='modal.html'):
         form = AddCodeToAnnotation()
 
     form_action = reverse('add_code_to_annotation', args=(pid, aid))
-    form.fields['codes'].queryset = p.codes.all()
+    form.fields['codes'].queryset = p.codes.exclude(id__in=a.codes.all().values('id'))
+
     response_dict = {
                      'form': form,
                      'form_action': form_action,
@@ -402,3 +408,21 @@ def add_code_to_annotation(request, pid, aid, template='modal.html'):
     return HttpResponse(
                 json.dumps(response_data),
                 content_type="application/json")
+
+
+@login_required
+def remove_code_from_annotation(request, pid, aid, cid):
+    p = get_object_or_404(Project, pk=pid)
+    a = get_object_or_404(Annotation, pk=aid)
+    c = get_object_or_404(Code, pk=cid)
+
+    if c not in a.codes.all():
+        raise Http404
+
+    if request.user in p.admin_users():
+        a.codes.remove(c)
+        a.save()
+    else:
+        raise Http404
+
+    return redirect('browse_annotations', pid=pid)

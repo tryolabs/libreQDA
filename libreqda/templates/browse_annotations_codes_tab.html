@@ -1,10 +1,11 @@
 {% load i18n %}
+{% load filters %}
 
 <div class="modal hide fade" id="codeModal{{annotation.id}}">
 </div>
 
 <div class="toolbar-small">
-  <a data-url="{% url add_code_to_annotation pid=project.id %}" id="addCode{{annotation.id}}" class="btn btn-small btn-success pull-right"><i class="icon-user icon-white"></i> {% trans "Agregar código" %}</a>
+  <a data-url="{% url add_code_to_annotation pid=project.id aid=annotation.id %}" id="addCode{{annotation.id}}button" class="btn btn-small btn-success pull-right"><i class="icon-book icon-white"></i> {% trans "Agregar código" %}</a>
 </div>
 
 {% if annotation.codes.all %}
@@ -31,7 +32,7 @@
           <td>{{ code.weight }}</td>
           <td>{{ code.created_by }}</td>
           <td>{{ code.creation_date }}</td> 
-          <td><a class="btn btn-small btn-danger pull-right" href="{% url delete_code pid=project.id cid=code.id %}"><i class="icon-trash icon-white"></i>  {% trans "Eliminar" %}</a></td>
+          <td><a class="btn btn-small btn-danger pull-right" href="{% url remove_code_from_annotation pid=project.id aid=annotation.id cid=code.id %}"><i class="icon-trash icon-white"></i>  {% trans "Eliminar" %}</a></td>
         </tr>
         <tr>
           {% if code.comment %}
@@ -45,11 +46,10 @@
   </table>
 {% else %}
   <div class="alert alert-info">
-    <h4>{% trans "¡No hay códigos asignados!" %}</h4>
-    <p>{% trans "No hay códigos para la anotación. Puede " %}<strong><a href="{% url add_code_to_annotation pid=project.id %}">{% trans "agregar uno" %}</a></strong>.</p>
+    <p>{% trans "¡No hay códigos asignados!" %}</p>
   </div>
 {% endif %}
 
 <script>
-    simpleModal('addCode{{annotation.id}}', 'codeModal{{{{annotation.id}}}}')
+    simpleModal('addCode{{annotation.id}}button', 'codeModal{{annotation.id}}')
 </script>

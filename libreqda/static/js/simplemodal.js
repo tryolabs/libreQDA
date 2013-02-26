@@ -1,15 +1,15 @@
 function simpleModal(buttonId, modalId) {
     $(document).ready(function() {
-        $('#buttonId').click(function(ev) {
+        $('#' + buttonId).click(function(ev) {
             ev.preventDefault(); // prevent navigation
             var url = $(this).data("url"); // get the form url
             $.getJSON(url, function(data) { // load the url into the modal
-                $('#modalId').html(data.html);
-                $("#modalId").modal('show');
+                $('#' + modalId).html(data.html);
+                $('#' + modalId).modal('show');
             });
             return false; // prevent the click propagation
         });
-        $('#modalId').on('submit', 'form', function() {
+        $('#' + modalId).on('submit', 'form', function() {
             $.ajax({
                 type : $(this).attr('method'),
                 url : this.action,
@@ -19,7 +19,7 @@ function simpleModal(buttonId, modalId) {
                     if (data.redirect) {
                         window.location.replace(data.redirect);
                     }
-                    $('#modalId').html(data.html);
+                    $('#' + modalId).html(data.html);
                 }
             });
             return false;

@@ -67,7 +67,9 @@ class Annotation(models.Model):
     modified_date = models.DateTimeField(auto_now=True)
     created_by = models.ForeignKey(User)
     text = models.TextField()
-    codes = models.ManyToManyField('Code', related_name='annotations')
+    codes = models.ManyToManyField('Code',
+                                   blank=True,
+                                   related_name=_('annotations'))
 
 
 class Citation(models.Model):
@@ -107,6 +109,9 @@ class Code(models.Model):
     creation_date = models.DateTimeField(auto_now_add=True)
     citations = models.ManyToManyField(Citation, related_name='codes')
     parent_code = models.ForeignKey('self', null=True, related_name='sub_codes')
+
+    def __unicode__(self):
+        return self.name
 
 
 class Category(models.Model):
