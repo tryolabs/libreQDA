@@ -14,10 +14,10 @@ from django.contrib.auth.decorators import login_required
 
 import libreqda.text_extraction
 
-from libreqda.forms import AddUserToProjectForm, CodeForm, ProjectForm,\
-    UploadDocumentForm
-from libreqda.models import Code, Document, DocumentInstance, Project,\
-    UserProjectPermission
+from libreqda.forms import AddUserToProjectForm, AnnotationForm, CodeForm,\
+    ProjectForm, UploadDocumentForm
+from libreqda.models import Annotation, Code, Document, DocumentInstance,\
+    Project, UserProjectPermission
 
 
 @login_required
@@ -319,3 +319,51 @@ def delete_code(request, pid, cid):
         raise Http404
 
     return redirect('browse_projects')
+
+
+@login_required
+def browse_annotations(request, pid, template='browse_annotations.html'):
+    p = get_object_or_404(Project, pk=pid)
+
+    return render(request,
+              template,
+              {'project': p})
+
+
+@login_required
+def new_annotation(request, pid, template='new_annotation.html'):
+    p = get_object_or_404(Project, pk=pid)
+
+    back_or_success = reverse('browse_annotations', args=(pid,))
+
+    if request.method == 'POST':
+        a = Annotation()
+        form = AnnotationForm(request.POST, instance=a)
+        if form.is_valid():
+            a.created_by = request.user
+            a.project = p
+            a.save()
+
+            return redirect(back_or_success)
+    else:
+        form = AnnotationForm()
+
+    form_action = reverse('new_annotation', args=(pid,))
+    return render(request,
+              template,
+              {'form': form,
+               'form_action': form_action,
+               'back_url': back_or_success})
+
+
+@login_required
+def delete_annotation(request, pid, aid):
+    p = get_object_or_404(Project, pk=pid)
+    a = get_object_or_404(Annotation, pk=pid)
+
+    if request.user in p.admin_users():
+        a.delete()
+    else:
+        raise Http404
+
+    return reverse('browse_annotations', args=(pid,))

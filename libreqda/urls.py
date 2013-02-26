@@ -49,6 +49,16 @@ urlpatterns = patterns('',
     url(r'^project/(?P<pid>\d+)/code/(?P<cid>\d+)/delete/$',
         'libreqda.views.delete_code',
         name='delete_code'),
+    #annotations
+    url(r'^project/(?P<pid>\d+)/annotation/$',
+        'libreqda.views.browse_annotations',
+        name='browse_annotations'),
+    url(r'^project/(?P<pid>\d+)/annotation/new/$',
+        'libreqda.views.new_annotation',
+        name='new_annotation'),
+    url(r'^project/(?P<pid>\d+)/annotation/(?P<aid>\d+)/delete/$',
+        'libreqda.views.delete_annotation',
+        name='delete_annotation'),
     # accounts
     url(r'^accounts/login/$',
         'django.contrib.auth.views.login',
@@ -58,7 +68,7 @@ urlpatterns = patterns('',
         name='logout',
         kwargs={'next_page': '/accounts/login'}),
 
-    # annotations
+    # annotator
     url(r'^project/(?P<pid>\d+)/document/(?P<did>\d+)/annotations/create/$',
         'libreqda.annotations_views.create',
         name='annotations_create'),

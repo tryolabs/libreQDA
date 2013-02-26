@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+
+{% block head %}
+  {{ block.super }}
+{% endblock head %}
+
+{% block topbar_extra %}
+{% endblock topbar_extra %}
+
+{% load filters %}
+
+{% block body %}
+  <div class="row-fluid">
+    <div class="span10 offset1">
+      <div class="toolbar">
+        <a class="btn btn-success pull-right" href="{% url new_annotation pid=project.id %}"><i class="icon-book icon-white"></i>  {% trans "Agregar anotación" %}</a>
+      </div>
+      {% if project.annotations.all %}
+       <div class="accordion white-background" id="accordion">
+        {% for annotation in project.annotations.all %}
+          <div class="accordion-group">
+            <div class="accordion-heading">
+              <a class="accordion-toggle acordion-project-name" data-toggle="collapse" data-parent="#accordion" href="#collapse{{annotation.id}}">
+                {% trans "Anotación " %}{{ forloop.counter }}
+              </a>
+            </div>
+            <div id="collapse{{annotation.id}}" class="accordion-body collapse">
+              <div class="accordion-inner">
+                <div class="toolbar-small">
+                  <a class="btn btn-danger pull-right left-group-button" href="{% url delete_annotation pid=project.id aid=annotation.id %}"><i class="icon-trash icon-white"></i>  Eliminar</a>
+                </div>
+                <ul class="nav nav-tabs">
+                  <li class="active"><a href="#general{{project.id}}-tab" data-toggle="tab">General</a></li>
+                  <li><a href="#citations{{project.id}}-tab" data-toggle="tab">Citas</a></li>
+                  <li><a href="#codes{{project.id}}-tab" data-toggle="tab">Códigos</a></li>
+                </ul>
+                <div class="tab-content">
+                  <div class="tab-pane tight-tab-content active" id="general{{annotarion.id}}-tab">
+                    {% include "browse_annotations_general_tab.html" with annotation=annotation %}
+                  </div>
+                  <div class="tab-pane tight-tab-content" id="citations{{annotation.id}}-tab">
+                    {% include "browse_annotations_citations_tab.html" with annotation=annotation %}
+                  </div>
+                  <div class="tab-pane tight-tab-content" id="codes{{annotation.id}}-tab">
+                    {% include "browse_annotations_codes_tab.html" with annotation=annotation %}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+      {% else %}
+        <div class="alert alert-info">
+          <h4>{% trans "¡No hay Anotaciones!" %}</h4>
+          <p>{% trans "No hay anotaciones para el proyecto. Puede " %}<strong><a href="{% url new_annotation pid=project.id %}">{% trans "agregar una" %}</a></strong>.</p>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}
