@@ -75,8 +75,6 @@ def add_user_to_project(request, pid, template='modal.html'):
         if form.is_valid():
             for u in form.cleaned_data['users']:
                 perm = UserProjectPermission()
-                perm.creation_date = datetime.now()
-                perm.modified_date = datetime.now()
                 perm.user = u
                 perm.project = p
                 perm.permissions = 'g'
