@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from os.path import splitext
 
 from django.core.exceptions import ValidationError
