@@ -14,8 +14,8 @@ from django.contrib.auth.decorators import login_required
 
 import libreqda.text_extraction
 
-from libreqda.forms import AddUserToProjectForm, AnnotationForm, CodeForm,\
-    ProjectForm, UploadDocumentForm
+from libreqda.forms import AddCodeToAnnotation, AddUserToProjectForm,\
+    AnnotationForm, CodeForm, ProjectForm, UploadDocumentForm
 from libreqda.models import Annotation, Code, Document, DocumentInstance,\
     Project, UserProjectPermission
 
@@ -365,3 +365,38 @@ def delete_annotation(request, pid, aid):
         raise Http404
 
     return reverse('browse_annotations', args=(pid,))
+
+
+@login_required
+def add_code_to_annotation(request, pid, aid, template='modal.html'):
+    p = get_object_or_404(Project, pk=pid)
+    a = get_object_or_404(Annotation, pk=aid)
+
+    if a.project != p:
+        raise Http404
+
+    if request.method == 'POST':
+        form = AddCodeToAnnotation(request.POST)
+
+        if form.is_valid():
+            response_data = {'redirect': reverse('browse_annotations',
+                                                 args=(pid,))}
+            return HttpResponse(json.dumps(response_data),
+                                content_type="application/json")
+    else:
+        form = AddCodeToAnnotation()
+
+    form_action = reverse('add_code_to_annotation', args=(pid, aid))
+    form.fields['codes'].queryset = p.codes.all()
+    response_dict = {
+                     'form': form,
+                     'form_action': form_action,
+                     'form_header': _('Asignar códigos a la anotación'),
+                    }
+    html_response = render_to_string(
+                        template, response_dict, RequestContext(request))
+
+    response_data = {'html': html_response}
+    return HttpResponse(
+                json.dumps(response_data),
+                content_type="application/json")
