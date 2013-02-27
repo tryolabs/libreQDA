@@ -221,7 +221,8 @@ def upload_document(request, pid, template='upload_document.html'):
             document = Document(name=name,
                                 comment=comment,
                                 uploaded_by=request.user,
-                                file=document_file)
+                                file=document_file,
+                                type=splitext(document_file.name)[1])
             document.save()
 
             doc_instance = DocumentInstance(name=name,
@@ -235,7 +236,7 @@ def upload_document(request, pid, template='upload_document.html'):
 
             try:
                 text = extract_text(document.file.name,
-                                    splitext(document.file.name)[1])
+                                    document.type)
                 document.text = text
                 document.save()
                 doc_instance.save()
