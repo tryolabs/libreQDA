@@ -19,8 +19,8 @@ def pretty_print_code_name(code):
                  's': 'badge-success',
                  'w': 'badge-warning',
                  'e': 'badge-important',
-                 'b': '',
-                 'd': 'badge-inverse'}
+                 'b': 'badge-inverse',
+                 'd': ''}
 
     if code.color:
         return '<span class="badge %s">%s</span>' % (class_map[code.color],

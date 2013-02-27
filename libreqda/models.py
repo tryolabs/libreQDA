@@ -100,6 +100,8 @@ class Code(models.Model):
                                  verbose_name=_('Peso'))
     created_by = models.ForeignKey(User)
     color = models.CharField(max_length=1,
+                             blank=True,
+                             null=True,
                              choices=CODE_COLORS,
                              verbose_name=_('Color'))
     comment = models.TextField(null=True,
