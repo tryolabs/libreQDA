@@ -83,6 +83,7 @@ class Citation(models.Model):
     end_paragraph = models.PositiveIntegerField()
     start = models.PositiveIntegerField()
     end = models.PositiveIntegerField()
+    text = models.TextField(blank=True, null=True)
     serialized = models.TextField(null=True, blank=True)
 
 
