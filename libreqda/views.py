@@ -319,7 +319,7 @@ def delete_code(request, pid, cid):
     else:
         raise Http404
 
-    return redirect('browse_projects')
+    return redirect('browse_codes', pid=pid)
 
 
 @login_required
