@@ -4,7 +4,8 @@ from django import forms
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 
-from libreqda.models import Annotation, Code, Document, Project
+from libreqda.models import Annotation, BooleanQuery, Code, Document, Project,\
+    SetQuery
 from libreqda.validators import DocumentValidator
 
 
@@ -60,3 +61,15 @@ class AnnotationForm(forms.ModelForm):
 class AddCodeToAnnotation(forms.Form):
     codes = forms.ModelMultipleChoiceField(queryset=Code.objects.none(),
                                            label=_('Códigos'))
+
+
+class BooleanQueryForm(forms.ModelForm):
+    class Meta:
+        model = BooleanQuery
+        exclude = ('project')
+
+
+class SetQueryForm(forms.ModelForm):
+    class Meta:
+        model = SetQuery
+        exclude = ('project')

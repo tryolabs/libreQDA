@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% load i18n %}
+{% load filters %}
 
 {% block head %}
   {{ block.super }}
@@ -8,8 +9,6 @@
 
 {% block topbar_extra %}
 {% endblock topbar_extra %}
-
-{% load filters %}
 
 {% block body %}
   <div class="row-fluid">

@@ -17,9 +17,10 @@ from django.contrib.auth.decorators import login_required
 import libreqda.text_extraction
 
 from libreqda.forms import AddCodeToAnnotation, AddUserToProjectForm,\
-    AnnotationForm, CodeForm, ProjectForm, UploadDocumentForm
-from libreqda.models import Annotation, Code, Document, DocumentInstance,\
-    Project, UserProjectPermission
+    AnnotationForm, BooleanQueryForm, CodeForm, ProjectForm, SetQueryForm,\
+    UploadDocumentForm
+from libreqda.models import Annotation, BooleanQuery, Code, Document,\
+    DocumentInstance, Project, SetQuery, UserProjectPermission
 
 
 @login_required
@@ -427,3 +428,141 @@ def remove_code_from_annotation(request, pid, aid, cid):
         raise Http404
 
     return redirect('browse_annotations', pid=pid)
+
+
+@login_required
+def browse_queries(request, pid, template='browse_queries.html'):
+    p = get_object_or_404(Project, pk=pid)
+
+    return render(request, template, {'project': p})
+
+
+@login_required
+def new_boolean_query(request, pid, template='new_boolean_query.html'):
+    p = get_object_or_404(Project, pk=pid)
+
+    if request.user not in p.admin_users():
+        raise Http404
+
+    back_or_success = reverse('browse_queries', args=(pid,))
+
+    if request.method == 'POST':
+        b = BooleanQuery()
+        form = BooleanQueryForm(request.POST, instance=b)
+        form.fields['codes'].queryset = p.codes.all()
+
+        if form.is_valid():
+            b.project = p
+            b.save()
+
+            for code in form.cleaned_data['codes']:
+                b.codes.add(code)
+            b.save()
+
+            return redirect('browse_queries', pid=pid)
+    else:
+        form = BooleanQueryForm()
+        form.fields['codes'].queryset = p.codes.all()
+
+    form_action = reverse('new_boolean_query', args=(pid,))
+
+    return render(request,
+                  template,
+                  {'form': form,
+                   'form_action': form_action,
+                   'back_url': back_or_success})
+
+
+@login_required
+def delete_boolean_query(request, pid, qid):
+    p = get_object_or_404(Project, pk=pid)
+    q = get_object_or_404(BooleanQuery, pk=qid)
+
+    if q.project != p:
+        raise Http404
+
+    if request.user not in p.admin_users():
+        raise Http404
+
+    for qq in q.containing_queries.all():
+        qq.delete()
+    q.delete()
+
+    return redirect('browse_queries', pid=pid)
+
+
+@login_required
+def new_set_query(request, pid, template='new_set_query.html'):
+    p = get_object_or_404(Project, pk=pid)
+
+    if request.user not in p.admin_users():
+        raise Http404
+
+    back_or_success = reverse('browse_queries', args=(pid,))
+
+    if request.method == 'POST':
+        s = SetQuery()
+        form = SetQueryForm(request.POST, instance=s)
+        form.fields['queries'].queryset = p.boolean_queries.all()
+
+        if form.is_valid():
+            s.project = p
+            s.save()
+
+            for q in form.cleaned_data['queries']:
+                s.queries.add(q)
+            s.save()
+
+            return redirect('browse_queries', pid=pid)
+    else:
+        form = SetQueryForm()
+        form.fields['queries'].queryset = p.boolean_queries.all()
+
+    form_action = reverse('new_set_query', args=(pid,))
+
+    return render(request,
+                  template,
+                  {'form': form,
+                   'form_action': form_action,
+                   'back_url': back_or_success})
+
+
+@login_required
+def delete_set_query(request, pid, qid):
+    p = get_object_or_404(Project, pk=pid)
+    q = get_object_or_404(SetQuery, pk=qid)
+
+    if q.project != p:
+        raise Http404
+
+    if request.user not in p.admin_users():
+        raise Http404
+
+    q.delete()
+
+    return redirect('browse_queries', pid=pid)
+
+
+def __do_query(request, pid, qid, t, template='browse_query_results.html'):
+    p = get_object_or_404(Project, pk=pid)
+    query = get_object_or_404(t, pk=qid)
+
+    if query.project != p:
+        raise Http404
+
+    results = query.execute()
+
+    return render(request,
+                  template,
+                  {'project': p,
+                   'results': results})
+
+
+@login_required
+def do_boolean_query(request, pid, qid):
+    return __do_query(request, pid, qid, BooleanQuery)
+
+
+@login_required
+def do_set_query(request, pid, qid):
+    return __do_query(request, pid, qid, SetQuery)

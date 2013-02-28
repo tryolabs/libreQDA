@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from sets import Set
+
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils.translation import ugettext_lazy as _
@@ -145,3 +147,69 @@ class UserProjectPermission(models.Model):
 
     def is_admin_permission(self):
         return self.permissions == 'a'
+
+
+class BooleanQuery(models.Model):
+    OPERATORS = (('|', _('or')),
+                 ('&', _('and')))
+    project = models.ForeignKey(Project, related_name=_('boolean_queries'))
+    codes = models.ManyToManyField(Code, 
+                                   related_name='boolean_queries',
+                                   verbose_name=_('Códigos'))
+    operator = models.CharField(max_length=1,
+                                choices=OPERATORS,
+                                verbose_name=_('Operadores'))
+    name = models.CharField(max_length=250, verbose_name=_('Nombre'))
+
+    def __unicode__(self):
+        return self.name
+
+    def execute(self):
+        result_set = Set()
+        codes = self.codes.all()
+
+        for citation in Citation.objects.filter(document__project=self.project):
+            ccodes = citation.codes.all()
+            if self.operator == '|':
+                tests = False
+                for c in codes:
+                    if c in ccodes:
+                        tests = True
+                        break
+            elif self.operator == '%':
+                tests = True
+                for c in codes:
+                    if c not in ccodes:
+                        tests = False
+                        break
+            else:
+                raise ValueError(_('Unknown operator.'))
+
+            if tests:
+                result_set.add(citation)
+
+        return result_set
+
+
+class SetQuery(models.Model):
+    OPERATORS = (('+', _('union')),
+                 ('^', _('intersection')))
+    project = models.ForeignKey(Project, related_name=_('set_queries'))
+    queries = models.ManyToManyField(BooleanQuery,
+                                     related_name='containing_queries',
+                                     verbose_name=_('Consultas'))
+    operator = models.CharField(max_length=1,
+                                choices=OPERATORS,
+                                verbose_name=_('Operadores'))
+    name = models.CharField(max_length=250, verbose_name=_('Nombre'))
+
+    def execute(self):
+        result_set = self.queries.all()[0].execute()
+        for q in self.queries.all()[1:]:
+            if self.operator == '+':
+                result_set = result_set.union(q.execute())
+            elif self.operator == '^':
+                result_set = result_set.intersection(q.execute())
+            else:
+                raise ValueError(_('Unknown operator.'))
+        return result_set

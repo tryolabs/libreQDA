@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+{% load filters %}
+
+{% block head %}
+  {{ block.super }}
+{% endblock head %}
+
+{% block topbar_extra %}
+{% endblock topbar_extra %}
+
+{% block body %}
+  <div class="row-fluid">
+    <div class="span10 offset1">
+        <div class="toolbar">
+          <a class="btn btn-success pull-right left-group-button" href="{% url new_boolean_query pid=project.id %}"><i class="icon-plus icon-white"></i>  {% trans "Nueva consulta booleana" %}</a>
+          <a class="btn btn-success pull-right" href="{% url new_set_query pid=project.id %}"><i class="icon-plus icon-white"></i>  {% trans "Nueva consulta avanzada" %}</a>
+        </div>
+
+      <div class="white-background with-border">
+        {% if project.boolean_queries.all %}
+          <table class="table table-condensed table-striped table-hover">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>{% trans "Nombre" %}</th>
+                <th>{% trans "Códigos" %}</th>
+                <th>{% trans "Operador" %}</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for query in project.boolean_queries.all %}
+                <tr>
+                  <td>{{ forloop.counter }}</td>
+                  <td> {{query.name}} </td>
+                  <td>
+                    {% for code in query.codes.all %}
+                      {{ code|pretty_print_code_name|safe }}
+                    {% endfor %}
+                  </td>
+                  <td>{{ query.operator }}</td>
+                  <td>
+                    <a class="btn btn-primary pull-right left-group-button" href="{% url do_boolean_query pid=project.id qid=query.id %}"><i class="icon-eye-open icon-white"></i>  {% trans "Consultar" %}</a>
+                    <a class="btn btn-danger pull-right" href="{% url delete_boolean_query pid=project.id qid=query.id %}"><i class="icon-trash icon-white"></i>  {% trans "Eliminar" %}</a>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        {% else %}
+          <div class="alert alert-info">
+            <p>{% trans "¡No hay consultas booleanas definidas!" %}</p>
+          </div>
+        {% endif %}
+
+        <hr/>
+
+        {% if project.set_queries.all %}
+          <table class="table table-condensed table-striped table-hover">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>{% trans "Nombre" %}</th>
+                <th>{% trans "Consultas" %}</th>
+                <th>{% trans "Operador" %}</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for query in project.set_queries.all %}
+                <tr>
+                  <td>{{ forloop.counter }}</td>
+                  <td> {{query.name}} </td>
+                  <td>
+                    {% for qq in query.queries.all %}
+                      {% if forloop.last %}
+                        {{ qq.name }}
+                      {% else %}
+                        {{ qq.name }},
+                      {% endif %}
+                    {% endfor %}
+                  </td>
+                  <td> {{ query.operator }} </td>
+                  <td>
+                    <a class="btn btn-primary pull-right left-group-button" href="{% url do_set_query pid=project.id qid=query.id %}"><i class="icon-eye-open icon-white"></i>  {% trans "Consultar" %}</a>
+                    <a class="btn btn-danger pull-right" href="{% url delete_set_query pid=project.id qid=query.id %}"><i class="icon-trash icon-white"></i>  {% trans "Eliminar" %}</a>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        {% else %}
+          <div class="alert alert-info">
+            <p>{% trans "¡No hay consultas avazadas definidas!" %}</p>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+{% endblock %}
