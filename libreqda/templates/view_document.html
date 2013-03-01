@@ -20,10 +20,10 @@
       <div class="toolbar move-up">
         <a class="btn left-group-button pull-right"><i class="icon-tags"></i> {% trans "Categorías" %}</a>
         <a class="btn left-group-button pull-right"><i class="icon-file"></i> {% trans "Informes" %}</a>
-        <a class="btn left-group-button pull-right"><i class="icon-search"></i> {% trans "Consultas" %}</a>
+        <a class="btn left-group-button pull-right" target="_blank" href="{% url browse_queries pid=project.id %}"><i class="icon-search"></i> {% trans "Consultas" %}</a>
         <a class="btn left-group-button pull-right"><i class="icon-filter"></i> {% trans "Filtros" %}</a>
-        <a class="btn left-group-button pull-right"><i class="icon-comment"></i> {% trans "Anotaciones" %}</a>
-        <a class="btn left-group-button pull-right" href="{% url browse_codes pid=project.id %}"><i class="icon-book"></i> {% trans "Códigos" %}</a>
+        <a class="btn left-group-button pull-right" target="_blank" href="{% url browse_annotations pid=project.id %}"><i class="icon-comment"></i> {% trans "Anotaciones" %}</a>
+        <a class="btn left-group-button pull-right" target="_blank" href="{% url browse_codes pid=project.id %}"><i class="icon-book"></i> {% trans "Códigos" %}</a>
         <a class="btn left-group-button pull-right"><i class="icon-bookmark"></i> {% trans "Citas" %}</a>
       </div>
     </div>

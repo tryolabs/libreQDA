@@ -1,3 +1,7 @@
+# -*- coding: utf-8 -*-
+
+from sets import Set
+
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils.translation import ugettext_lazy as _
@@ -35,7 +39,7 @@ class Document(models.Model):
     name = models.CharField(max_length=250)
     type = models.CharField(max_length=250)
     text = models.TextField(blank=True)
-    comment = models.CharField(blank=True, null=True, max_length=250)
+    comment = models.TextField(blank=True, null=True)
     file = models.FileField(upload_to=get_new_document_path)
     uploaded_by = models.ForeignKey(User)
     creation_date = models.DateTimeField(auto_now_add=True)
@@ -49,9 +53,11 @@ class DocumentInstance(models.Model):
     project = models.ForeignKey(Project, related_name='documents')
     name = models.CharField(max_length=250)
     type = models.CharField(max_length=250)
-    comment = models.CharField(blank=True, null=True, max_length=250)
+    comment = models.TextField(blank=True, null=True)
     modified_date = models.DateTimeField(auto_now=True)
     uploaded_by = models.ForeignKey(User)
+    creation_date = models.DateTimeField(auto_now_add=True)
+    annotations = models.ManyToManyField('Annotation', related_name='documents')
 
     def __unicode__(self):
         return "DocumentInstance: %s" % (self.name)
@@ -62,8 +68,10 @@ class Annotation(models.Model):
     creation_date = models.DateTimeField(auto_now_add=True)
     modified_date = models.DateTimeField(auto_now=True)
     created_by = models.ForeignKey(User)
-    text = models.TextField(null=True, blank=True)
-    documents = models.ManyToManyField(Document, related_name='annotations')
+    text = models.TextField()
+    codes = models.ManyToManyField('Code',
+                                   blank=True,
+                                   related_name=_('annotations'))
 
 
 class Citation(models.Model):
@@ -77,7 +85,11 @@ class Citation(models.Model):
     end_paragraph = models.PositiveIntegerField()
     start = models.PositiveIntegerField()
     end = models.PositiveIntegerField()
+    text = models.TextField(blank=True, null=True)
     serialized = models.TextField(null=True, blank=True)
+
+    def __unicode__(self):
+        return self.comment
 
 
 class Code(models.Model):
@@ -94,6 +106,8 @@ class Code(models.Model):
                                  verbose_name=_('Peso'))
     created_by = models.ForeignKey(User)
     color = models.CharField(max_length=1,
+                             blank=True,
+                             null=True,
                              choices=CODE_COLORS,
                              verbose_name=_('Color'))
     comment = models.TextField(null=True,
@@ -102,7 +116,14 @@ class Code(models.Model):
     modified_date = models.DateTimeField(auto_now=True)
     creation_date = models.DateTimeField(auto_now_add=True)
     citations = models.ManyToManyField(Citation, related_name='codes')
-    parent_code = models.ForeignKey('self', null=True, related_name='sub_codes')
+    parent_code = models.ForeignKey('self',
+                                    blank=True,
+                                    null=True,
+                                    related_name='sub_codes',
+                                    verbose_name=_('Código padre'))
+
+    def __unicode__(self):
+        return self.name
 
 
 class Category(models.Model):
@@ -133,3 +154,72 @@ class UserProjectPermission(models.Model):
 
     def is_admin_permission(self):
         return self.permissions == 'a'
+
+
+class BooleanQuery(models.Model):
+    OPERATORS = (('|', _('or')),
+                 ('&', _('and')))
+    project = models.ForeignKey(Project, related_name=_('boolean_queries'))
+    codes = models.ManyToManyField(Code, 
+                                   related_name='boolean_queries',
+                                   verbose_name=_('Códigos'))
+    operator = models.CharField(max_length=1,
+                                choices=OPERATORS,
+                                verbose_name=_('Operadores'))
+    name = models.CharField(max_length=250, verbose_name=_('Nombre'))
+
+    def __unicode__(self):
+        return self.name
+
+    def execute(self):
+        result_set = Set()
+        codes = self.codes.all()
+
+        for citation in Citation.objects.filter(document__project=self.project):
+            ccodes = citation.codes.all()
+            if self.operator == '|':
+                tests = False
+                for c in codes:
+                    if c in ccodes:
+                        tests = True
+                        break
+            elif self.operator == '&':
+                tests = True
+                for c in codes:
+                    if c not in ccodes:
+                        tests = False
+                        break
+            else:
+                raise ValueError(_('Unknown operator.'))
+
+            if tests:
+                result_set.add(citation)
+
+        return result_set
+
+
+class SetQuery(models.Model):
+    OPERATORS = (('+', _('union')),
+                 ('^', _('intersection')))
+    project = models.ForeignKey(Project, related_name=_('set_queries'))
+    queries = models.ManyToManyField(BooleanQuery,
+                                     related_name='containing_queries',
+                                     verbose_name=_('Consultas'))
+    operator = models.CharField(max_length=1,
+                                choices=OPERATORS,
+                                verbose_name=_('Operadores'))
+    name = models.CharField(max_length=250, verbose_name=_('Nombre'))
+
+    def __unicode__(self):
+        return self.name
+
+    def execute(self):
+        result_set = self.queries.all()[0].execute()
+        for q in self.queries.all()[1:]:
+            if self.operator == '+':
+                result_set = result_set.union(q.execute())
+            elif self.operator == '^':
+                result_set = result_set.intersection(q.execute())
+            else:
+                raise ValueError(_('Unknown operator.'))
+        return result_set

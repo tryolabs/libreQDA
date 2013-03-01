@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% load i18n %}
+{% load filters %}
 
 {% block head %}
   {{ block.super }}
@@ -8,8 +9,6 @@
 
 {% block topbar_extra %}
 {% endblock topbar_extra %}
-
-{% load filters %}
 
 {% block body %}
   <div class="row-fluid">
@@ -26,6 +25,7 @@
                 <th>{% trans "Etiqueta" %}</th>
                 <th>{% trans "Citas" %}</th>
                 <th>{% trans "Códigos" %}</th>
+                <th>{% trans "Padre" %}<th>
                 <th>{% trans "Peso" %}</th>
                 <th>{% trans "Añadido por" %}</th>
                 <th>{% trans "Fecha" %}</th>
@@ -39,6 +39,13 @@
                   <td>{{ code|pretty_print_code_name|safe }}</td>
                   <td>{{ code.citations.count }}</td>
                   <td>TODO</td>
+                  <td>
+                    {% if code.parent_code %}
+                      {{ code.parent_code|pretty_print_code_name|safe }}
+                    {% else %}
+                      -
+                    {% endif %}
+                  </td>
                   <td>{{ code.weight }}</td>
                   <td>{{ code.created_by }}</td>
                   <td>{{ code.creation_date }}</td>

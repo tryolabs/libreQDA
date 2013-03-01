@@ -8,7 +8,7 @@ Instalación
 ------------------------------------------------------
 Para mayor comodidad se recomienda utilizar un virtualenv.
 
-1. Instalar Virtualenv: (`sudo apt-get install virtualenv` en Debian/Ubuntu).
+1. Instalar Virtualenv: (`sudo apt-get install python-virtualenv` en Debian/Ubuntu).
 2. Una vez instalado, crear un Virtualenv: `virtualenv libreqda`.
 3. Activar el Virtualenv: `cd libreqda` y luego `source bin/activate`.
 
@@ -21,7 +21,7 @@ Dependencias
 Antes de poder comenzar es necesario instalar algunas dependencias.
 
 1. Instalar `build-essential`: `sudo apt-get install build-essential`.
-2. Instalar MySQL: `sudo apt-get install mysql-server libmysqlclient-dev`.
+2. Instalar MySQL: `sudo apt-get install mysql-server libmysqlclient-dev libevent-dev libxml2-dev libxslt1-dev`.
 3. El archivo `requirements.txt` contiene una lista de dependencias a instalar. Es posible instalar todas de forma automática con el comando `pip install -r requirements.txt`.
 
 ~~Python-docx~~
@@ -34,12 +34,24 @@ Antes de poder comenzar es necesario instalar algunas dependencias.
 
 Configurar y ejecutar
 ---------------------
-1. Crear una base de datos para LibreQDA.
+1. Crear una base de datos para LibreQDA. El encoding de la base de datos debe ser **UTF-8** para evitar problemas al subir documentos.
+  `CREATE DATABASE libreqda CHARACTER SET utf8 COLLATE utf8_general_ci;`
 2. Copiar el archivo `local_settings.py.template` que se encuentra junto al código a `local_settings.py`.
 3. Abrir el nuevo archivo, `local_settings.py` y editar según sea necesario.
 4. Crear la base de datos con django: `python manage.py syncdb`.
 5. Ejecutar con: `python manage.py runserver`
 
+Actualizar
+----------
+Para actualizar LibreQDA simplemente es necesario hacer un pull del repositorio con `git pull` y luego actualizar la base de datos con `python manage.py reset libreqda`.
+
+También es necesario actualziar las dependencias con: `pip install -r requirements.txt`.
+
+NOTA: Los datos son eliminados de la base de datos cuando se hace un `reset`. Es posible utilizar 
+[`dumpdata`](https://docs.djangoproject.com/en/dev/ref/django-admin/#dumpdata-appname-appname-appname-model) y 
+[`loaddata`](https://docs.djangoproject.com/en/dev/ref/django-admin/#loaddata-fixture-fixture) para exportar e importar datos fácilmente.
+
+FIXME: Ojo, hice un dumpdata y un loaddata y me da error: `Problem installing fixture 'proyectos': dump is not a known serialization format.`
 
 Cómo agregar soporte para otros tipos de archivos
 =================================================

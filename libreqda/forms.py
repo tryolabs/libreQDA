@@ -1,8 +1,11 @@
+# -*- coding: utf-8 -*-
+
 from django import forms
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 
-from libreqda.models import Code, Document, Project
+from libreqda.models import Annotation, BooleanQuery, Code, Document, Project,\
+    SetQuery
 from libreqda.validators import DocumentValidator
 
 
@@ -42,7 +45,31 @@ class CodeForm(forms.ModelForm):
         WEIGHTS = [(i, i) for i in range(-100, 101)][::-1]
 
         model = Code
-        exclude = ('created_by', 'creation_date', 'modified_date', 'project',
-                   'citations', 'parent_code')
+        exclude = ('citations', 'created_by', 'creation_date', 'modified_date',\
+                   'project')
         widgets = {'name': forms.TextInput(),
                    'weight': forms.Select(choices=WEIGHTS)}
+
+
+class AnnotationForm(forms.ModelForm):
+    class Meta:
+        model = Annotation
+        exclude = ('codes', 'created_by', 'creation_date', 'modified_date',\
+                   'project')
+
+
+class AddCodeToAnnotation(forms.Form):
+    codes = forms.ModelMultipleChoiceField(queryset=Code.objects.none(),
+                                           label=_('Códigos'))
+
+
+class BooleanQueryForm(forms.ModelForm):
+    class Meta:
+        model = BooleanQuery
+        exclude = ('project')
+
+
+class SetQueryForm(forms.ModelForm):
+    class Meta:
+        model = SetQuery
+        exclude = ('project')

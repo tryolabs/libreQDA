@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from django.contrib import admin
 from django.conf import settings
 from django.conf.urls import patterns, include, url
@@ -49,6 +51,22 @@ urlpatterns = patterns('',
     url(r'^project/(?P<pid>\d+)/code/(?P<cid>\d+)/delete/$',
         'libreqda.views.delete_code',
         name='delete_code'),
+    #annotations
+    url(r'^project/(?P<pid>\d+)/annotation/$',
+        'libreqda.views.browse_annotations',
+        name='browse_annotations'),
+    url(r'^project/(?P<pid>\d+)/annotation/new/$',
+        'libreqda.views.new_annotation',
+        name='new_annotation'),
+    url(r'^project/(?P<pid>\d+)/annotation/(?P<aid>\d+)/delete/$',
+        'libreqda.views.delete_annotation',
+        name='delete_annotation'),
+    url(r'^project/(?P<pid>\d+)/annotation/(?P<aid>\d+)/code/add/$',
+        'libreqda.views.add_code_to_annotation',
+        name='add_code_to_annotation'),
+    url(r'^project/(?P<pid>\d+)/annotation/(?P<aid>\d+)/code/remove/(?P<cid>\d+)/$',
+        'libreqda.views.remove_code_from_annotation',
+        name='remove_code_from_annotation'),
     # accounts
     url(r'^accounts/login/$',
         'django.contrib.auth.views.login',
@@ -57,8 +75,29 @@ urlpatterns = patterns('',
         'django.contrib.auth.views.logout',
         name='logout',
         kwargs={'next_page': '/accounts/login'}),
-
-    # annotations
+    #queries
+    url(r'^project/(?P<pid>\d+)/query/$',
+        'libreqda.views.browse_queries',
+        name='browse_queries'),
+    url(r'^project/(?P<pid>\d+)/query/boolean/new/$',
+        'libreqda.views.new_boolean_query',
+        name='new_boolean_query'),
+    url(r'^project/(?P<pid>\d+)/query/boolean/delete/(?P<qid>\d+)/$',
+        'libreqda.views.delete_boolean_query',
+        name='delete_boolean_query'),
+    url(r'^project/(?P<pid>\d+)/query/set/new/$',
+        'libreqda.views.new_set_query',
+        name='new_set_query'),
+    url(r'^project/(?P<pid>\d+)/query/set/delete/(?P<qid>\d+)/$',
+        'libreqda.views.delete_set_query',
+        name='delete_set_query'),
+    url(r'^project/(?P<pid>\d+)/query/boolean/(?P<qid>\d+)/$',
+        'libreqda.views.do_boolean_query',
+        name='do_boolean_query'),
+    url(r'^project/(?P<pid>\d+)/query/set/(?P<qid>\d+)/$',
+        'libreqda.views.do_set_query',
+        name='do_set_query'),
+    # annotator
     url(r'^project/(?P<pid>\d+)/document/(?P<did>\d+)/annotations/create/$',
         'libreqda.annotations_views.create',
         name='annotations_create'),

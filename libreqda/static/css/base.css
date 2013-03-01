@@ -166,3 +166,7 @@ body {
 #userModal form {
 	margin: 0;
 }
+
+#doc-text-area {
+    word-wrap: break-word;
+}

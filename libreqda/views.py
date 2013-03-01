@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import json
 
 from os.path import splitext
@@ -14,10 +16,11 @@ from django.contrib.auth.decorators import login_required
 
 import libreqda.text_extraction
 
-from libreqda.forms import AddUserToProjectForm, CodeForm, ProjectForm,\
+from libreqda.forms import AddCodeToAnnotation, AddUserToProjectForm,\
+    AnnotationForm, BooleanQueryForm, CodeForm, ProjectForm, SetQueryForm,\
     UploadDocumentForm
-from libreqda.models import Code, Document, DocumentInstance, Project,\
-    UserProjectPermission
+from libreqda.models import Annotation, BooleanQuery, Code, Document,\
+    DocumentInstance, Project, SetQuery, UserProjectPermission
 
 
 @login_required
@@ -75,8 +78,6 @@ def add_user_to_project(request, pid, template='modal.html'):
         if form.is_valid():
             for u in form.cleaned_data['users']:
                 perm = UserProjectPermission()
-                perm.creation_date = datetime.now()
-                perm.modified_date = datetime.now()
                 perm.user = u
                 perm.project = p
                 perm.permissions = 'g'
@@ -221,7 +222,8 @@ def upload_document(request, pid, template='upload_document.html'):
             document = Document(name=name,
                                 comment=comment,
                                 uploaded_by=request.user,
-                                file=document_file)
+                                file=document_file,
+                                type=splitext(document_file.name)[1])
             document.save()
 
             doc_instance = DocumentInstance(name=name,
@@ -235,7 +237,7 @@ def upload_document(request, pid, template='upload_document.html'):
 
             try:
                 text = extract_text(document.file.name,
-                                    splitext(document.file.name)[1])
+                                    document.type)
                 document.text = text
                 document.save()
                 doc_instance.save()
@@ -286,10 +288,7 @@ def browse_codes(request, pid, template='browse_codes.html'):
 def new_code(request, pid, template='new_code.html'):
     p = get_object_or_404(Project, pk=pid)
 
-    try:
-        back_or_success = request.META.get("HTTP_REFERER")
-    except KeyError:
-        back_or_success = reverse('browse_projects')
+    back_or_success = reverse('browse_codes', args=(pid,))
 
     if request.method == 'POST':
         c = Code()
@@ -321,4 +320,259 @@ def delete_code(request, pid, cid):
     else:
         raise Http404
 
-    return redirect('browse_projects')
+    return redirect('browse_codes', pid=pid)
+
+
+@login_required
+def browse_annotations(request, pid, template='browse_annotations.html'):
+    p = get_object_or_404(Project, pk=pid)
+
+    return render(request,
+              template,
+              {'project': p})
+
+
+@login_required
+def new_annotation(request, pid, template='new_annotation.html'):
+    p = get_object_or_404(Project, pk=pid)
+
+    back_or_success = reverse('browse_annotations', args=(pid,))
+
+    if request.method == 'POST':
+        a = Annotation()
+        form = AnnotationForm(request.POST, instance=a)
+        if form.is_valid():
+            a.created_by = request.user
+            a.project = p
+            a.save()
+
+            return redirect(back_or_success)
+    else:
+        form = AnnotationForm()
+
+    form_action = reverse('new_annotation', args=(pid,))
+    return render(request,
+              template,
+              {'form': form,
+               'form_action': form_action,
+               'back_url': back_or_success})
+
+
+@login_required
+def delete_annotation(request, pid, aid):
+    p = get_object_or_404(Project, pk=pid)
+    a = get_object_or_404(Annotation, pk=pid)
+
+    if request.user in p.admin_users():
+        a.delete()
+    else:
+        raise Http404
+
+    return reverse('browse_annotations', args=(pid,))
+
+
+@login_required
+def add_code_to_annotation(request, pid, aid, template='modal.html'):
+    p = get_object_or_404(Project, pk=pid)
+    a = get_object_or_404(Annotation, pk=aid)
+
+    if a.project != p:
+        raise Http404
+
+    if request.method == 'POST':
+        form = AddCodeToAnnotation(request.POST)
+        form.fields['codes'].queryset = p.codes.all()
+
+        if form.is_valid():
+            for code in form.cleaned_data['codes']:
+                a.codes.add(code)
+            a.save()
+
+            response_data = {'redirect': reverse('browse_annotations',
+                                                 args=(pid,))}
+            return HttpResponse(json.dumps(response_data),
+                                content_type="application/json")
+    else:
+        form = AddCodeToAnnotation()
+
+    form_action = reverse('add_code_to_annotation', args=(pid, aid))
+    form.fields['codes'].queryset = p.codes.exclude(id__in=a.codes.all().values('id'))
+
+    response_dict = {
+                     'form': form,
+                     'form_action': form_action,
+                     'form_header': _('Asignar códigos a la anotación'),
+                    }
+    html_response = render_to_string(
+                        template, response_dict, RequestContext(request))
+
+    response_data = {'html': html_response}
+    return HttpResponse(
+                json.dumps(response_data),
+                content_type="application/json")
+
+
+@login_required
+def remove_code_from_annotation(request, pid, aid, cid):
+    p = get_object_or_404(Project, pk=pid)
+    a = get_object_or_404(Annotation, pk=aid)
+    c = get_object_or_404(Code, pk=cid)
+
+    if c not in a.codes.all():
+        raise Http404
+
+    if request.user in p.admin_users():
+        a.codes.remove(c)
+        a.save()
+    else:
+        raise Http404
+
+    return redirect('browse_annotations', pid=pid)
+
+
+@login_required
+def browse_queries(request, pid, template='browse_queries.html'):
+    p = get_object_or_404(Project, pk=pid)
+
+    return render(request, template, {'project': p})
+
+
+@login_required
+def new_boolean_query(request, pid, template='new_boolean_query.html'):
+    p = get_object_or_404(Project, pk=pid)
+
+    if request.user not in p.admin_users():
+        raise Http404
+
+    back_or_success = reverse('browse_queries', args=(pid,))
+
+    if request.method == 'POST':
+        b = BooleanQuery()
+        form = BooleanQueryForm(request.POST, instance=b)
+        form.fields['codes'].queryset = p.codes.all()
+
+        if form.is_valid():
+            b.project = p
+            b.save()
+
+            for code in form.cleaned_data['codes']:
+                b.codes.add(code)
+            b.save()
+
+            return redirect('browse_queries', pid=pid)
+    else:
+        form = BooleanQueryForm()
+        form.fields['codes'].queryset = p.codes.all()
+
+    form_action = reverse('new_boolean_query', args=(pid,))
+
+    return render(request,
+                  template,
+                  {'form': form,
+                   'form_action': form_action,
+                   'back_url': back_or_success})
+
+
+@login_required
+def delete_boolean_query(request, pid, qid):
+    p = get_object_or_404(Project, pk=pid)
+    q = get_object_or_404(BooleanQuery, pk=qid)
+
+    if q.project != p:
+        raise Http404
+
+    if request.user not in p.admin_users():
+        raise Http404
+
+    for qq in q.containing_queries.all():
+        qq.delete()
+    q.delete()
+
+    return redirect('browse_queries', pid=pid)
+
+
+@login_required
+def new_set_query(request, pid, template='new_set_query.html'):
+    p = get_object_or_404(Project, pk=pid)
+
+    if request.user not in p.admin_users():
+        raise Http404
+
+    back_or_success = reverse('browse_queries', args=(pid,))
+
+    if request.method == 'POST':
+        s = SetQuery()
+        form = SetQueryForm(request.POST, instance=s)
+        form.fields['queries'].queryset = p.boolean_queries.all()
+
+        if form.is_valid():
+            s.project = p
+            s.save()
+
+            for q in form.cleaned_data['queries']:
+                s.queries.add(q)
+            s.save()
+
+            return redirect('browse_queries', pid=pid)
+    else:
+        form = SetQueryForm()
+        form.fields['queries'].queryset = p.boolean_queries.all()
+
+    form_action = reverse('new_set_query', args=(pid,))
+
+    return render(request,
+                  template,
+                  {'form': form,
+                   'form_action': form_action,
+                   'back_url': back_or_success})
+
+
+@login_required
+def delete_set_query(request, pid, qid):
+    p = get_object_or_404(Project, pk=pid)
+    q = get_object_or_404(SetQuery, pk=qid)
+
+    if q.project != p:
+        raise Http404
+
+    if request.user not in p.admin_users():
+        raise Http404
+
+    q.delete()
+
+    return redirect('browse_queries', pid=pid)
+
+
+def __do_query(request, pid, qid, t, template='browse_query_results.html'):
+    p = get_object_or_404(Project, pk=pid)
+    query = get_object_or_404(t, pk=qid)
+
+    if query.project != p:
+        raise Http404
+
+    citations = query.execute()
+    results = {}
+
+    for c in citations:
+        if c.document.id in results:
+            results[c.document.id]['citations'].append(c)
+        else:
+            results[c.document.id] = {'id': c.document.id,
+                                      'name': c.document.name,
+                                      'citations': [c]}
+
+    res = results.values()
+    return render(request,
+                  template,
+                  {'project': p,
+                   'results': res})
+
+
+@login_required
+def do_boolean_query(request, pid, qid):
+    return __do_query(request, pid, qid, BooleanQuery)
+
+
+@login_required
+def do_set_query(request, pid, qid):
+    return __do_query(request, pid, qid, SetQuery)

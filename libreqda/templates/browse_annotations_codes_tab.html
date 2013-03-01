@@ -1,0 +1,55 @@
+{% load i18n %}
+{% load filters %}
+
+<div class="modal hide fade" id="codeModal{{annotation.id}}">
+</div>
+
+<div class="toolbar-small">
+  <a data-url="{% url add_code_to_annotation pid=project.id aid=annotation.id %}" id="addCode{{annotation.id}}button" class="btn btn-small btn-success pull-right"><i class="icon-book icon-white"></i> {% trans "Agregar código" %}</a>
+</div>
+
+{% if annotation.codes.all %}
+  <table class="table table-condensed table-striped table-hover">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>{% trans "Etiqueta" %}</th>
+        <th>{% trans "Citas" %}</th>
+        <th>{% trans "Códigos" %}</th>
+        <th>{% trans "Peso" %}</th>
+        <th>{% trans "Añadido por" %}</th>
+        <th>{% trans "Fecha" %}</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for code in annotation.codes.all %}
+        <tr>
+          <td>{{ forloop.counter}}</td>
+          <td>{{ code|pretty_print_code_name|safe }}</td>
+          <td>{{ code.citations.count }}</td>
+          <td>TODO</td>
+          <td>{{ code.weight }}</td>
+          <td>{{ code.created_by }}</td>
+          <td>{{ code.creation_date }}</td> 
+          <td><a class="btn btn-small btn-danger pull-right" href="{% url remove_code_from_annotation pid=project.id aid=annotation.id cid=code.id %}"><i class="icon-trash icon-white"></i>  {% trans "Eliminar" %}</a></td>
+        </tr>
+        <tr>
+          {% if code.comment %}
+            <td colspan="8">{{ code.comment }}</td>
+          {% else %}
+            <td colspan="8">{% trans "El código no tiene descripción." %}</td>
+          {% endif %}
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% else %}
+  <div class="alert alert-info">
+    <p>{% trans "¡No hay códigos asignados!" %}</p>
+  </div>
+{% endif %}
+
+<script>
+    simpleModal('addCode{{annotation.id}}button', 'codeModal{{annotation.id}}')
+</script>
