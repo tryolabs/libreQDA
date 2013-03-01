@@ -45,8 +45,8 @@ class CodeForm(forms.ModelForm):
         WEIGHTS = [(i, i) for i in range(-100, 101)][::-1]
 
         model = Code
-        exclude = ('created_by', 'creation_date', 'modified_date', 'project',
-                   'citations', 'parent_code')
+        exclude = ('citations', 'created_by', 'creation_date', 'modified_date',\
+                   'project')
         widgets = {'name': forms.TextInput(),
                    'weight': forms.Select(choices=WEIGHTS)}
 

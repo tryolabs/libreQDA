@@ -119,7 +119,8 @@ class Code(models.Model):
     parent_code = models.ForeignKey('self',
                                     blank=True,
                                     null=True,
-                                    related_name='sub_codes')
+                                    related_name='sub_codes',
+                                    verbose_name=_('Código padre'))
 
     def __unicode__(self):
         return self.name
