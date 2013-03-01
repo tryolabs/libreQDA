@@ -87,6 +87,7 @@ def populate_citation(citation, serialized_annotation,
     c.end_paragraph = a_range['end_p']
     c.start = a_range['start']
     c.end = a_range['end']
+    c.text = annotation['quote']
 
     if not citation_id:
         # Freshly created citation.

@@ -88,6 +88,9 @@ class Citation(models.Model):
     text = models.TextField(blank=True, null=True)
     serialized = models.TextField(null=True, blank=True)
 
+    def __unicode__(self):
+        return self.comment
+
 
 class Code(models.Model):
     CODE_COLORS = (('d', _('Grey')),
@@ -113,7 +116,10 @@ class Code(models.Model):
     modified_date = models.DateTimeField(auto_now=True)
     creation_date = models.DateTimeField(auto_now_add=True)
     citations = models.ManyToManyField(Citation, related_name='codes')
-    parent_code = models.ForeignKey('self', null=True, related_name='sub_codes')
+    parent_code = models.ForeignKey('self',
+                                    blank=True,
+                                    null=True,
+                                    related_name='sub_codes')
 
     def __unicode__(self):
         return self.name
@@ -176,7 +182,7 @@ class BooleanQuery(models.Model):
                     if c in ccodes:
                         tests = True
                         break
-            elif self.operator == '%':
+            elif self.operator == '&':
                 tests = True
                 for c in codes:
                     if c not in ccodes:
@@ -202,6 +208,9 @@ class SetQuery(models.Model):
                                 choices=OPERATORS,
                                 verbose_name=_('Operadores'))
     name = models.CharField(max_length=250, verbose_name=_('Nombre'))
+
+    def __unicode__(self):
+        return self.name
 
     def execute(self):
         result_set = self.queries.all()[0].execute()

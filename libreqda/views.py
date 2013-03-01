@@ -550,12 +550,22 @@ def __do_query(request, pid, qid, t, template='browse_query_results.html'):
     if query.project != p:
         raise Http404
 
-    results = query.execute()
+    citations = query.execute()
+    results = {}
 
+    for c in citations:
+        if c.document.id in results:
+            results[c.document.id]['citations'].append(c)
+        else:
+            results[c.document.id] = {'id': c.document.id,
+                                      'name': c.document.name,
+                                      'citations': [c]}
+
+    res = results.values()
     return render(request,
                   template,
                   {'project': p,
-                   'results': results})
+                   'results': res})
 
 
 @login_required
