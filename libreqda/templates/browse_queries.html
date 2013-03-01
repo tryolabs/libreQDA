@@ -42,8 +42,8 @@
                   </td>
                   <td>{{ query.operator }}</td>
                   <td>
-                    <a class="btn btn-primary pull-right left-group-button" href="{% url do_boolean_query pid=project.id qid=query.id %}"><i class="icon-eye-open icon-white"></i>  {% trans "Consultar" %}</a>
-                    <a class="btn btn-danger pull-right" href="{% url delete_boolean_query pid=project.id qid=query.id %}"><i class="icon-trash icon-white"></i>  {% trans "Eliminar" %}</a>
+                    <a class="btn btn-small btn-primary pull-right left-group-button" href="{% url do_boolean_query pid=project.id qid=query.id %}"><i class="icon-eye-open icon-white"></i>  {% trans "Consultar" %}</a>
+                    <a class="btn btn-small btn-danger pull-right" href="{% url delete_boolean_query pid=project.id qid=query.id %}"><i class="icon-trash icon-white"></i>  {% trans "Eliminar" %}</a>
                   </td>
                 </tr>
               {% endfor %}
@@ -84,8 +84,8 @@
                   </td>
                   <td> {{ query.operator }} </td>
                   <td>
-                    <a class="btn btn-primary pull-right left-group-button" href="{% url do_set_query pid=project.id qid=query.id %}"><i class="icon-eye-open icon-white"></i>  {% trans "Consultar" %}</a>
-                    <a class="btn btn-danger pull-right" href="{% url delete_set_query pid=project.id qid=query.id %}"><i class="icon-trash icon-white"></i>  {% trans "Eliminar" %}</a>
+                    <a class="btn btn-small btn-primary pull-right left-group-button" href="{% url do_set_query pid=project.id qid=query.id %}"><i class="icon-eye-open icon-white"></i>  {% trans "Consultar" %}</a>
+                    <a class="btn btn-small btn-danger pull-right" href="{% url delete_set_query pid=project.id qid=query.id %}"><i class="icon-trash icon-white"></i>  {% trans "Eliminar" %}</a>
                   </td>
                 </tr>
               {% endfor %}
