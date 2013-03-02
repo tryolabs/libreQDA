@@ -14,7 +14,10 @@ Para mayor comodidad se recomienda utilizar un virtualenv.
 
 Obtener el código
 -----------------
-Antes que nada, debemos obtener el código de LibreQDA: `git clone https://github.com/tryolabs/libreQDA.git`.
+Probablemente tengas que instalar git: `sudo apt-get install git`
+
+Luego debes obtener el código de LibreQDA: `git clone https://github.com/tryolabs/libreQDA.git`.
+
 
 Dependencias
 ------------
