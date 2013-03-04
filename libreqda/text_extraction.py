@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 import slate
 
 from docx import opendocx, getdocumenttext

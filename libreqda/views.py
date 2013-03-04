@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 import json
 
 from os.path import splitext
