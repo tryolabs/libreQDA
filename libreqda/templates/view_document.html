@@ -5,12 +5,25 @@
   {{ block.super }}
   <script src="{{ STATIC_URL }}lib/annotator/annotator-full.min.js" type="text/javascript"></script>
   <link href="{{ STATIC_URL }}css/annotator.min.css" rel="stylesheet" type="text/css">
+  
+  <!-- <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>-->
+  
+  <script src="{{ STATIC_URL }}lib/jquery.contextMenu/jquery.contextMenu.js" type="text/javascript"></script>
+  <script src="{{ STATIC_URL }}lib/jquery.contextMenu/jquery.ui.position.js" type="text/javascript"></script>
+  <link href="{{ STATIC_URL }}lib/jquery.contextMenu/jquery.contextMenu.css" rel="stylesheet" type="text/css">
+  
+  
+  
+    
 {% endblock head %}
 
 {% block topbar_extra %}
 {% endblock topbar_extra %}
 
 {% block body %}
+  <div class="modal hide fade" id="codeModal">
+  </div>
+
   <div id="documents-menu" class="menu left">
     {% include "view_document_documents_tab.html" %}
   </div>
@@ -45,6 +58,69 @@
         setTimeout(function() {
           $('#documents-menu').css('left','-430px');
         }, 250);
+        
+        // SHOW RIGHT SIDE BARS
+        setTimeout(function() {
+          $(".annotator-hl").each(function() {
+            var offset = $(this).offset().top;            
+            
+            var new_bar = $('<div/>', {
+              'id': 'bar-id-' + offset, //TODO: hacer bien...
+              'class': 'citation-bar',
+            });
+            
+            $('.document-citations').append(new_bar);
+            new_bar.position({
+              my: "top top",
+              at: "top",
+              of: $(this)
+            });
+            new_bar.height($(this).height());
+            new_bar[0].style.left = null;
+          });
+          
+          $.contextMenu({
+            selector: '.document-citations .citation-bar',
+            callback: function(key, options) {
+              var m = "clicked: " + key + " on " + $(this)[0].id;
+              window.console && console.log(m) || alert(m); 
+            },
+            items: {
+              "addcode": {name: "Agregar", icon: "edit"},
+            }
+          });
+          
+          $('.document-citations .citation-bar').click(function(ev) {
+            ev.preventDefault(); // prevent navigation
+            var url = $(this).data("url"); // get the form url
+            $.getJSON(url, function(data) { // load the url into the modal
+              $('#codeModal').html(data.html);
+              $('#codeModal').modal('show');
+            });
+            return false; // prevent the click propagation
+          });
+
+          $('#codeModal').on('submit', 'form', function() {
+            $.ajax({ 
+              type: $(this).attr('method'), 
+              url: this.action, 
+              data: $(this).serialize(),
+              context: this,
+              success: function(data, status) {
+                if (data.success) {
+                  $('#codeModal').modal('hide');
+                } else {
+                  $('#codeModal').html(data.html);
+                }                
+              }
+            });
+            return false;
+          });
+          
+        }, 750);
+        
+        
+        
         
         Annotator.Plugin.StoreLogger = function (element) {
           return {
