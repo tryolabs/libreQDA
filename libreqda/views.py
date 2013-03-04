@@ -554,12 +554,13 @@ def __do_query(request, pid, qid, t, template='browse_query_results.html'):
     results = {}
 
     for c in citations:
-        if c.document.id in results:
-            results[c.document.id]['citations'].append(c)
-        else:
-            results[c.document.id] = {'id': c.document.id,
-                                      'name': c.document.name,
-                                      'citations': [c]}
+        for code in c.codes.all():
+            if code in results:
+                results[code.id]['citations'].append(c)
+            else:
+                results[code.id] = {'id': code.id,
+                                    'name': code.name,
+                                    'citations': [c]}
 
     res = results.values()
     return render(request,

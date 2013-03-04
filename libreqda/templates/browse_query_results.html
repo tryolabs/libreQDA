@@ -15,27 +15,25 @@
     <div class="span10 offset1">
       {% if results %}
         <div class="accordion white-background" id="accordion">
-          {% for document in results %}
+          {% for code in results %}
             <div class="accordion-group">
               <div class="accordion-heading">
-                <a class="accordion-toggle acordion-project-name" data-toggle="collapse" data-parent="#accordion" href="#collapse{{document.id}}">
-                  {{ document.name }}
+                <a class="accordion-toggle acordion-project-name" data-toggle="collapse" href="#collapse{{code.id}}">
+                  {{ code.name }}
                 </a>
               </div>
-              <div id="collapse{{project.id}}" class="accordion-body in collapse">
+              <div id="collapse{{code.id}}" class="accordion-body in collapse">
                 <div class="accordion-inner">
-                  <div class="toolbar">
-                    <a class="btn btn-primary pull-right left-group-button" href="{% url view_document pid=project.id did=document.id %}"><i class="icon-eye-open icon-white"></i> {% trans "Ver documento" %}</a>
-                  </div>
                   <table class="table table-condensed table-striped table-hover">
                     <thead>
                       <tr>
                         <th>#</th>
                         <th>{% trans "Códigos" %}</th>
+                        <th></th>
                       </tr>
                     </thead>
                     <tbody>
-                    {% for citation in document.citations %}
+                    {% for citation in code.citations %}
                       <tr>
                         <td>{{ forloop.counter }}</td>
                         <td>
@@ -43,9 +41,12 @@
                             {{ code|pretty_print_code_name|safe }}
                           {% endfor %}
                         </td>
+                        <td>
+                          <a class="btn btn-small btn-primary pull-right" href="{% url view_document pid=project.id did=citation.document.id %}"><i class="icon-eye-open icon-white"></i> {% trans "Ver documento" %}</a>
+                        </td>
                       </tr>
                       <tr>
-                        <td colspan="2">
+                        <td colspan="3">
                           {{ citation.text }}
                         <td>
                       </tr>
