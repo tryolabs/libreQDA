@@ -163,6 +163,22 @@ body {
     padding-left: 5px;
 }
 
+.document-citations .citation-bar {
+	width: 10px;
+	height: 40px;
+	background-color: blue;
+	display: inline-block;
+	margin: 1px;
+	position: relative;	
+    border-radius: 5px;
+}
+
+.document-citations .citation-bar:hover {
+	background-color: blueviolet;
+	cursor: hand;
+	cursor: pointer;
+}
+
 #userModal form {
 	margin: 0;
 }
