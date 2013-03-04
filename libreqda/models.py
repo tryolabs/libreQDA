@@ -90,6 +90,15 @@ class Citation(models.Model):
     def __unicode__(self):
         return self.comment
 
+    def touches(self, other):
+        tlen = len(self.document.document.text) + 1
+        ss = self.start_paragraph * tlen + self.start
+        se = self.end_paragraph * tlen + self.end
+        os = other.start_paragraph * tlen + other.start
+        oe = other.end_paragraph * tlen + other.end
+
+        return ss < os < se or ss < oe < ss
+
 
 class Code(models.Model):
     CODE_COLORS = (('d', _('Grey')),
@@ -206,7 +215,7 @@ class SetQuery(models.Model):
                                      verbose_name=_('Consultas'))
     operator = models.CharField(max_length=1,
                                 choices=OPERATORS,
-                                verbose_name=_('Operadores'))
+                                verbose_name=_('Operador'))
     name = models.CharField(max_length=250, verbose_name=_('Nombre'))
 
     def __unicode__(self):
@@ -221,4 +230,43 @@ class SetQuery(models.Model):
                 result_set = result_set.intersection(q.execute())
             else:
                 raise ValueError(_('Unknown operator.'))
+        return result_set
+
+
+class ProximityQuery(models.Model):
+    OPERATORS = (('c', _('coocurrencia')),)
+    project = models.ForeignKey(Project, related_name=_('proximity_queries'))
+    code1 = models.ForeignKey(Code,
+                              related_name='proximity_operand1',
+                              verbose_name=_('Código 1'))
+    code2 = models.ForeignKey(Code,
+                              related_name='proximity_operand2',
+                              verbose_name=_('Código 2'))
+    operator = models.CharField(max_length=1,
+                                choices=OPERATORS,
+                                verbose_name=_('Operador'))
+    name = models.CharField(max_length=250, verbose_name=_('Nombre'))
+
+    def __unicode__(self):
+        return self.name
+
+    def execute(self):
+        if self.operator == 'c':
+            return self.__execute_cooccurrence()
+        else:
+            raise ValueError(_('Unknown operator.'))
+
+    def __execute_cooccurrence(self):
+        result_set = Set()
+
+        for doc in self.project.documents.all():
+            with_c1 = self.code1.citations.filter(document=doc)
+            with_c2 = self.code2.citations.filter(document=doc)
+
+            for c in with_c1:
+                for cc in with_c2:
+                    if c != cc and c.touches(cc):
+                        result_set.add(c)
+                        result_set.add(cc)
+
         return result_set

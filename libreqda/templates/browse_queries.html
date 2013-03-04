@@ -13,12 +13,12 @@
 {% block body %}
   <div class="row-fluid">
     <div class="span10 offset1">
-        <div class="toolbar">
-          <a class="btn btn-success pull-right left-group-button" href="{% url new_boolean_query pid=project.id %}"><i class="icon-plus icon-white"></i>  {% trans "Nueva consulta booleana" %}</a>
-          <a class="btn btn-success pull-right" href="{% url new_set_query pid=project.id %}"><i class="icon-plus icon-white"></i>  {% trans "Nueva consulta avanzada" %}</a>
-        </div>
-
       <div class="white-background with-border">
+        <br/>
+        <div class="toolbar-small">
+          <a class="btn btn-small btn-success pull-right left-group-button" href="{% url new_boolean_query pid=project.id %}"><i class="icon-plus icon-white"></i>  {% trans "Nueva consulta booleana" %}</a>
+        </div>
+        <h4>{% trans "Consultas booleanas" %}</h4>
         {% if project.boolean_queries.all %}
           <table class="table table-condensed table-striped table-hover">
             <thead>
@@ -56,7 +56,10 @@
         {% endif %}
 
         <hr/>
-
+        <div class="toolbar-small">
+          <a class="btn btn-small btn-success pull-right" href="{% url new_set_query pid=project.id %}"><i class="icon-plus icon-white"></i>  {% trans "Nueva consulta avanzada" %}</a>
+        </div>
+        <h4>{% trans "Consultas avanzadas" %}</h4>
         {% if project.set_queries.all %}
           <table class="table table-condensed table-striped table-hover">
             <thead>
@@ -94,6 +97,45 @@
         {% else %}
           <div class="alert alert-info">
             <p>{% trans "¡No hay consultas avazadas definidas!" %}</p>
+          </div>
+        {% endif %}
+
+        <hr/>
+        <div class="toolbar-small">
+          <a class="btn btn-small btn-success pull-right" href="{% url new_proximity_query pid=project.id %}"><i class="icon-plus icon-white"></i>  {% trans "Nueva consulta de proximidad" %}</a>
+        </div>
+        <h4>{% trans "Consultas de proximidad" %}</h4>
+        {% if project.proximity_queries.all %}
+          <table class="table table-condensed table-striped table-hover">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>{% trans "Nombre" %}</th>
+                <th>{% trans "Código 1" %}</th>
+                <th>{% trans "Código 2" %}</th>
+                <td>{% trans "Operador" %}</td>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+            {% for query in project.proximity_queries.all %}
+              <tr>
+                <td> {{ forloop.counter }}</td>
+                <td> {{query.name}} </td>
+                <td> {{ query.code1|pretty_print_code_name|safe }} </td>
+                <td> {{ query.code2|pretty_print_code_name|safe }} </td>
+                <td> {{ query.operator }}</td>
+                <td>
+                  <a class="btn btn-small btn-primary pull-right left-group-button" href="{% url do_proximity_query pid=project.id qid=query.id %}"><i class="icon-eye-open icon-white"></i>  {% trans "Consultar" %}</a>
+                  <a class="btn btn-small btn-danger pull-right" href="{% url delete_proximity_query pid=project.id qid=query.id %}"><i class="icon-trash icon-white"></i>  {% trans "Eliminar" %}</a>
+                </td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        {% else %}
+          <div class="alert alert-info">
+            <p>{% trans "¡No hay consultas de proximidad definidas!" %}</p>
           </div>
         {% endif %}
       </div>

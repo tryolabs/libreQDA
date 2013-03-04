@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 
 from libreqda.models import Annotation, BooleanQuery, Code, Document, Project,\
-    SetQuery
+    SetQuery, ProximityQuery
 from libreqda.validators import DocumentValidator
 
 
@@ -71,4 +71,10 @@ class BooleanQueryForm(forms.ModelForm):
 class SetQueryForm(forms.ModelForm):
     class Meta:
         model = SetQuery
+        exclude = ('project')
+
+
+class ProximityQueryForm(forms.ModelForm):
+    class Meta:
+        model = ProximityQuery
         exclude = ('project')

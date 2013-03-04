@@ -17,9 +17,9 @@ import libreqda.text_extraction
 
 from libreqda.forms import AddCodeToAnnotation, AddUserToProjectForm,\
     AnnotationForm, BooleanQueryForm, CodeForm, ProjectForm, SetQueryForm,\
-    UploadDocumentForm
+    UploadDocumentForm, ProximityQueryForm
 from libreqda.models import Annotation, BooleanQuery, Code, Document,\
-    DocumentInstance, Project, SetQuery, UserProjectPermission
+    DocumentInstance, Project, ProximityQuery, SetQuery, UserProjectPermission
 
 
 @login_required
@@ -542,6 +542,56 @@ def delete_set_query(request, pid, qid):
     return redirect('browse_queries', pid=pid)
 
 
+@login_required
+def new_proximity_query(request, pid, template='new_proximity_query.html'):
+    p = get_object_or_404(Project, pk=pid)
+
+    if request.user not in p.admin_users():
+        raise Http404
+
+    back_or_success = reverse('browse_queries', args=(pid,))
+
+    if request.method == 'POST':
+        q = ProximityQuery()
+        form = ProximityQueryForm(request.POST, instance=q)
+        form.fields['code1'].queryset = p.codes.all()
+        form.fields['code2'].queryset = p.codes.all()
+
+        if form.is_valid():
+            q.project = p
+            q.save()
+
+            return redirect('browse_queries', pid=pid)
+    else:
+        form = ProximityQueryForm()
+        form.fields['code1'].queryset = p.codes.all()
+        form.fields['code2'].queryset = p.codes.all()
+
+    form_action = reverse('new_proximity_query', args=(pid,))
+
+    return render(request,
+                  template,
+                  {'form': form,
+                   'form_action': form_action,
+                   'back_url': back_or_success})
+
+
+@login_required
+def delete_proximity_query(request, pid, qid):
+    p = get_object_or_404(Project, pk=pid)
+    q = get_object_or_404(ProximityQuery, pk=qid)
+
+    if q.project != p:
+        raise Http404
+
+    if request.user not in p.admin_users():
+        raise Http404
+
+    q.delete()
+
+    return redirect('browse_queries', pid=pid)
+
+
 def __do_query(request, pid, qid, t, template='browse_query_results.html'):
     p = get_object_or_404(Project, pk=pid)
     query = get_object_or_404(t, pk=qid)
@@ -554,7 +604,7 @@ def __do_query(request, pid, qid, t, template='browse_query_results.html'):
 
     for c in citations:
         for code in c.codes.all():
-            if code in results:
+            if code.id in results:
                 results[code.id]['citations'].append(c)
             else:
                 results[code.id] = {'id': code.id,
@@ -576,3 +626,8 @@ def do_boolean_query(request, pid, qid):
 @login_required
 def do_set_query(request, pid, qid):
     return __do_query(request, pid, qid, SetQuery)
+
+
+@login_required
+def do_proximity_query(request, pid, qid):
+    return __do_query(request, pid, qid, ProximityQuery)
