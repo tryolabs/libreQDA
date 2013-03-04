@@ -86,6 +86,10 @@ class Citation(models.Model):
     end = models.PositiveIntegerField()
     text = models.TextField(blank=True, null=True)
     serialized = models.TextField(null=True, blank=True)
+    annotations = models.ManyToManyField(Annotation,
+                                         null=True,
+                                         blank=True,
+                                         related_name='citations')
 
     def __unicode__(self):
         return self.comment

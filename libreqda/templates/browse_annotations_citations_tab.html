@@ -1,0 +1,40 @@
+{% load i18n %}
+{% load filters %}
+
+{% if annotation.citations.all %}
+  <table class="table table-condensed table-striped table-hover">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>{% trans "Códigos" %}</th>
+        <th>{% trans "Documento" %}
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for citation in annotation.citations.all %}
+      <tr>
+        <td>{{ forloop.counter }}</td>
+        <td>
+          {% for code in citation.codes.all %}
+            {{ code|pretty_print_code_name|safe }}
+          {% endfor %}
+        </td>
+        <td>{{ citation.document.name }}</td>
+        <td>
+          <a class="btn btn-small btn-primary pull-right" href="{% url view_document pid=project.id did=citation.document.id %}"><i class="icon-eye-open icon-white"></i> {% trans "Ver documento" %}</a>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="3">
+          {{ citation.text }}
+        <td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+{% else %}
+  <div class="alert alert-info">
+    <p>{% trans "¡La anotación no fue asignada a ninguna cita!" %}</p>
+  </div>
+{% endif %}
