@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
-import json
-
 from os.path import splitext
 from datetime import datetime
 
-from django.http import Http404, HttpResponse
+from django.http import Http404
 from django.template import RequestContext
 from django.shortcuts import render, get_object_or_404, redirect
 from django.template.loader import render_to_string
@@ -14,11 +12,11 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 
 import libreqda.text_extraction
-
-from libreqda.forms import AddCodeToAnnotation, AddUserToProjectForm,\
-    AnnotationForm, BooleanQueryForm, CodeForm, ProjectForm, SetQueryForm,\
+from libreqda.utils import JsonResponse
+from libreqda.forms import AddCodeToAnnotation, AddUserToProjectForm, \
+    AnnotationForm, BooleanQueryForm, CodeForm, ProjectForm, SetQueryForm, \
     UploadDocumentForm, ProximityQueryForm
-from libreqda.models import Annotation, BooleanQuery, Code, Document,\
+from libreqda.models import Annotation, BooleanQuery, Code, Document, \
     DocumentInstance, Project, ProximityQuery, SetQuery, UserProjectPermission
 
 
@@ -84,9 +82,7 @@ def add_user_to_project(request, pid, template='modal.html'):
 
             # All OK, redirect to projects home
             response_data = {'redirect': reverse('browse_projects')}
-            return HttpResponse(
-                        json.dumps(response_data),
-                        content_type="application/json")
+            return JsonResponse(response_data)
     else:
         p = get_object_or_404(Project, pk=pid)
         form = AddUserToProjectForm()
@@ -103,9 +99,7 @@ def add_user_to_project(request, pid, template='modal.html'):
                         template, response_dict, RequestContext(request))
 
     response_data = {'html': html_response}
-    return HttpResponse(
-                json.dumps(response_data),
-                content_type="application/json")
+    return JsonResponse(response_data)
 
 
 @login_required
@@ -389,8 +383,7 @@ def add_code_to_annotation(request, pid, aid, template='modal.html'):
 
             response_data = {'redirect': reverse('browse_annotations',
                                                  args=(pid,))}
-            return HttpResponse(json.dumps(response_data),
-                                content_type="application/json")
+            return JsonResponse(response_data)
     else:
         form = AddCodeToAnnotation()
 
@@ -406,9 +399,7 @@ def add_code_to_annotation(request, pid, aid, template='modal.html'):
                         template, response_dict, RequestContext(request))
 
     response_data = {'html': html_response}
-    return HttpResponse(
-                json.dumps(response_data),
-                content_type="application/json")
+    return JsonResponse(response_data)
 
 
 @login_required
