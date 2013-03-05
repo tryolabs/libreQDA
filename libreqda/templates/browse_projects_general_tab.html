@@ -21,7 +21,13 @@
     </tr>
     <tr>
       <td class="key">{% trans "Comentario" %}</td>
-      <td class="value">{{ project.comment|linebreaks }}</td>
+      <td class="value">
+      {% if project.comment %}
+        {{ project.comment|linebreaks }}
+      {% else %}
+        {% trans "El proyecto no tiene un comentario." %}
+      {% endif %}
+      </td>
     </tr>
     <tr>
       <td class="key">{% trans "Número de documentos" %}</td>
