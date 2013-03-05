@@ -2,6 +2,8 @@
 from django import template
 from django.utils.translation import ugettext as _
 
+from libreqda.models import Citation
+
 register = template.Library()
 
 
@@ -28,3 +30,8 @@ def pretty_print_code_name(code):
                                                      code.name)
     else:
         return code.name
+
+
+@register.filter
+def project_citation_count(project):
+    return Citation.objects.filter(document__project=project).count()

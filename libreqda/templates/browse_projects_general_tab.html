@@ -1,36 +1,39 @@
+{% load i18n %}
+{% load filters %}
+
 <table class="table table-condensed table-striped table-bordered key-value-table">
   <tbody>
     <tr>
-      <td class="key">Versión</td>
+      <td class="key">{% trans "Versión" %}</td>
       <td class="value">{{ project.version }}</td>
     </tr>
     <tr>
-      <td class="key">Fecha de creación</td>
+      <td class="key">{% trans "Fecha de creación" %}</td>
       <td class="value">{{ project.creation_date }}</td>
     </tr>
     <tr>
-      <td class="key">Fecha de modificación</td>
+      <td class="key">{% trans "Fecha de modificación" %}</td>
       <td class="value">{{ project.modified_date }}</td>
     </tr>
     <tr>
-      <td class="key">Creador</td>
+      <td class="key">{% trans "Creador" %}</td>
       <td class="value">{{ project.owner }}</td>
     </tr>
     <tr>
-      <td class="key">Comentario</td>
+      <td class="key">{% trans "Comentario" %}</td>
       <td class="value">{{ project.comment }}</td>
     </tr>
     <tr>
-      <td class="key">Número de documentos</td>
-      <td class="value">TODO</td>
+      <td class="key">{% trans "Número de documentos" %}</td>
+      <td class="value">{{ project.documents.count }}</td>
     </tr>
     <tr>
-      <td class="key">Número total de códigos</td>
-      <td class="value">TODO</td>
+      <td class="key">{% trans "Número total de códigos" %}</td>
+      <td class="value">{{ project.codes.count }}</td>
     </tr>
     <tr>
-      <td class="key">Número total de citas</td>
-      <td class="value">TODO</td>
+      <td class="key">{% trans "Número total de citas" %}</td>
+      <td class="value">{{ project|project_citation_count }}</td>
     </tr>
   </tbody>
 </table>
