@@ -20,10 +20,14 @@ from libreqda.models import Annotation, BooleanQuery, Code, Document, \
     DocumentInstance, Project, ProximityQuery, SetQuery, UserProjectPermission
 
 
+## Base
+
 @login_required
 def home(request):
     return redirect('browse_projects')
 
+
+## Projects
 
 @login_required
 def browse_projects(request, template='browse_projects.html'):
@@ -156,6 +160,8 @@ def copy_project(request, pid, template='copy_project.html'):
                    'back_url': reverse('browse_projects')})
 
 
+## Documents
+
 @login_required
 def view_document(request, pid, did, template='view_document.html'):
     p = get_object_or_404(Project, pk=pid)
@@ -276,6 +282,8 @@ def delete_document(request, pid, did):
     return redirect('browse_projects')
 
 
+## Codes
+
 @login_required
 def browse_codes(request, pid, template='browse_codes.html'):
     p = get_object_or_404(Project, pk=pid)
@@ -323,6 +331,8 @@ def delete_code(request, pid, cid):
 
     return redirect('browse_codes', pid=pid)
 
+
+## Annotations
 
 @login_required
 def browse_annotations(request, pid, template='browse_annotations.html'):
@@ -427,6 +437,15 @@ def remove_code_from_annotation(request, pid, aid, cid):
 
     return redirect('browse_annotations', pid=pid)
 
+
+## Citations
+
+@login_required
+def add_code_to_citation(request, pid, cid, codeid, template='modal.html'):
+    raise Http404
+
+
+## Queries
 
 @login_required
 def browse_queries(request, pid, template='browse_queries.html'):
