@@ -139,7 +139,18 @@ class Code(models.Model):
 
 
 class Category(models.Model):
+    CODE_COLORS = (('d', _('Grey')),
+                   ('e', _('Red')),
+                   ('w', _('Yellow')),
+                   ('s', _('Green')),
+                   ('i', _('Blue')),
+                   ('b', _('Black')),)
     name = models.TextField(max_length=250)
+    color = models.CharField(max_length=1,
+                             blank=True,
+                             null=True,
+                             choices=CODE_COLORS,
+                             verbose_name=_('Color'))
     creation_date = models.DateTimeField(auto_now_add=True)
     modified_date = models.DateTimeField(auto_now=True)
     created_by = models.ForeignKey(User)

@@ -3,8 +3,8 @@ from django import forms
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 
-from libreqda.models import Annotation, BooleanQuery, Code, Document, Project,\
-    SetQuery, ProximityQuery
+from libreqda.models import Annotation, BooleanQuery, Category, Code, \
+    Document, Project, SetQuery, ProximityQuery
 from libreqda.validators import DocumentValidator
 
 
@@ -44,7 +44,7 @@ class CodeForm(forms.ModelForm):
         WEIGHTS = [(i, i) for i in range(-100, 101)][::-1]
 
         model = Code
-        exclude = ('citations', 'created_by', 'creation_date', 'modified_date',\
+        exclude = ('citations', 'created_by', 'creation_date', 'modified_date',
                    'project')
         widgets = {'name': forms.TextInput(),
                    'weight': forms.Select(choices=WEIGHTS)}
@@ -53,7 +53,7 @@ class CodeForm(forms.ModelForm):
 class AnnotationForm(forms.ModelForm):
     class Meta:
         model = Annotation
-        exclude = ('codes', 'created_by', 'creation_date', 'modified_date',\
+        exclude = ('codes', 'created_by', 'creation_date', 'modified_date',
                    'project')
 
 
@@ -78,3 +78,11 @@ class ProximityQueryForm(forms.ModelForm):
     class Meta:
         model = ProximityQuery
         exclude = ('project')
+
+
+class CategoryForm(forms.ModelForm):
+    class Meta:
+        model = Category
+        exclude = ('annotations', 'citations', 'codes', 'documents',
+                   'created_by', 'creation_date', 'modified_date', 'project')
+        widgets = {'name': forms.TextInput()}
