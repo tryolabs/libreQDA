@@ -1,3 +1,4 @@
+![LibreQDA](http://proyecto.data.cse.edu.uy/attachments/download/672/LibreQDA-logo.png "LibreQDA")
 [LibreQDA](https://github.com/tryolabs/libreQDA)
 ================================================
 
