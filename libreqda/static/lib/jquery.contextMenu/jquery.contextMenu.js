@@ -1076,7 +1076,7 @@ var // currently active contextMenu trigger
                 
                     // add icons
                     if (item.icon) {
-                        $t.addClass("icon icon-" + item.icon);
+                        $t.addClass("context-menu-icon context-menu-icon-" + item.icon);
                     }
                 }
                 
