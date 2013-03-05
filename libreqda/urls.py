@@ -66,6 +66,10 @@ urlpatterns = patterns('',
     url(r'^project/(?P<pid>\d+)/annotation/(?P<aid>\d+)/code/remove/(?P<cid>\d+)/$',
         'libreqda.views.remove_code_from_annotation',
         name='remove_code_from_annotation'),
+    #citations
+    url(r'^project/(?P<pid>\d+)/citation/(?P<cid>\d+)/assign/$',
+        'libreqda.views.add_code_to_citation',
+        name='add_code_to_citation'),
     # accounts
     url(r'^accounts/login/$',
         'django.contrib.auth.views.login',

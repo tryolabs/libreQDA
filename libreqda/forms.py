@@ -3,7 +3,7 @@ from django import forms
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 
-from libreqda.models import Annotation, BooleanQuery, Code, Document, Project,\
+from libreqda.models import Annotation, BooleanQuery, Code, Document, Project, \
     SetQuery, ProximityQuery
 from libreqda.validators import DocumentValidator
 
@@ -18,6 +18,12 @@ class AddUserToProjectForm(forms.Form):
     users = forms.ModelMultipleChoiceField(
                         queryset=User.objects.all(),
                         label=_('Usuarios'))
+
+
+class AddCodeToCitationForm(forms.Form):
+    codes = forms.ModelMultipleChoiceField(
+                        queryset=Code.objects.all(),
+                        label=_('Códigos'))
 
 
 class NewDocumentForm(forms.Form):
@@ -44,7 +50,7 @@ class CodeForm(forms.ModelForm):
         WEIGHTS = [(i, i) for i in range(-100, 101)][::-1]
 
         model = Code
-        exclude = ('citations', 'created_by', 'creation_date', 'modified_date',\
+        exclude = ('citations', 'created_by', 'creation_date', 'modified_date', \
                    'project')
         widgets = {'name': forms.TextInput(),
                    'weight': forms.Select(choices=WEIGHTS)}
@@ -53,7 +59,7 @@ class CodeForm(forms.ModelForm):
 class AnnotationForm(forms.ModelForm):
     class Meta:
         model = Annotation
-        exclude = ('codes', 'created_by', 'creation_date', 'modified_date',\
+        exclude = ('codes', 'created_by', 'creation_date', 'modified_date', \
                    'project')
 
 
