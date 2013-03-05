@@ -15,9 +15,10 @@ import libreqda.text_extraction
 from libreqda.utils import JsonResponse
 from libreqda.forms import AddCodeToAnnotation, AddUserToProjectForm, \
     AnnotationForm, BooleanQueryForm, CodeForm, ProjectForm, SetQueryForm, \
-    UploadDocumentForm, ProximityQueryForm
+    UploadDocumentForm, ProximityQueryForm, AddCodeToCitationForm
 from libreqda.models import Annotation, BooleanQuery, Code, Document, \
-    DocumentInstance, Project, ProximityQuery, SetQuery, UserProjectPermission
+    DocumentInstance, Project, ProximityQuery, SetQuery, Citation, \
+    UserProjectPermission
 
 
 ## Base
@@ -167,10 +168,16 @@ def view_document(request, pid, did, template='view_document.html'):
     p = get_object_or_404(Project, pk=pid)
     d = get_object_or_404(DocumentInstance, pk=did)
 
+    texts = {
+        'add_code': _('Asignar códigos'),
+        'view_codes': _('Ver códigos asignados'),
+    }
+
     return render(request,
                   template,
                   {'project': p,
-                   'document': d})
+                   'document': d,
+                   'texts': texts})
 
 
 #Uncomment this to enable file selection instead of uploading a new file
@@ -441,8 +448,40 @@ def remove_code_from_annotation(request, pid, aid, cid):
 ## Citations
 
 @login_required
-def add_code_to_citation(request, pid, cid, codeid, template='modal.html'):
-    raise Http404
+def add_code_to_citation(request, pid, cid, template='modal.html'):
+    if request.method == 'POST':
+        form = AddCodeToCitationForm(request.POST)
+        p = get_object_or_404(Project, pk=pid)
+        cit = get_object_or_404(Citation, pk=cid)
+
+        if form.is_valid():
+            response_data = {'success': True}
+            for code in form.cleaned_data['codes']:
+                if cit.codes.filter(pk=code.pk).exists():
+                    response_data = {'error': _('Code is not in project')}
+                    break
+                cit.codes.add(code)
+            return JsonResponse(response_data)
+    else:
+        p = get_object_or_404(Project, pk=pid)
+        cit = get_object_or_404(Citation, pk=cid)
+        form = AddCodeToCitationForm()
+
+    form_action = reverse('add_code_to_citation',
+                          kwargs={'pid': pid, 'cid': cid})
+    available_codes = Code.objects.filter(project=p).exclude(
+                                                    pk__in=cit.codes.all())
+    form.fields['codes'].queryset = available_codes
+    response_dict = {
+                     'form': form,
+                     'form_action': form_action,
+                     'form_header': _('Asignar códigos a la cita'),
+                    }
+    html_response = render_to_string(
+                        template, response_dict, RequestContext(request))
+
+    response_data = {'html': html_response}
+    return JsonResponse(response_data)
 
 
 ## Queries
