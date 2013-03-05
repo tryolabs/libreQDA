@@ -17,11 +17,8 @@ def pdf(f):
 
 
 def docx(f):
-    try:
-        doc = opendocx(f)
-        return '\r\n'.join(getdocumenttext(doc))
-    except Exception as e:
-        print e
+    doc = opendocx(f)
+    return '\r\n'.join(getdocumenttext(doc))
 
 
 def rtf(f):

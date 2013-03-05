@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+{% load filters %}
+
+{% block head %}
+  {{ block.super }}
+{% endblock head %}
+
+{% block topbar_extra %}
+{% endblock topbar_extra %}
+
+{% block body %}
+  <div class="row-fluid">
+    <div class="span10 offset1">
+      <div class="alert alert-error">
+        {% if title %}
+          <strong>{{ title }}</strong><br/>
+        {% endif %} 
+        
+        {{ message }}
+        
+        {% if backlink and backtext %}
+          <a href="{{backlink}}">{{ backtext }}</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+{% endblock %}

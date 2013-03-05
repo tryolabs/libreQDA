@@ -239,6 +239,14 @@ def upload_document(request, pid, template='upload_document.html'):
                 document.file.delete()
                 document.delete()
 
+                return render(request,
+                              'error.html',
+                              {'title': _('¡Oops!'),
+                               'message': _('Hubo un error al agregar el documento.'),
+                               'backtext': _('Agregar otro documento.'),
+                               'backlink': reverse('upload_document', args=(pid,))
+                               })
+
             return redirect('browse_projects')
     else:
         form = UploadDocumentForm()
@@ -246,12 +254,12 @@ def upload_document(request, pid, template='upload_document.html'):
     back_url = reverse('browse_projects')
     form_action = reverse('upload_document', args=(pid,))
     return render(request,
-              template,
-              {'project': p,
-               'documents': Document.objects.all(),
-               'form': form,
-               'form_action': form_action,
-               'back_url': back_url})
+                  template,
+                  {'project': p,
+                   'documents': Document.objects.all(),
+                   'form': form,
+                   'form_action': form_action,
+                   'back_url': back_url})
 
 
 @login_required
