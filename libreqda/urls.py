@@ -5,6 +5,8 @@ from django.conf.urls import patterns, include, url
 
 admin.autodiscover()
 
+handler404 = 'libreqda.http_handlers.handle_404'
+
 urlpatterns = patterns('',
     # admin
     url(r'^admin/', include(admin.site.urls)),
