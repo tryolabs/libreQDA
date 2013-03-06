@@ -14,17 +14,11 @@ from django.contrib.auth.decorators import login_required
 import libreqda.text_extraction
 from libreqda.utils import JsonResponse
 from libreqda.forms import AddCodeToAnnotation, AddUserToProjectForm, \
-<<<<<<< HEAD
-    AnnotationForm, BooleanQueryForm, CodeForm, ProjectForm, SetQueryForm, \
-    UploadDocumentForm, ProximityQueryForm, AddCodeToCitationForm
-from libreqda.models import Annotation, BooleanQuery, Code, Document, \
-    DocumentInstance, Project, ProximityQuery, SetQuery, Citation, \
-=======
-    AnnotationForm, BooleanQueryForm, CategoryForm, CodeForm, ProjectForm, \
-    SetQueryForm, UploadDocumentForm, ProximityQueryForm
-from libreqda.models import Annotation, BooleanQuery, Category, Code, \
-    Document, DocumentInstance, Project, ProximityQuery, SetQuery,\
->>>>>>> 563b43cddb89c17d3ddc5113ef2af07fbc31223e
+    AddCodeToCitationForm, AnnotationForm, BooleanQueryForm, CategoryForm, \
+    CodeForm, ProjectForm, SetQueryForm, UploadDocumentForm, \
+    ProximityQueryForm
+from libreqda.models import Category, Annotation, BooleanQuery, Document, \
+    DocumentInstance, Project, ProximityQuery, SetQuery, Citation, Code, \
     UserProjectPermission
 
 
