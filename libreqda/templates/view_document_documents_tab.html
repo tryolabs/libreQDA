@@ -1,3 +1,5 @@
+{% load i18n %}
+
 <div class="accordion white-background" id="accordion">
   {% for doc in project.documents.all %}
     <div class="accordion-group">
@@ -8,7 +10,11 @@
       </div>
       <div id="collapse{{doc.id}}" class="accordion-body collapse">
         <div class="accordion-inner">
-          {{ doc.comment|linebreaks }}
+          {% if doc.comment %}
+            {{ doc.comment|linebreaks }}
+          {% else %}
+            {% trans "El documento no tiene descripción." %}
+          {% endif %}
           <a class="btn btn-small btn-block btn-primary pull-right left-group-button menu-document-button" href="/project/{{project.id}}/document/{{doc.id}}"><i class="icon-eye-open icon-white"></i>  Ver</a>
         </div>
       </div>

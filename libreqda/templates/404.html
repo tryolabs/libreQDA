@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+{% load filters %}
+
+{% block head %}
+  {{ block.super }}
+{% endblock head %}
+
+{% block topbar_extra %}
+{% endblock topbar_extra %}
+
+{% block body %}
+  <div class="row-fluid">
+    <div class="span10 offset1">
+      <div class="alert alert-error">
+        <h1>404 - {% trans "¡Página no encontrada!" %}</h1>
+        {% trans "La página solicitada no pudo ser encontrada." %}
+        <a href="/">{% trans "Volver a la página principal." %}</a>
+      </div>
+    </div>
+  </div>
+{% endblock %}

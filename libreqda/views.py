@@ -14,10 +14,17 @@ from django.contrib.auth.decorators import login_required
 import libreqda.text_extraction
 from libreqda.utils import JsonResponse
 from libreqda.forms import AddCodeToAnnotation, AddUserToProjectForm, \
+<<<<<<< HEAD
     AnnotationForm, BooleanQueryForm, CodeForm, ProjectForm, SetQueryForm, \
     UploadDocumentForm, ProximityQueryForm, AddCodeToCitationForm
 from libreqda.models import Annotation, BooleanQuery, Code, Document, \
     DocumentInstance, Project, ProximityQuery, SetQuery, Citation, \
+=======
+    AnnotationForm, BooleanQueryForm, CategoryForm, CodeForm, ProjectForm, \
+    SetQueryForm, UploadDocumentForm, ProximityQueryForm
+from libreqda.models import Annotation, BooleanQuery, Category, Code, \
+    Document, DocumentInstance, Project, ProximityQuery, SetQuery,\
+>>>>>>> 563b43cddb89c17d3ddc5113ef2af07fbc31223e
     UserProjectPermission
 
 
@@ -443,6 +450,56 @@ def remove_code_from_annotation(request, pid, aid, cid):
         raise Http404
 
     return redirect('browse_annotations', pid=pid)
+
+
+## Categories
+
+@login_required
+def browse_categories(request, pid, template='browse_categories.html'):
+    p = get_object_or_404(Project, pk=pid)
+
+    return render(request,
+                  template,
+                  {'project': p})
+
+
+@login_required
+def new_category(request, pid, template='new_category.html'):
+    p = get_object_or_404(Project, pk=pid)
+
+    back_or_success = reverse('browse_categories', args=(pid,))
+
+    if request.method == 'POST':
+        c = Category()
+        form = CategoryForm(request.POST, instance=c)
+        if form.is_valid():
+            c.created_by = request.user
+            c.project = p
+            c.save()
+
+            return redirect(back_or_success)
+    else:
+        form = CategoryForm()
+
+    form_action = reverse('new_category', args=(pid,))
+    return render(request,
+                  template,
+                  {'form': form,
+                   'form_action': form_action,
+                   'back_url': back_or_success})
+
+
+@login_required
+def delete_category(request, pid, cid):
+    p = get_object_or_404(Project, pk=pid)
+    c = get_object_or_404(Category, pk=cid)
+
+    if c.project == p and c.created_by == request.user:
+        c.delete()
+    else:
+        raise Http404
+
+    return redirect('browse_categories', pid=pid)
 
 
 ## Citations

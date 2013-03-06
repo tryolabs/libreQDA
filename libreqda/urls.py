@@ -5,6 +5,8 @@ from django.conf.urls import patterns, include, url
 
 admin.autodiscover()
 
+handler404 = 'libreqda.http_handlers.handle_404'
+
 urlpatterns = patterns('',
     # admin
     url(r'^admin/', include(admin.site.urls)),
@@ -50,6 +52,16 @@ urlpatterns = patterns('',
     url(r'^project/(?P<pid>\d+)/code/(?P<cid>\d+)/delete/$',
         'libreqda.views.delete_code',
         name='delete_code'),
+    #categories
+    url(r'^project/(?P<pid>\d+)/category/$',
+        'libreqda.views.browse_categories',
+        name='browse_categories'),
+    url(r'^project/(?P<pid>\d+)/category/new/$',
+        'libreqda.views.new_category',
+        name='new_category'),
+    url(r'^project/(?P<pid>\d+)/category/(?P<cid>\d+)/delete/$',
+        'libreqda.views.delete_category',
+        name='delete_category'),
     #annotations
     url(r'^project/(?P<pid>\d+)/annotation/$',
         'libreqda.views.browse_annotations',

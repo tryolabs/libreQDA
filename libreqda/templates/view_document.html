@@ -32,7 +32,7 @@
   <div class="row-fluid">
     <div class="span10 offset1">
       <div class="toolbar move-up">
-        <a class="btn left-group-button pull-right"><i class="icon-tags"></i> {% trans "Categorías" %}</a>
+        <a class="btn left-group-button pull-right" target="_blank" href="{% url browse_categories pid=project.id %}"><i class="icon-tags"></i> {% trans "Categorías" %}</a>
         <a class="btn left-group-button pull-right"><i class="icon-file"></i> {% trans "Informes" %}</a>
         <a class="btn left-group-button pull-right" target="_blank" href="{% url browse_queries pid=project.id %}"><i class="icon-search"></i> {% trans "Consultas" %}</a>
         <a class="btn left-group-button pull-right"><i class="icon-filter"></i> {% trans "Filtros" %}</a>
