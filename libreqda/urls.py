@@ -67,7 +67,7 @@ urlpatterns = patterns('',
         'libreqda.views.remove_code_from_annotation',
         name='remove_code_from_annotation'),
     #citations
-    url(r'^project/(?P<pid>\d+)/citation/(?P<cid>\d+)/assign/$',
+    url(r'^project/(?P<pid>\d+)/citation/(?P<cid>.+)/assign/$',
         'libreqda.views.add_code_to_citation',
         name='add_code_to_citation'),
     # accounts
