@@ -167,7 +167,7 @@ body {
 	width: 10px;
 	height: 40px;
 	background-color: blue;
-	display: inline-block;
+	display: block;
 	margin: 1px;
 	position: relative;	
     border-radius: 5px;
