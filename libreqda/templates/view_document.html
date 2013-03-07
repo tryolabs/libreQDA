@@ -51,6 +51,9 @@
       </div>
     </div>
     <div class="span3 document-citations">
+      {% for cit in citations %}
+      <div id="bar-id-{{ cit.id }}" class="citation-bar" title="{{ cit.codes_str }}" data-cid="{{ cit.id }}"></div>
+      {% endfor %}
     </div>
   </div>
 
@@ -71,6 +74,11 @@
             var citation_id = cid;
           }
           
+          if (citation.attr("name") == 'cit-id-NaN') {
+            // We assign the correct name for newly created citations
+            citation.attr("name", Annotator.prototype.citationIdStr + citation_id);
+          }
+          
           var new_bar = $('<div/>', {
             'id': 'bar-id-' + citation_id,
             'class': 'citation-bar'
@@ -78,8 +86,8 @@
           
           $('.document-citations').append(new_bar);
           new_bar.position({
-            my: "top top",
-            at: "top",
+            my: "bottom top",
+            at: "bottom top",
             of: citation
           });
           new_bar.data("cid", citation_id);
@@ -89,9 +97,9 @@
         
         setTimeout(function() {
           // ** Create code bars **
-          $(".annotator-hl").each(function() {
+          /*$(".annotator-hl").each(function() {
             createCitationBar($(this), null);
-          });
+          });*/
           
           // ** Hide Annotations **
           Annotator.prototype.hideAllAnnotations();
@@ -152,10 +160,12 @@
             context: this,
             success: function(data, status) {
               if (data.success) {
+                var selector = '#' + 'bar-id-' + data.cid;
+                $(selector).attr('title', data.codes_str)
                 $('#codeModal').modal('hide');
               } else {
                 $('#codeModal').html(data.html);
-              }                
+              }
             }
           });
           return false;
@@ -172,10 +182,13 @@
                   var selector_name = '*[name="' + citation_id_str + annotation.id + '"]';
                   var selector_nan = '*[name="' + citation_id_str + 'NaN"]';
                   createCitationBar($(selector_name + ',' + selector_nan), annotation.id);
+                  Annotator.prototype.hideAllAnnotations();
+                  Annotator.prototype.showAnnotation(annotation.id, true);
                 })
                 .subscribe("annotationDeleted", function (annotation) {
                   var selector = '#' + 'bar-id-' + annotation.id;
                   $(selector).remove();
+                  Annotator.prototype.hideAllAnnotations();
                 });
               }
           }

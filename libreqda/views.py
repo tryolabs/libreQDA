@@ -178,6 +178,7 @@ def view_document(request, pid, did, template='view_document.html'):
                   template,
                   {'project': p,
                    'document': d,
+                   'citations': d.citations.order_by('start').order_by('start_paragraph'),
                    'texts': texts})
 
 
@@ -512,6 +513,8 @@ def add_code_to_citation(request, pid, cid, template='modal.html'):
                     response_data = {'error': _('Code is not in project')}
                     break
                 cit.codes.add(code)
+            response_data['cid'] = cid
+            response_data['codes_str'] = cit.codes_str()
             return JsonResponse(response_data)
     else:
         p = get_object_or_404(Project, pk=pid)
