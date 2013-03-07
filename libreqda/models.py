@@ -103,6 +103,9 @@ class Citation(models.Model):
 
         return ss < os < se or ss < oe < ss
 
+    def codes_str(self):
+        return ', '.join(self.codes.all().values_list('name', flat=True))
+
 
 class Code(models.Model):
     CODE_COLORS = (('d', _('Grey')),
@@ -183,7 +186,7 @@ class BooleanQuery(models.Model):
     OPERATORS = (('|', _('or')),
                  ('&', _('and')))
     project = models.ForeignKey(Project, related_name=_('boolean_queries'))
-    codes = models.ManyToManyField(Code, 
+    codes = models.ManyToManyField(Code,
                                    related_name='boolean_queries',
                                    verbose_name=_('Códigos'))
     operator = models.CharField(max_length=1,
