@@ -8,14 +8,22 @@ body {
     border-radius: 0;
 }
 
+.logo-container {
+    text-align: center;
+}
+
 .login-container {
-    top: 50%;
+    top: 45%;
     left: 50%;
     width: 500px;
-    height: 180px;
+    height: 335px;
     margin: -150px 0px 0px -250px;
     position: absolute;
     padding-top: 20px !important;
+}
+
+#login-form {
+    margin: 40px 0 20px;
 }
 
 .with-border {

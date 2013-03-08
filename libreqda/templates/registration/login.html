@@ -2,6 +2,9 @@
 
 {% block body %}
     <div id="login-container" class="login-container with-border white-background">
+      <div class="logo-container">
+        <img src="{{ STATIC_URL }}imgs/logo.png" alt="LibreQDA" title="LibreQDA">
+      </div>
         <form action="{% url login %}" method="post" id="login-form" class="form-horizontal">
             {% csrf_token %}
             <input type="hidden" name="next" value="{{ next }}" />
