@@ -24,6 +24,9 @@
 {% block body %}
   <div class="modal hide fade" id="codeModal">
   </div>
+  
+  <div class="modal hide fade" id="citationModal">
+  </div>
 
   <div id="documents-menu" class="menu left">
     {% include "view_document_documents_tab.html" %}
@@ -52,7 +55,7 @@
     </div>
     <div class="span3 document-citations">
       {% for cit in citations %}
-      <div id="bar-id-{{ cit.id }}" class="citation-bar" title="{{ cit.codes_str }}" data-cid="{{ cit.id }}"></div>
+      <span id="bar-id-{{ cit.id }}" class="citation-bar" title="{{ cit.codes_str }}" data-cid="{{ cit.id }}"></span>
       {% endfor %}
     </div>
   </div>
@@ -79,7 +82,7 @@
             citation.attr("name", Annotator.prototype.citationIdStr + citation_id);
           }
           
-          var new_bar = $('<div/>', {
+          var new_bar = $('<span/>', {
             'id': 'bar-id-' + citation_id,
             'class': 'citation-bar'
           });
@@ -124,10 +127,15 @@
                 },
               },
               "viewCodes": {
-                name: "{{ texts.view_codes }}",
+                name: "{{ texts.view_details }}",
                 icon: "copy",
                 callback: function(key, options) {
-                  alert('NOT IMPLEMENTED YET');
+                  var cit_id = $(this).data('cid');
+                  var url = '{% url citation_details pid=project.id cid="CIT_ID" %}'.replace('CIT_ID', cit_id);//TODO: mejorar
+                  $.getJSON(url, function(data) {
+                    $('#citationModal').html(data.html);
+                    $('#citationModal').modal('show');
+                  });
                 },
               },
             }

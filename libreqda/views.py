@@ -171,7 +171,7 @@ def view_document(request, pid, did, template='view_document.html'):
 
     texts = {
         'add_code': _('Asignar códigos'),
-        'view_codes': _('Ver códigos asignados'),
+        'view_details': _('Ver detalles'),
     }
 
     return render(request,
@@ -536,6 +536,35 @@ def add_code_to_citation(request, pid, cid, template='modal.html'):
 
     response_data = {'html': html_response}
     return JsonResponse(response_data)
+
+
+@login_required
+def citation_details(request, pid, cid, template='citation_details.html'):
+    p = get_object_or_404(Project, pk=pid)
+    cit = get_object_or_404(Citation, pk=cid)
+    response_dict = {
+                     'project': p,
+                     'citation': cit,
+                     'form_header': _('Detalles de la cita'),
+                    }
+    html_response = render_to_string(
+                        template, response_dict, RequestContext(request))
+
+    response_data = {'html': html_response}
+    return JsonResponse(response_data)
+
+@login_required
+def remove_code_from_citation(request, pid, citid, codeid):
+    cit = get_object_or_404(Citation, pk=citid)
+    code = get_object_or_404(Code, pk=codeid)
+
+    if code not in cit.codes.all():
+        raise Http404
+
+    cit.codes.remove(code)
+    cit.save()
+
+    return redirect('view_document', pid=pid, did=cit.document.pk)
 
 
 ## Queries
