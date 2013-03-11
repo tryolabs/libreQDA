@@ -1,0 +1,91 @@
+{% load i18n %}
+{% load filters %}
+
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+  <h3 id="myModalLabel">{{ form_header }}</h3>
+</div>
+
+<div class="modal-body">
+  <h4>{% trans "Datos de la cita" %}</h4>
+  <table class="table table-striped table-bordered key-value-table">
+    <tbody>
+      <tr>
+        <td class="key">{% trans "Fecha de creación" %}</td>
+        <td class="value">{{ citation.creation_date }}</td>
+      </tr>
+      <tr>
+        <td class="key">{% trans "Fecha de modificación" %}</td>
+        <td class="value">{{ citation.modified_date }}</td>
+      </tr>
+      <tr>
+      <tr>
+        <td class="key">{% trans "Creador" %}</td>
+        <td class="value">{{ citation.created_by }}</td>
+      </tr>
+      <tr>
+        <td class="key">{% trans "Comentario" %}</td>
+        <td class="value">{{ citation.comment }}</td>
+      </tr>
+      <tr>
+        <td class="key">{% trans "Texto" %}</td>
+        <td class="value">{{ citation.text }}</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  <h4>{% trans "Códigos de la cita" %}</h4>
+  <div class="row-fluid">
+    <div class="">
+      <div class="white-background with-border lone-container">
+        {% if citation.codes.all %}
+          <table class="table table-condensed table-striped table-hover">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>{% trans "Etiqueta" %}</th>
+                <th>{% trans "Padre" %}<th>
+                <th>{% trans "Peso" %}</th>
+                <th>{% trans "Añadido por" %}</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for code in citation.codes.all %}
+                <tr>
+                  <td>{{ forloop.counter}}</td>
+                  <td>{{ code|pretty_print_code_name|safe }}</td>
+                  <td>
+                    {% if code.parent_code %}
+                      {{ code.parent_code|pretty_print_code_name|safe }}
+                    {% else %}
+                      -
+                    {% endif %}
+                  </td>
+                  <td>{{ code.weight }}</td>
+                  <td>{{ code.created_by }}</td>
+                  <td><a class="btn btn-small btn-danger pull-right" href="{% url remove_code_from_citation pid=project.id codeid=code.id citid=citation.id %}"><i class="icon-trash icon-white"></i>  {% trans "Remover" %}</a></td>
+                </tr>
+                <tr>
+                  {% if code.comment %}
+                    <td colspan="8">{{ code.comment }}</td>
+                  {% else %}
+                    <td colspan="8">{% trans "El código no tiene descripción." %}</td>
+                  {% endif %}
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        {% else %}
+          <div class="alert alert-info">
+            <p>{% trans "No hay códigos asignados a esta cita." %}</p>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>  
+
+<div class="modal-footer">      
+  <a data-dismiss="modal" class="btn left-group-button"><i class="icon-circle-arrow-left"></i> {% trans "Cerrar" %}</a>    
+</div>
