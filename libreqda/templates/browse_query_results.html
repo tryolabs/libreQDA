@@ -42,6 +42,7 @@
                           {% endfor %}
                         </td>
                         <td>
+                          <span>{{citation.document.name}}</span>
                           <a class="btn btn-small btn-primary pull-right" href="{% url view_document pid=project.id did=citation.document.id %}"><i class="icon-eye-open icon-white"></i> {% trans "Ver documento" %}</a>
                         </td>
                       </tr>
