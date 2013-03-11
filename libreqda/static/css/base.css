@@ -191,6 +191,11 @@ body {
 	margin: 0;
 }
 
+#citationModal {
+	width: 1075px;
+	left: 415px;
+}
+
 #doc-text-area {
     word-wrap: break-word;
 }
