@@ -70,16 +70,25 @@
         
         // ** Right side bar **
         // ******************
+        function positionCitationBar(bar, citation) {
+          bar.position({
+            my: "bottom top",
+            at: "bottom top",
+            of: citation
+          });
+          bar.height(citation.height());
+          bar.css("left", "");
+        }
+        
         function createCitationBar(citation, cid) {
           if (cid == null) {
             var citation_id = citation.attr('name').match(/\d+$/)[0];
           } else {
+            if (citation.attr("name") == 'cit-id-NaN') {
+              // We assign the correct name for newly created citations
+              citation.attr("name", Annotator.prototype.citationIdStr + cid);
+            }
             var citation_id = cid;
-          }
-          
-          if (citation.attr("name") == 'cit-id-NaN') {
-            // We assign the correct name for newly created citations
-            citation.attr("name", Annotator.prototype.citationIdStr + citation_id);
           }
           
           var new_bar = $('<span/>', {
@@ -88,24 +97,20 @@
           });
           
           $('.document-citations').append(new_bar);
-          new_bar.position({
-            my: "bottom top",
-            at: "bottom top",
-            of: citation
-          });
           new_bar.data("cid", citation_id);
-          new_bar.height(citation.height());
-          new_bar.css("left", "");
+          positionCitationBar(new_bar, citation);
         }
         
-        setTimeout(function() {
-          // ** Create code bars **
-          /*$(".annotator-hl").each(function() {
-            createCitationBar($(this), null);
-          });*/
-          
+        setTimeout(function() {          
           // ** Hide Annotations **
           Annotator.prototype.hideAllAnnotations();
+          
+          // Position bars
+          $(".citation-bar").each(function() {
+            citation_id_str = Annotator.prototype.citationIdStr;
+            var selector_name = '*[name="' + citation_id_str + $(this).data('cid') + '"]';
+            positionCitationBar($(this), $(selector_name));
+          });
           
           // ** Context menu for each code bar **
           $.contextMenu({
@@ -156,7 +161,7 @@
             Annotator.prototype.hideAnnotation(citation_id);
           });
           
-        }, 750);
+        }, 200);
         
         // ** Modal on submit **
         // ******************        
