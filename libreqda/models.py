@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from sets import Set
+from itertools import chain
 
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
@@ -283,9 +284,12 @@ class SetQuery(models.Model):
     def __unicode__(self):
         return self.name
 
+    def __queries(self):
+        return chain(self.boolean_queries.all(), self.proximity_queries.all())
+
     def execute(self):
-        result_set = self.queries.all()[0].execute()
-        for q in self.queries.all()[1:]:
+        result_set = Set()
+        for q in self.__queries():
             if self.operator == '+':
                 result_set = result_set.union(q.execute())
             elif self.operator == '^':
