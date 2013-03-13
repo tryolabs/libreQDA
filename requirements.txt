@@ -3,13 +3,14 @@ MySQL-python==1.2.4c1
 PIL==1.1.7
 argparse==1.2.1
 distribute==0.6.32
+django-model-report==0.1.4
 django-rosetta==0.6.8
+-e git+https://github.com/mikemaccana/python-docx.git@0c4379c6b89a7c745890e940a9be88b04147dfc2#egg=docx-dev
 ipython==0.13.1
 lxml==3.1.0
 pdfminer==20110515
+pyth==0.5.6
 python-dateutil==2.1
 six==1.2.0
 slate==0.3
 wsgiref==0.1.2
-pyth==0.5.6
--e git+https://github.com/mikemaccana/python-docx.git@0c4379c6b89a7c745890e940a9be88b04147dfc2#egg=python-docx
