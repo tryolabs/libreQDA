@@ -171,6 +171,7 @@ def view_document(request, pid, did, template='view_document.html'):
 
     texts = {
         'add_code': _('Asignar códigos'),
+        'add_annotation': _('Asignar anotación'),
         'view_details': _('Ver detalles'),
     }
 
