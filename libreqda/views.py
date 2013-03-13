@@ -643,20 +643,24 @@ def new_set_query(request, pid, template='new_set_query.html'):
     if request.method == 'POST':
         s = SetQuery()
         form = SetQueryForm(request.POST, instance=s)
-        form.fields['queries'].queryset = p.boolean_queries.all()
+        form.fields['boolean_queries'].queryset = p.boolean_queries.all()
+        form.fields['proximity_queries'].queryset = p.proximity_queries.all()
 
         if form.is_valid():
             s.project = p
             s.save()
 
-            for q in form.cleaned_data['queries']:
-                s.queries.add(q)
+            for q in form.cleaned_data['boolean_queries']:
+                s.boolean_queries.add(q)
+            for q in form.cleaned_data['proximity_queries']:
+                s.proximity_queries.add(q)
             s.save()
 
             return redirect('browse_queries', pid=pid)
     else:
         form = SetQueryForm()
-        form.fields['queries'].queryset = p.boolean_queries.all()
+        form.fields['boolean_queries'].queryset = p.boolean_queries.all()
+        form.fields['proximity_queries'].queryset = p.proximity_queries.all()
 
     form_action = reverse('new_set_query', args=(pid,))
 

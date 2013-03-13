@@ -79,6 +79,16 @@ class SetQueryForm(forms.ModelForm):
         model = SetQuery
         exclude = ('project')
 
+    def clean(self):
+        cleaned_data = super(SetQueryForm, self).clean()
+
+        if not (cleaned_data['boolean_queries'] or 
+                cleaned_data['proximity_queries']):
+            raise forms.ValidationError(
+                            _('* Se debe seleccionar al menos una consulta.'))
+
+        return cleaned_data
+
 
 class ProximityQueryForm(forms.ModelForm):
     class Meta:
