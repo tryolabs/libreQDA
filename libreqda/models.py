@@ -224,33 +224,6 @@ class BooleanQuery(models.Model):
         return result_set
 
 
-class SetQuery(models.Model):
-    OPERATORS = (('+', _('union')),
-                 ('^', _('intersection')))
-    project = models.ForeignKey(Project, related_name=_('set_queries'))
-    queries = models.ManyToManyField(BooleanQuery,
-                                     related_name='containing_queries',
-                                     verbose_name=_('Consultas'))
-    operator = models.CharField(max_length=1,
-                                choices=OPERATORS,
-                                verbose_name=_('Operador'))
-    name = models.CharField(max_length=250, verbose_name=_('Nombre'))
-
-    def __unicode__(self):
-        return self.name
-
-    def execute(self):
-        result_set = self.queries.all()[0].execute()
-        for q in self.queries.all()[1:]:
-            if self.operator == '+':
-                result_set = result_set.union(q.execute())
-            elif self.operator == '^':
-                result_set = result_set.intersection(q.execute())
-            else:
-                raise ValueError(_('Unknown operator.'))
-        return result_set
-
-
 class ProximityQuery(models.Model):
     OPERATORS = (('c', _('coocurrencia')),)
     project = models.ForeignKey(Project, related_name=_('proximity_queries'))
@@ -287,4 +260,36 @@ class ProximityQuery(models.Model):
                         result_set.add(c)
                         result_set.add(cc)
 
+        return result_set
+
+
+class SetQuery(models.Model):
+    OPERATORS = (('+', _('union')),
+                 ('^', _('intersection')))
+    project = models.ForeignKey(Project, related_name=_('set_queries'))
+    boolean_queries = models.ManyToManyField(BooleanQuery,
+                                             blank=True,
+                                             related_name='containing_queries',
+                                             verbose_name=_('Consultas booleanas'))
+    proximity_queries = models.ManyToManyField(ProximityQuery,
+                                               blank=True,
+                                               related_name='containing_queries',
+                                               verbose_name=_('Consultas de proximidad'))
+    operator = models.CharField(max_length=1,
+                                choices=OPERATORS,
+                                verbose_name=_('Operador'))
+    name = models.CharField(max_length=250, verbose_name=_('Nombre'))
+
+    def __unicode__(self):
+        return self.name
+
+    def execute(self):
+        result_set = self.queries.all()[0].execute()
+        for q in self.queries.all()[1:]:
+            if self.operator == '+':
+                result_set = result_set.union(q.execute())
+            elif self.operator == '^':
+                result_set = result_set.intersection(q.execute())
+            else:
+                raise ValueError(_('Unknown operator.'))
         return result_set
