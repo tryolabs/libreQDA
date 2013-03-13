@@ -25,7 +25,7 @@
                 <th>{% trans "Etiqueta" %}</th>
                 <th>{% trans "Citas" %}</th>
                 <th>{% trans "Códigos" %}</th>
-                <th>{% trans "Padre" %}<th>
+                <th>{% trans "Padre" %}</th>
                 <th>{% trans "Peso" %}</th>
                 <th>{% trans "Añadido por" %}</th>
                 <th>{% trans "Fecha" %}</th>
@@ -53,9 +53,9 @@
                 </tr>
                 <tr>
                   {% if code.comment %}
-                    <td colspan="8">{{ code.comment }}</td>
+                    <td colspan="9">{{ code.comment }}</td>
                   {% else %}
-                    <td colspan="8">{% trans "El código no tiene descripción." %}</td>
+                    <td colspan="9">{% trans "El código no tiene descripción." %}</td>
                   {% endif %}
                 </tr>
               {% endfor %}
