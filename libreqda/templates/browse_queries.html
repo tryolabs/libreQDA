@@ -57,6 +57,43 @@
 
         <hr/>
         <div class="toolbar-small">
+          <a class="btn btn-small btn-success pull-right" href="{% url new_semantic_query pid=project.id %}"><i class="icon-plus icon-white"></i>  {% trans "Nueva consulta semántica" %}</a>
+        </div>
+        <h4>{% trans "Consultas semánticas" %}</h4>
+        {% if project.semantic_queries.all %}
+          <table class="table table-condensed table-striped table-hover">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>{% trans "Nombre" %}</th>
+                <th>{% trans "Código" %}</th>
+                <td>{% trans "Operador" %}</td>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+            {% for query in project.semantic_queries.all %}
+              <tr>
+                <td> {{ forloop.counter }}</td>
+                <td> {{ query.name }} </td>
+                <td> {{ query.code|pretty_print_code_name|safe }} </td>
+                <td> {{ query.operator }}</td>
+                <td>
+                  <a class="btn btn-small btn-primary pull-right left-group-button" href="{% url do_semantic_query pid=project.id qid=query.id %}"><i class="icon-eye-open icon-white"></i>  {% trans "Consultar" %}</a>
+                  <a class="btn btn-small btn-danger pull-right" href="{% url delete_semantic_query pid=project.id qid=query.id %}"><i class="icon-trash icon-white"></i>  {% trans "Eliminar" %}</a>
+                </td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        {% else %}
+          <div class="alert alert-info">
+            <p>{% trans "¡No hay consultas semánticas definidas!" %}</p>
+          </div>
+        {% endif %}
+
+        <hr/>
+        <div class="toolbar-small">
           <a class="btn btn-small btn-success pull-right" href="{% url new_proximity_query pid=project.id %}"><i class="icon-plus icon-white"></i>  {% trans "Nueva consulta de proximidad" %}</a>
         </div>
         <h4>{% trans "Consultas de proximidad" %}</h4>
@@ -76,7 +113,7 @@
             {% for query in project.proximity_queries.all %}
               <tr>
                 <td> {{ forloop.counter }}</td>
-                <td> {{query.name}} </td>
+                <td> {{ query.name }} </td>
                 <td> {{ query.code1|pretty_print_code_name|safe }} </td>
                 <td> {{ query.code2|pretty_print_code_name|safe }} </td>
                 <td> {{ query.operator }}</td>
@@ -107,6 +144,7 @@
                 <th>{% trans "Nombre" %}</th>
                 <th>{% trans "Consultas booleanas" %}</th>
                 <th>{% trans "Consultas de proximidad" %}</th>
+                <th>{% trans "Consultas semánticas" %}</th>
                 <th>{% trans "Operador" %}</th>
                 <th></th>
               </tr>
@@ -127,6 +165,15 @@
                   </td>
                   <td>
                     {% for qq in query.proximity_queries.all %}
+                      {% if forloop.last %}
+                        {{ qq.name }}
+                      {% else %}
+                        {{ qq.name }},
+                      {% endif %}
+                    {% endfor %}
+                  </td>
+                  <td>
+                    {% for qq in query.semantic_queries.all %}
                       {% if forloop.last %}
                         {{ qq.name }}
                       {% else %}

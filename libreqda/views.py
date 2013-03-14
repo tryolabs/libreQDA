@@ -15,11 +15,11 @@ import libreqda.text_extraction
 from libreqda.utils import JsonResponse
 from libreqda.forms import AddCodeToAnnotation, AddUserToProjectForm, \
     AddCodeToCitationForm, AnnotationForm, BooleanQueryForm, CategoryForm, \
-    CodeForm, ProjectForm, SetQueryForm, UploadDocumentForm, \
-    ProximityQueryForm
+    CodeForm, ProjectForm, SemanticQueryForm, SetQueryForm, \
+    UploadDocumentForm, ProximityQueryForm
 from libreqda.models import Category, Annotation, BooleanQuery, Document, \
-    DocumentInstance, Project, ProximityQuery, SetQuery, Citation, Code, \
-    UserProjectPermission
+    DocumentInstance, Project, ProximityQuery, SemanticQuery, SetQuery, \
+    Citation, Code, UserProjectPermission
 
 
 ## Base
@@ -314,6 +314,10 @@ def new_code(request, pid, template='new_code.html'):
         if form.is_valid():
             c.created_by = request.user
             c.project = p
+            c.save()
+
+            for parent in form.cleaned_data['parent_codes']:
+                c.parent_codes.add(parent)
             c.save()
 
             return redirect(back_or_success)
@@ -631,7 +635,7 @@ def delete_boolean_query(request, pid, qid):
 
 
 @login_required
-def new_set_query(request, pid, template='new_set_query.html'):
+def new_semantic_query(request, pid, template='new_semantic_query.html'):
     p = get_object_or_404(Project, pk=pid)
 
     if request.user not in p.admin_users():
@@ -640,28 +644,20 @@ def new_set_query(request, pid, template='new_set_query.html'):
     back_or_success = reverse('browse_queries', args=(pid,))
 
     if request.method == 'POST':
-        s = SetQuery()
-        form = SetQueryForm(request.POST, instance=s)
-        form.fields['boolean_queries'].queryset = p.boolean_queries.all()
-        form.fields['proximity_queries'].queryset = p.proximity_queries.all()
+        q = SemanticQuery()
+        form = SemanticQueryForm(request.POST, instance=q)
+        form.fields['code'].queryset = p.codes.all()
 
         if form.is_valid():
-            s.project = p
-            s.save()
-
-            for q in form.cleaned_data['boolean_queries']:
-                s.boolean_queries.add(q)
-            for q in form.cleaned_data['proximity_queries']:
-                s.proximity_queries.add(q)
-            s.save()
+            q.project = p
+            q.save()
 
             return redirect('browse_queries', pid=pid)
     else:
-        form = SetQueryForm()
-        form.fields['boolean_queries'].queryset = p.boolean_queries.all()
-        form.fields['proximity_queries'].queryset = p.proximity_queries.all()
+        form = SemanticQueryForm()
+        form.fields['code'].queryset = p.codes.all()
 
-    form_action = reverse('new_set_query', args=(pid,))
+    form_action = reverse('new_semantic_query', args=(pid,))
 
     return render(request,
                   template,
@@ -671,9 +667,9 @@ def new_set_query(request, pid, template='new_set_query.html'):
 
 
 @login_required
-def delete_set_query(request, pid, qid):
+def delete_semantic_query(request, pid, qid):
     p = get_object_or_404(Project, pk=pid)
-    q = get_object_or_404(SetQuery, pk=qid)
+    q = get_object_or_404(SemanticQuery, pk=qid)
 
     if q.project != p:
         raise Http404
@@ -736,6 +732,66 @@ def delete_proximity_query(request, pid, qid):
     return redirect('browse_queries', pid=pid)
 
 
+@login_required
+def new_set_query(request, pid, template='new_set_query.html'):
+    p = get_object_or_404(Project, pk=pid)
+
+    if request.user not in p.admin_users():
+        raise Http404
+
+    back_or_success = reverse('browse_queries', args=(pid,))
+
+    if request.method == 'POST':
+        s = SetQuery()
+        form = SetQueryForm(request.POST, instance=s)
+        form.fields['boolean_queries'].queryset = p.boolean_queries.all()
+        form.fields['proximity_queries'].queryset = p.proximity_queries.all()
+        form.fields['semantic_queries'].queryset = p.semantic_queries.all()
+
+        if form.is_valid():
+            s.project = p
+            s.save()
+
+            for q in form.cleaned_data['boolean_queries']:
+                s.boolean_queries.add(q)
+            for q in form.cleaned_data['proximity_queries']:
+                s.proximity_queries.add(q)
+            for q in form.cleaned_data['semantic_queries']:
+                s.semantic_queries.add(q)
+            s.save()
+
+            return redirect('browse_queries', pid=pid)
+    else:
+        form = SetQueryForm()
+        form.fields['boolean_queries'].queryset = p.boolean_queries.all()
+        form.fields['proximity_queries'].queryset = p.proximity_queries.all()
+        form.fields['semantic_queries'].queryset = p.semantic_queries.all()
+
+    form_action = reverse('new_set_query', args=(pid,))
+
+    return render(request,
+                  template,
+                  {'form': form,
+                   'form_action': form_action,
+                   'back_url': back_or_success})
+
+
+@login_required
+def delete_set_query(request, pid, qid):
+    p = get_object_or_404(Project, pk=pid)
+    q = get_object_or_404(SetQuery, pk=qid)
+
+    if q.project != p:
+        raise Http404
+
+    if request.user not in p.admin_users():
+        raise Http404
+
+    q.delete()
+
+    return redirect('browse_queries', pid=pid)
+
+
 def __do_query(request, pid, qid, t, template='browse_query_results.html'):
     p = get_object_or_404(Project, pk=pid)
     query = get_object_or_404(t, pk=qid)
@@ -768,10 +824,15 @@ def do_boolean_query(request, pid, qid):
 
 
 @login_required
-def do_set_query(request, pid, qid):
-    return __do_query(request, pid, qid, SetQuery)
+def do_proximity_query(request, pid, qid):
+    return __do_query(request, pid, qid, ProximityQuery)
 
 
 @login_required
-def do_proximity_query(request, pid, qid):
-    return __do_query(request, pid, qid, ProximityQuery)
+def do_semantic_query(request, pid, qid):
+    return __do_query(request, pid, qid, SemanticQuery)
+
+
+@login_required
+def do_set_query(request, pid, qid):
+    return __do_query(request, pid, qid, SetQuery)
