@@ -16,7 +16,7 @@ from libreqda.utils import JsonResponse
 from libreqda.forms import AddCodeToAnnotation, AddUserToProjectForm, \
     AddCodeToCitationForm, AnnotationForm, BooleanQueryForm, CategoryForm, \
     CodeForm, ProjectForm, SetQueryForm, UploadDocumentForm, \
-    ProximityQueryForm
+    ProximityQueryForm, AddAnnotationToCitationForm
 from libreqda.models import Category, Annotation, BooleanQuery, Document, \
     DocumentInstance, Project, ProximityQuery, SetQuery, Citation, Code, \
     UserProjectPermission
@@ -511,7 +511,7 @@ def add_code_to_citation(request, pid, cid, template='modal.html'):
             response_data = {'success': True}
             for code in form.cleaned_data['codes']:
                 if cit.codes.filter(pk=code.pk).exists():
-                    response_data = {'error': _('Code is not in project')}
+                    response_data = {'error': _('Code already in project')}
                     break
                 cit.codes.add(code)
             response_data['cid'] = cid
@@ -540,6 +540,73 @@ def add_code_to_citation(request, pid, cid, template='modal.html'):
 
 
 @login_required
+def remove_code_from_citation(request, pid, citid, codeid):
+    cit = get_object_or_404(Citation, pk=citid)
+    code = get_object_or_404(Code, pk=codeid)
+
+    if code not in cit.codes.all():
+        raise Http404
+
+    cit.codes.remove(code)
+    cit.save()
+
+    return redirect('view_document', pid=pid, did=cit.document.pk)
+
+
+@login_required
+def add_annotation_to_citation(request, pid, cid, template='modal.html'):
+    if request.method == 'POST':
+        form = AddAnnotationToCitationForm(request.POST)
+        p = get_object_or_404(Project, pk=pid)
+        cit = get_object_or_404(Citation, pk=cid)
+
+        if form.is_valid():
+            response_data = {'success': True}
+            for ann in form.cleaned_data['annotations']:
+                if cit.annotations.filter(pk=ann.pk).exists():
+                    response_data = {
+                        'error': _('Annotation already in project')
+                    }
+                    break
+                cit.annotations.add(ann)
+            return JsonResponse(response_data)
+    else:
+        p = get_object_or_404(Project, pk=pid)
+        cit = get_object_or_404(Citation, pk=cid)
+        form = AddAnnotationToCitationForm()
+
+    form_action = reverse('add_annotation_to_citation',
+                          kwargs={'pid': pid, 'cid': cid})
+    available_anns = Annotation.objects.filter(project=p).exclude(
+                                                pk__in=cit.annotations.all())
+    form.fields['annotations'].queryset = available_anns
+    response_dict = {
+                     'form': form,
+                     'form_action': form_action,
+                     'form_header': _('Asignar anotaciones a la cita'),
+                    }
+    html_response = render_to_string(
+                        template, response_dict, RequestContext(request))
+
+    response_data = {'html': html_response}
+    return JsonResponse(response_data)
+
+#TODO: terminar
+@login_required
+def remove_annotation_from_citation(request, pid, citid, aid):
+    c = get_object_or_404(Citation, pk=citid)
+    a = get_object_or_404(Annotation, pk=aid)
+
+    if a not in c.annotations.all():
+        raise Http404
+
+    c.annotations.remove(a)
+    c.save()
+
+    return redirect('view_document', pid=pid, did=c.document.pk)
+
+
+@login_required
 def citation_details(request, pid, cid, template='citation_details.html'):
     p = get_object_or_404(Project, pk=pid)
     cit = get_object_or_404(Citation, pk=cid)
@@ -553,19 +620,6 @@ def citation_details(request, pid, cid, template='citation_details.html'):
 
     response_data = {'html': html_response}
     return JsonResponse(response_data)
-
-@login_required
-def remove_code_from_citation(request, pid, citid, codeid):
-    cit = get_object_or_404(Citation, pk=citid)
-    code = get_object_or_404(Code, pk=codeid)
-
-    if code not in cit.codes.all():
-        raise Http404
-
-    cit.codes.remove(code)
-    cit.save()
-
-    return redirect('view_document', pid=pid, did=cit.document.pk)
 
 
 ## Queries
