@@ -123,7 +123,9 @@
     Store.prototype._onLoadAnnotations = function(data) {
       if (data == null) data = [];
       this.annotations = data;
-      return this.annotator.loadAnnotations(data.slice());
+      var result = this.annotator.loadAnnotations(data.slice());
+      this.annotator.publish('annotationsLoadedFromStore');//TODO:pass
+      return result;
     };
 
     Store.prototype.loadAnnotationsFromSearch = function(searchOptions) {
