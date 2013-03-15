@@ -40,8 +40,14 @@
                   <td>{{ code.citations.count }}</td>
                   <td>TODO</td>
                   <td>
-                    {% if code.parent_code %}
-                      {{ code.parent_code|pretty_print_code_name|safe }}
+                    {% if code.parent_codes.all %}
+                      {% for parent in code.parent_codes.all %}
+                        {% if forloop.last %}
+                          {{ parent|pretty_print_code_name|safe }}
+                        {% else %}
+                          {{ parent|pretty_print_code_name|safe }} 
+                        {% endif %}
+                      {% endfor %}
                     {% else %}
                       -
                     {% endif %}

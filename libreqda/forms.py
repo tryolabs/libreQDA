@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 
 from libreqda.models import Annotation, BooleanQuery, Category, Code, \
-    Document, Project, SetQuery, ProximityQuery
+    Document, Project, SemanticQuery, SetQuery, ProximityQuery
 from libreqda.validators import DocumentValidator
 
 
@@ -89,11 +89,18 @@ class SetQueryForm(forms.ModelForm):
         cleaned_data = super(SetQueryForm, self).clean()
 
         if not (cleaned_data['boolean_queries'] or
-                cleaned_data['proximity_queries']):
+                cleaned_data['proximity_queries'] or
+                cleaned_data['semantic_queries']):
             raise forms.ValidationError(
                             _('* Se debe seleccionar al menos una consulta.'))
 
         return cleaned_data
+
+
+class SemanticQueryForm(forms.ModelForm):
+    class Meta:
+        model = SemanticQuery
+        exclude = ('project')
 
 
 class ProximityQueryForm(forms.ModelForm):

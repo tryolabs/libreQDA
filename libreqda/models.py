@@ -135,11 +135,12 @@ class Code(models.Model):
     modified_date = models.DateTimeField(auto_now=True)
     creation_date = models.DateTimeField(auto_now_add=True)
     citations = models.ManyToManyField(Citation, related_name='codes')
-    parent_code = models.ForeignKey('self',
-                                    blank=True,
-                                    null=True,
-                                    related_name='sub_codes',
-                                    verbose_name=_('Código padre'))
+    parent_codes = models.ManyToManyField('self',
+                                          null=True,
+                                          blank=True,
+                                          symmetrical=False,
+                                          related_name='sub_codes',
+                                          verbose_name=_('Códigos padre'))
 
     def __unicode__(self):
         return self.name
@@ -238,6 +239,44 @@ class BooleanQuery(models.Model):
         return result_set
 
 
+class SemanticQuery(models.Model):
+    OPERATORS = (('d', _('down')),)
+    project = models.ForeignKey(Project, related_name=_('semantic_queries'))
+    code = models.ForeignKey(Code,
+                             related_name='semantic_operand',
+                             verbose_name=_('Código'))
+    operator = models.CharField(max_length=1,
+                                choices=OPERATORS,
+                                verbose_name=_('Operador'))
+    name = models.CharField(max_length=250, verbose_name=_('Nombre'))
+
+    def __unicode__(self):
+        return self.name
+
+    def execute(self):
+        if self.operator == 'd':
+            return self.__execute_down()
+        else:
+            raise ValueError(_('Unknown operator.'))
+
+    def __execute_down(self):
+        hierarchy = Set()
+        result_set = Set()
+
+        def traverse_hierarchy(code):
+            hierarchy.add(code)
+            for sub_code in code.sub_codes.all():
+                if sub_code not in hierarchy:
+                    traverse_hierarchy(sub_code)
+        traverse_hierarchy(self.code)
+
+        for code in hierarchy:
+            for citation in code.citations.all():
+                result_set.add(citation)
+
+        return result_set
+
+
 class ProximityQuery(models.Model):
     OPERATORS = (('c', _('coocurrencia')),)
     project = models.ForeignKey(Project, related_name=_('proximity_queries'))
@@ -289,6 +328,10 @@ class SetQuery(models.Model):
                                                blank=True,
                                                related_name='containing_queries',
                                                verbose_name=_('Consultas de proximidad'))
+    semantic_queries = models.ManyToManyField(SemanticQuery,
+                                              blank=True,
+                                              related_name='containing_queries',
+                                              verbose_name=_('Consultas semánticas'))
     operator = models.CharField(max_length=1,
                                 choices=OPERATORS,
                                 verbose_name=_('Operador'))

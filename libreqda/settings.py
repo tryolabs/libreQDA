@@ -128,6 +128,7 @@ INSTALLED_APPS = (
     # 'django.contrib.admindocs', # admin documentation
     # 3rd party
     'rosetta',
+    'model_report',
     # Ours
     'libreqda',
 )
