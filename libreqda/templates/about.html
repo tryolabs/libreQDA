@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+{% load filters %}
+
+{% block head %}
+  {{ block.super }}
+{% endblock head %}
+
+{% block topbar_extra %}
+{% endblock topbar_extra %}
+
+{% block body %}
+  <div class="row-fluid">
+    <div class="span10 offset1">
+      <div class="white-background with-border">
+        <div class="logo-container separate">
+          <img src="{{ STATIC_URL }}imgs/logo.png" alt="LibreQDA" title="LibreQDA">
+        </div>
+        <div class="credits">
+          <h3>Líderes de proyecto</h3>
+          <dl class="unstyled">
+            <dd><strong>Juan Muñoz</strong> (Universitat Autònoma de Barcelona)</dd>
+            <dd><strong>Paribanú Freitas</strong> (Universidad de la República)</dd>
+            <dd><strong>Luis Alonzo Fulchi</strong> (DATA-CSE - Universidad de la República)</dd>
+            <dd><strong>Marc Bria</strong> (Universitat Autònoma de Barcelona)</dd>
+          </dl>
+          <hr>
+          <h3>Desarrollo</h3>
+        </div>
+        <div class="logo-container">
+          <a href="http://tryolabs.com" target="_blank">
+            <img src="{{ STATIC_URL }}imgs/tryolabs-logo.png" alt="LibreQDA" title="LibreQDA">
+          </a>
+        </div>
+        <div class="credits">
+          <dl class="unstyled">
+            <dd><strong>Alejandro Martínez</strong> <a href="https://github.com/ernestorx"><img class="github-badge" src="{{ STATIC_URL }}imgs/github.png"/></a></dd>
+            <dd><strong>Ernesto Rodríguez</strong> <a href="https://github.com/amartinezuy"><img class="github-badge" src="{{ STATIC_URL }}imgs/github.png"/></a></dd>
+            <dd><strong>Mauro de Carvalho</strong> <a href="https://github.com/maurodec"><img class="github-badge" src="{{ STATIC_URL }}imgs/github.png"/></a></dd>
+          </dl>
+          <hr>
+          <h3>Financiación</h3>
+          <dl class="unstyled">
+            <dd><strong>Agencia Española de Cooperación Internacional para el Desarrollo</strong> (AECID)</dd>
+            <dd><strong>Programa de Cooperación Interuniversitaria e Investigación Científica</strong></dd>
+          </dl>
+          <hr>
+          <h3>Logo</h3>
+          <dl class="unstyled">
+            <dd><strong>Carlos Silva</strong></dd>
+          </dl>
+          <hr>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock body%}
