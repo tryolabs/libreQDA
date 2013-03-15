@@ -240,7 +240,7 @@ class BooleanQuery(models.Model):
 
 
 class SemanticQuery(models.Model):
-    OPERATORS = (('u', 'up'),
+    OPERATORS = (('u', _('up')),
                  ('d', _('down')),)
     project = models.ForeignKey(Project, related_name=_('semantic_queries'))
     code = models.ForeignKey(Code,
