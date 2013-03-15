@@ -55,7 +55,7 @@
     </div>
     <div class="span3 document-citations">
       {% for cit in citations %}
-      <span id="bar-id-{{ cit.id }}" class="citation-bar" title="{{ cit.codes_str }}" data-cid="{{ cit.id }}"></span>
+      <div id="bar-id-{{ cit.id }}" class="citation-bar" title="{{ cit.codes_str }}" data-cid="{{ cit.id }}"></div>
       {% endfor %}
     </div>
   </div>
@@ -71,13 +71,24 @@
         // ** Right side bar **
         // ******************
         function positionCitationBar(bar, citation) {
+          var total_height = 0;
+          $.each(citation, function() {
+            total_height += $(this).height() + 3; // 3: For paragraph spacing
+          });
+          
+          if (citation.length > 1) {
+            total_height -= 3;
+          }
+          
           bar.position({
-            my: "bottom top",
-            at: "bottom top",
+            my: "center top",
+            at: "center top",
             of: citation
           });
-          bar.height(citation.height());
+          
           bar.css("left", "");
+          bar.height(total_height);
+          //bar.css('top', (bar.position().top - 7) + 'px');
         }
         
         function createCitationBar(citation, cid) {
@@ -101,67 +112,68 @@
           positionCitationBar(new_bar, citation);
         }
         
-        setTimeout(function() {          
-          // ** Hide Annotations **
-          Annotator.prototype.hideAllAnnotations();
-          
-          // Position bars
-          $(".citation-bar").each(function() {
-            citation_id_str = Annotator.prototype.citationIdStr;
-            var selector_name = '*[name="' + citation_id_str + $(this).data('cid') + '"]';
-            positionCitationBar($(this), $(selector_name));
-          });
-          
-          // ** Context menu for each code bar **
-          $.contextMenu({
-            selector: '.document-citations .citation-bar',
-            callback: function(key, options) {
-              // Empty global callback 
+        
+        
+        // ** Context menu for each code bar **
+        $.contextMenu({
+          selector: '.document-citations .citation-bar',
+          callback: function(key, options) {
+            // Empty global callback 
+          },
+          items: {
+            "addCode": {
+              name: "{{ texts.add_code }}",
+              icon: "edit",
+              callback: function(key, options) {
+                var cit_id = $(this).data('cid');
+                var url = '{% url add_code_to_citation pid=project.id cid="CIT_ID" %}'.replace('CIT_ID', cit_id);//TODO: mejorar
+                $.getJSON(url, function(data) {
+                  $('#codeModal').html(data.html);
+                  $('#codeModal').modal('show');
+                });
+              },
             },
-            items: {
-              "addCode": {
-                name: "{{ texts.add_code }}",
-                icon: "edit",
-                callback: function(key, options) {
-                  var cit_id = $(this).data('cid');
-                  var url = '{% url add_code_to_citation pid=project.id cid="CIT_ID" %}'.replace('CIT_ID', cit_id);//TODO: mejorar
-                  $.getJSON(url, function(data) {
-                    $('#codeModal').html(data.html);
-                    $('#codeModal').modal('show');
-                  });
-                },
+            "addAnnotation": {
+              name: "{{ texts.add_annotation }}",
+              icon: "paste",
+              callback: function(key, options) {
+                var cit_id = $(this).data('cid');
+                var url = '{% url add_annotation_to_citation pid=project.id cid="CIT_ID" %}'.replace('CIT_ID', cit_id);//TODO: mejorar
+                $.getJSON(url, function(data) {
+                  $('#codeModal').html(data.html);
+                  $('#codeModal').modal('show');
+                });
               },
-              "viewCodes": {
-                name: "{{ texts.view_details }}",
-                icon: "copy",
-                callback: function(key, options) {
-                  var cit_id = $(this).data('cid');
-                  var url = '{% url citation_details pid=project.id cid="CIT_ID" %}'.replace('CIT_ID', cit_id);//TODO: mejorar
-                  $.getJSON(url, function(data) {
-                    $('#citationModal').html(data.html);
-                    $('#citationModal').modal('show');
-                  });
-                },
+            },
+            "viewCodes": {
+              name: "{{ texts.view_details }}",
+              icon: "copy",
+              callback: function(key, options) {
+                var cit_id = $(this).data('cid');
+                var url = '{% url citation_details pid=project.id cid="CIT_ID" %}'.replace('CIT_ID', cit_id);//TODO: mejorar
+                $.getJSON(url, function(data) {
+                  $('#citationModal').html(data.html);
+                  $('#citationModal').modal('show');
+                });
               },
-            }
-          });
+            },
+          }
+        });
           
-          // ** Annotations click and fade events **
-          $('.document-citations').on('click', '.citation-bar', function() {
-            citation_id = $(this).data('cid');
-            Annotator.prototype.hideAllAnnotations();
-            Annotator.prototype.showAnnotation(citation_id, true);
-          });
-          $('.document-citations').on('mouseenter', '.citation-bar', function() {
-            citation_id = $(this).data('cid');
-            Annotator.prototype.showAnnotation(citation_id);
-          });
-          $('.document-citations').on('mouseleave', '.citation-bar', function() {
-            citation_id = $(this).data('cid');
-            Annotator.prototype.hideAnnotation(citation_id);
-          });
-          
-        }, 200);
+        // ** Annotations click and fade events **
+        $('.document-citations').on('click', '.citation-bar', function() {
+          citation_id = $(this).data('cid');
+          Annotator.prototype.hideAllAnnotations();
+          Annotator.prototype.showAnnotation(citation_id, true);
+        });
+        $('.document-citations').on('mouseenter', '.citation-bar', function() {
+          citation_id = $(this).data('cid');
+          Annotator.prototype.showAnnotation(citation_id);
+        });
+        $('.document-citations').on('mouseleave', '.citation-bar', function() {
+          citation_id = $(this).data('cid');
+          Annotator.prototype.hideAnnotation(citation_id);
+        });
         
         // ** Modal on submit **
         // ******************        
@@ -197,6 +209,17 @@
                   createCitationBar($(selector_name + ',' + selector_nan), annotation.id);
                   Annotator.prototype.hideAllAnnotations();
                   Annotator.prototype.showAnnotation(annotation.id, true);
+                })
+                .subscribe("annotationsLoadedFromStore", function () {
+                  // ** Hide Annotations **
+                  Annotator.prototype.hideAllAnnotations();
+          
+                  // Position bars
+                  $(".citation-bar").each(function() {
+                    citation_id_str = Annotator.prototype.citationIdStr;
+                    var selector_name = '*[name="' + citation_id_str + $(this).data('cid') + '"]';
+                    positionCitationBar($(this), $(selector_name));
+                  });
                 })
                 .subscribe("annotationDeleted", function (annotation) {
                   var selector = '#' + 'bar-id-' + annotation.id;

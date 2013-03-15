@@ -73,6 +73,9 @@ class Annotation(models.Model):
                                    blank=True,
                                    related_name=_('annotations'))
 
+    def __unicode__(self):
+        return self.text
+
 
 class Citation(models.Model):
     # TODO: Document instances are no longer needed, should we remove them ?
@@ -141,6 +144,16 @@ class Code(models.Model):
 
     def __unicode__(self):
         return self.name
+
+    def get_html_color(self):
+        return {
+            'd': 'grey',
+            'e': 'red',
+            'w': 'yellow',
+            's': 'green',
+            'i': 'blue',
+            'b': 'black',
+        }.get(self.color)
 
 
 class Category(models.Model):

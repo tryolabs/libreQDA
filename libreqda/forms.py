@@ -26,6 +26,12 @@ class AddCodeToCitationForm(forms.Form):
                         label=_('Códigos'))
 
 
+class AddAnnotationToCitationForm(forms.Form):
+    annotations = forms.ModelMultipleChoiceField(
+                        queryset=Annotation.objects.all(),
+                        label=_('Anotaciones'))
+
+
 class NewDocumentForm(forms.Form):
     document = forms.ModelChoiceField(
                         queryset=Document.objects.all(),
