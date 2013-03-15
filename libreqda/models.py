@@ -227,7 +227,8 @@ class BooleanQuery(models.Model):
 
 
 class SemanticQuery(models.Model):
-    OPERATORS = (('d', _('down')),)
+    OPERATORS = (('u', 'up'),
+                 ('d', _('down')),)
     project = models.ForeignKey(Project, related_name=_('semantic_queries'))
     code = models.ForeignKey(Code,
                              related_name='semantic_operand',
@@ -243,8 +244,21 @@ class SemanticQuery(models.Model):
     def execute(self):
         if self.operator == 'd':
             return self.__execute_down()
+        elif self.operator == 'u':
+            return self.__execute_up()
         else:
             raise ValueError(_('Unknown operator.'))
+
+    def __execute_up(self):
+        result_set = Set()
+
+        for citation in self.code.citations.all():
+            result_set.add(citation)
+        for parent in self.code.parent_codes.all():
+            for citation in parent.citations.all():
+                result_set.add(citation)
+
+        return result_set
 
     def __execute_down(self):
         hierarchy = Set()
