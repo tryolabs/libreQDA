@@ -26,6 +26,12 @@ class AddCodeToCitationForm(forms.Form):
                         label=_('Códigos'))
 
 
+class AddAnnotationToCitationForm(forms.Form):
+    annotations = forms.ModelMultipleChoiceField(
+                        queryset=Annotation.objects.all(),
+                        label=_('Anotaciones'))
+
+
 class NewDocumentForm(forms.Form):
     document = forms.ModelChoiceField(
                         queryset=Document.objects.all(),
@@ -82,7 +88,7 @@ class SetQueryForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super(SetQueryForm, self).clean()
 
-        if not (cleaned_data['boolean_queries'] or 
+        if not (cleaned_data['boolean_queries'] or
                 cleaned_data['proximity_queries']):
             raise forms.ValidationError(
                             _('* Se debe seleccionar al menos una consulta.'))
