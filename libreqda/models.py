@@ -110,6 +110,13 @@ class Citation(models.Model):
     def codes_str(self):
         return ', '.join(self.codes.all().values_list('name', flat=True))
 
+    def html_color(self):
+        if not self.codes.all():
+            return 'blank'
+        return self.codes.all()[0].html_color()
+
+        return ', '.join(self.codes.all().values_list('name', flat=True))
+
 
 class Code(models.Model):
     CODE_COLORS = (('d', _('Grey')),
@@ -145,7 +152,7 @@ class Code(models.Model):
     def __unicode__(self):
         return self.name
 
-    def get_html_color(self):
+    def html_color(self):
         return {
             'd': 'grey',
             'e': 'red',

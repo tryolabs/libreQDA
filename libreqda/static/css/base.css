@@ -175,18 +175,32 @@ body {
 	float: left;
 	width: 10px;
 	height: 40px;
-	background-color: blue;
+	background-color: burlywood;
 	display: block;
 	margin: 1px;
 	position: relative;	
     border-radius: 5px;
 }
 
+.citation-bar.cit-grey { background-color: grey; }
+.citation-bar.cit-red { background-color: #E30022; }
+.citation-bar.cit-yellow { background-color: #FFEF00; }
+.citation-bar.cit-green { background-color: #008000; }
+.citation-bar.cit-blue { background-color: #00308F; }
+.citation-bar.cit-black { background-color: black; }
+
 .document-citations .citation-bar:hover {
-	background-color: blueviolet;
+	background-color: khaki;
 	cursor: hand;
 	cursor: pointer;
 }
+
+.citation-bar.cit-grey:hover { background-color: lightgrey; }
+.citation-bar.cit-red:hover { background-color: #FF5349; }
+.citation-bar.cit-yellow:hover { background-color: #FADA5E; }
+.citation-bar.cit-green:hover { background-color: #8DB600; }
+.citation-bar.cit-blue:hover { background-color: #72A0C1; }
+.citation-bar.cit-black:hover { background-color: #635147; }
 
 #userModal form {
 	margin: 0;
