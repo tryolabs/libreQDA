@@ -55,7 +55,7 @@
     </div>
     <div class="span3 document-citations">
       {% for cit in citations %}
-      <div id="bar-id-{{ cit.id }}" class="citation-bar" title="{{ cit.codes_str }}" data-cid="{{ cit.id }}"></div>
+      <div id="bar-id-{{ cit.id }}" class="citation-bar cit-{{ cit.html_color }}" title="{{ cit.codes_str }}" data-cid="{{ cit.id }}"></div>
       {% endfor %}
     </div>
   </div>
