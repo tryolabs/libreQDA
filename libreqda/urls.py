@@ -10,6 +10,10 @@ handler404 = 'libreqda.http_handlers.handle_404'
 urlpatterns = patterns('',
     # admin
     url(r'^admin/', include(admin.site.urls)),
+    # about
+    url(r'about/$',
+        'libreqda.views.about',
+        name='about'),
     # projects
     url(r'^$',
         'libreqda.views.home',

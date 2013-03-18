@@ -27,12 +27,19 @@
             {% block topbar_extra %}
             {% endblock topbar_extra %}
             {% if user.is_authenticated %}
-              <a class="btn btn-danger pull-right"href="{%url logout %}"><i class="icon-off icon-white"></i> Salir</a>
-              {% if user.is_staff %}
-              <ul class="nav pull-right"><li><a target="_blank" href="{% url admin:index %}">Bienvenido, {{user.username}}</a></li></ul>
-              {% else %}
-              <ul class="nav pull-right"><li><a>{% blocktrans %}Bienvenido, {{user.username}}{% endblocktrans %}</a></li></ul>
-              {% endif %}
+              <a class="btn btn-info pull-right left-group-button" href="{% url about %}"><i class="icon-info-sign icon-white"></i> {% trans "Acerca de" %}</a>
+              <a class="btn btn-danger pull-right" href="{% url logout %}"><i class="icon-off icon-white"></i> Salir</a>
+              <ul class="nav pull-right">
+                {% if user.is_staff %}
+                  <li>
+                    <a target="_blank" href="{% url admin:index %}">Bienvenido, {{user.username}}</a>
+                  </li>
+                {% else %}
+                  <li>
+                    <a>{% blocktrans %}Bienvenido, {{user.username}}{% endblocktrans %}</a>
+                  </li>
+                {% endif %}
+              </ul>
             {% endif %}
           </div>
         </div>

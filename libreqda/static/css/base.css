@@ -12,6 +12,14 @@ body {
     text-align: center;
 }
 
+.separate {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.credits {
+    margin-left: 10%;
+}
 .login-container {
     top: 45%;
     left: 50%;
@@ -213,4 +221,9 @@ body {
 
 #doc-text-area {
     word-wrap: break-word;
+}
+
+.github-badge {
+    width: 32px;
+    left: 32px;
 }

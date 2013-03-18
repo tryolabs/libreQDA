@@ -30,6 +30,12 @@ def home(request):
     return redirect('browse_projects')
 
 
+## about
+
+def about(request, template='about.html'):
+    return render(request, template, {})
+
+
 ## Projects
 
 @login_required
