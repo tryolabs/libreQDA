@@ -180,7 +180,6 @@ body {
 }
 
 .document-citations .citation-bar {
-	float: left;
 	width: 10px;
 	height: 40px;
 	background-color: burlywood;

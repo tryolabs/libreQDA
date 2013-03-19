@@ -16,6 +16,7 @@
   <link href="{{ STATIC_URL }}lib/jquery.contextMenu/jquery.contextMenu.css" rel="stylesheet" type="text/css">
   <script src="{{ STATIC_URL }}lib/jquery.contextMenu/jquery.contextMenu.js" type="text/javascript"></script>
   <script src="{{ STATIC_URL }}lib/jquery.contextMenu/jquery.ui.position.js" type="text/javascript"></script>
+  <script src="{{ STATIC_URL }}lib/collisioncheck/jquery.collisioncheck-1.1.min.js" type="text/javascript"></script>
 {% endblock head %}
 
 {% block topbar_extra %}
@@ -68,16 +69,26 @@
           $('#documents-menu').css('left','-430px');
         }, 250);
         
+        
+        setTimeout(function() {
+          $( ".citation-bar" ).each(function( index ) {
+            // TODO: check
+            var citation_id_str = Annotator.prototype.citationIdStr;
+            var selector_name = '*[name="' + citation_id_str + $(this).data('cid') + '"]';
+            positionCitationBar($(this), $(selector_name));            
+          });
+        }, 1800);
+        
         // ** Right side bar **
         // ******************
         function positionCitationBar(bar, citation) {
           var total_height = 0;
-          $.each(citation, function() {
-            total_height += $(this).height() + 3; // 3: For paragraph spacing
-          });
-          
           if (citation.length > 1) {
-            total_height -= 3;
+            var firstH = $(citation[0]).offset().top;
+            var lastH = $(citation[citation.length - 1]).offset().top;
+            total_height = lastH - firstH + $(citation[citation.length - 1]).height();
+          } else {
+            total_height = citation.height();
           }
           
           bar.position({
@@ -88,7 +99,13 @@
           
           bar.css("left", "");
           bar.height(total_height);
-          //bar.css('top', (bar.position().top - 7) + 'px');
+          
+          // Check for collisions
+          var bar_separation = 15;
+          while (bar.collidesWith('.citation-bar').length > 0) {
+            bar.css("left", bar_separation);
+            bar_separation *= 2;
+          }
         }
         
         function createCitationBar(citation, cid) {
@@ -111,8 +128,6 @@
           new_bar.data("cid", citation_id);
           positionCitationBar(new_bar, citation);
         }
-        
-        
         
         // ** Context menu for each code bar **
         $.contextMenu({
