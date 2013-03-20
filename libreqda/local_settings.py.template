@@ -13,3 +13,8 @@ DATABASES = {
 }
 
 SECRET_KEY = 'type your secret key here'
+
+# Where to upload documents. Leave as empty string to use a path relative
+# to the project source code.
+# Warning: You must have write perms over this path.
+DOCUMENTS_UPLOAD_PATH = ''
