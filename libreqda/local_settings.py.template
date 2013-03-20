@@ -18,3 +18,6 @@ SECRET_KEY = 'type your secret key here'
 # to the project source code.
 # Warning: You must have write perms over this path.
 DOCUMENTS_UPLOAD_PATH = ''
+
+# Absolute path to the directory static files should be collected to.
+STATIC_ROOT = ''
