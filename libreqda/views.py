@@ -265,7 +265,7 @@ def upload_document(request, pid, template='upload_document.html'):
 
                 return render(request,
                     'error.html',
-                    {'title': _('¡Oops!'),
+                    {'title': _(u'¡Oops!'),
                      'message': _('Hubo un error al agregar el documento.'),
                      'backtext': _('Agregar otro documento.'),
                      'backlink': reverse('upload_document', args=(pid,))
