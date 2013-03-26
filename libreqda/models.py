@@ -5,7 +5,6 @@ from sets import Set
 from itertools import chain
 
 from django.db import models
-from django.conf import settings
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
@@ -35,7 +34,6 @@ class Project(models.Model):
 def get_new_document_path(instance, filename):
     doc_uuid = uuid.uuid4().hex
     return os.path.join(
-                    settings.DOCUMENTS_UPLOAD_PATH,
                     'documents',
                     doc_uuid,
                     filename)
