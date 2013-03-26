@@ -64,7 +64,7 @@ def new_project(request, template='new_project.html'):
             perm.modified_date = datetime.now()
             perm.user = p.owner
             perm.project = p
-            perm.permissions = 'a' # admin
+            perm.permissions = 'a'  # admin
             perm.save()
 
             return redirect('browse_projects')
@@ -123,7 +123,8 @@ def remove_user_from_project(request, pid, uid):
                         user=request.user, project=p, permissions='a')
 
     if u == p.owner:
-        raise Exception(_('No se puede remover del projecto a su propietario.'))
+        raise Exception(_(
+                'No se puede remover del projecto a su propietario.'))
 
     if p.owner == request.user or admin_perm.exists():
         perm = UserProjectPermission.objects.get(user=u, project=p)
@@ -186,7 +187,7 @@ def view_document(request, pid, did, template='view_document.html'):
                   template,
                   {'project': p,
                    'document': d,
-                   'citations': d.citations.order_by('start').order_by('start_paragraph'),
+                   'citations': d.citations.order_by('start'),
                    'texts': texts})
 
 
@@ -263,12 +264,12 @@ def upload_document(request, pid, template='upload_document.html'):
                 document.delete()
 
                 return render(request,
-                              'error.html',
-                              {'title': _('¡Oops!'),
-                               'message': _('Hubo un error al agregar el documento.'),
-                               'backtext': _('Agregar otro documento.'),
-                               'backlink': reverse('upload_document', args=(pid,))
-                               })
+                    'error.html',
+                    {'title': _('¡Oops!'),
+                     'message': _('Hubo un error al agregar el documento.'),
+                     'backtext': _('Agregar otro documento.'),
+                     'backlink': reverse('upload_document', args=(pid,))
+                    })
 
             return redirect('browse_projects')
     else:
@@ -427,7 +428,8 @@ def add_code_to_annotation(request, pid, aid, template='modal.html'):
         form = AddCodeToAnnotation()
 
     form_action = reverse('add_code_to_annotation', args=(pid, aid))
-    form.fields['codes'].queryset = p.codes.exclude(id__in=a.codes.all().values('id'))
+    form.fields['codes'].queryset = p.codes.exclude(
+                                        id__in=a.codes.all().values('id'))
 
     response_dict = {
                      'form': form,
