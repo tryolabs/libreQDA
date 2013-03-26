@@ -253,7 +253,7 @@ def upload_document(request, pid, template='upload_document.html'):
             document.file.close()
 
             try:
-                text = extract_text(document.file.name,
+                text = extract_text(document.file.path,
                                     document.type)
                 document.text = text
                 document.save()
