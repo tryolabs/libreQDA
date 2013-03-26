@@ -169,9 +169,9 @@ LOGOUT_REDIRECT_URL = '/accounts/login'
 # Localization
 ugettext = lambda s: s
 LANGUAGES = (
-  ('en', ugettext('Inglés')),
-  ('es', ugettext('Español')),
-  ('pt', ugettext('Portugués')),
+  ('en', ugettext(u'Inglés')),
+  ('es', ugettext(u'Español')),
+  ('pt', ugettext(u'Portugués')),
 )
 
 try:

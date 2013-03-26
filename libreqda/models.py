@@ -153,7 +153,7 @@ class Code(models.Model):
                                           blank=True,
                                           symmetrical=False,
                                           related_name='sub_codes',
-                                          verbose_name=_('Códigos padre'))
+                                          verbose_name=_(u'Códigos padre'))
 
     def __unicode__(self):
         return self.name
@@ -216,7 +216,7 @@ class BooleanQuery(models.Model):
     project = models.ForeignKey(Project, related_name=_('boolean_queries'))
     codes = models.ManyToManyField(Code,
                                    related_name='boolean_queries',
-                                   verbose_name=_('Códigos'))
+                                   verbose_name=_(u'Códigos'))
     operator = models.CharField(max_length=1,
                                 choices=OPERATORS,
                                 verbose_name=_('Operadores'))
@@ -258,7 +258,7 @@ class SemanticQuery(models.Model):
     project = models.ForeignKey(Project, related_name=_('semantic_queries'))
     code = models.ForeignKey(Code,
                              related_name='semantic_operand',
-                             verbose_name=_('Código'))
+                             verbose_name=_(u'Código'))
     operator = models.CharField(max_length=1,
                                 choices=OPERATORS,
                                 verbose_name=_('Operador'))
@@ -309,10 +309,10 @@ class ProximityQuery(models.Model):
     project = models.ForeignKey(Project, related_name=_('proximity_queries'))
     code1 = models.ForeignKey(Code,
                               related_name='proximity_operand1',
-                              verbose_name=_('Código 1'))
+                              verbose_name=_(u'Código 1'))
     code2 = models.ForeignKey(Code,
                               related_name='proximity_operand2',
-                              verbose_name=_('Código 2'))
+                              verbose_name=_(u'Código 2'))
     operator = models.CharField(max_length=1,
                                 choices=OPERATORS,
                                 verbose_name=_('Operador'))
@@ -358,7 +358,7 @@ class SetQuery(models.Model):
     semantic_queries = models.ManyToManyField(SemanticQuery,
                                               blank=True,
                                               related_name='containing_queries',
-                                              verbose_name=_('Consultas semánticas'))
+                                              verbose_name=_(u'Consultas semánticas'))
     operator = models.CharField(max_length=1,
                                 choices=OPERATORS,
                                 verbose_name=_('Operador'))

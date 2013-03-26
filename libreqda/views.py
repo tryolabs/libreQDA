@@ -177,8 +177,8 @@ def view_document(request, pid, did, template='view_document.html'):
     d = get_object_or_404(DocumentInstance, pk=did)
 
     texts = {
-        'add_code': _('Asignar códigos'),
-        'add_annotation': _('Asignar anotación'),
+        'add_code': _(u'Asignar códigos'),
+        'add_annotation': _(u'Asignar anotación'),
         'view_details': _('Ver detalles'),
     }
 
@@ -432,7 +432,7 @@ def add_code_to_annotation(request, pid, aid, template='modal.html'):
     response_dict = {
                      'form': form,
                      'form_action': form_action,
-                     'form_header': _('Asignar códigos a la anotación'),
+                     'form_header': _(u'Asignar códigos a la anotación'),
                     }
     html_response = render_to_string(
                         template, response_dict, RequestContext(request))
@@ -541,7 +541,7 @@ def add_code_to_citation(request, pid, cid, template='modal.html'):
     response_dict = {
                      'form': form,
                      'form_action': form_action,
-                     'form_header': _('Asignar códigos a la cita'),
+                     'form_header': _(u'Asignar códigos a la cita'),
                     }
     html_response = render_to_string(
                         template, response_dict, RequestContext(request))

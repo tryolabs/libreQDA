@@ -23,7 +23,7 @@ class AddUserToProjectForm(forms.Form):
 class AddCodeToCitationForm(forms.Form):
     codes = forms.ModelMultipleChoiceField(
                         queryset=Code.objects.all(),
-                        label=_('Códigos'))
+                        label=_(u'Códigos'))
 
 
 class AddAnnotationToCitationForm(forms.Form):
@@ -71,7 +71,7 @@ class AnnotationForm(forms.ModelForm):
 
 class AddCodeToAnnotation(forms.Form):
     codes = forms.ModelMultipleChoiceField(queryset=Code.objects.none(),
-                                           label=_('Códigos'))
+                                           label=_(u'Códigos'))
 
 
 class BooleanQueryForm(forms.ModelForm):
