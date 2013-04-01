@@ -12,18 +12,15 @@ from libreqda.utils import JsonResponse
 from libreqda.models import DocumentInstance, Citation
 
 
-###TODO:Resolver temas de permisos en todas las vistas.
+# ##TODO:Resolver temas de permisos en todas las vistas.
 
-@csrf_exempt #TODO: Fix this to include csrf token in Annotations post
+@csrf_exempt  # TODO: Fix this to include csrf token in Annotations post
 @login_required
 def create(request, pid, did):
-    try:
-        serialized_annotation = request.POST.keys()[0]
-    except IndexError:
-        raise Exception("Invalid annotation data in 'create'")
-
     user = request.user
     doc = get_object_or_404(DocumentInstance, pk=did)
+    serialized_annotation = ''.join(request.POST.keys())
+
     c = populate_citation(Citation(), serialized_annotation, doc, user)
 
     return HttpResponse(c.serialized,
@@ -40,7 +37,7 @@ def read(request, pid, did, aid=None):
     content = '[%s]' % (','.join(citations),)
     return HttpResponse(content, mimetype='application/json; charset=utf8')
 
-@csrf_exempt #TODO: Fix this to include csrf token in Annotations post
+@csrf_exempt  # TODO: Fix this to include csrf token in Annotations post
 @login_required
 def update(request, pid, did, aid):
     user = request.user
@@ -54,7 +51,7 @@ def update(request, pid, did, aid):
     return HttpResponse(citation.serialized,
                         mimetype='application/json; charset=utf8')
 
-@csrf_exempt #TODO: Fix this to include csrf token in Annotations post
+@csrf_exempt  # TODO: Fix this to include csrf token in Annotations post
 @login_required
 def destroy(request, pid, did, aid):
     doc = get_object_or_404(DocumentInstance, pk=did)
