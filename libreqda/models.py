@@ -366,11 +366,12 @@ class SetQuery(models.Model):
         return self.name
 
     def __queries(self):
-        return chain(self.boolean_queries.all(), self.proximity_queries.all())
+        return list(chain(self.boolean_queries.all(), self.proximity_queries.all()))
 
     def execute(self):
-        result_set = Set()
-        for q in self.__queries():
+        queries = self.__queries()
+        result_set = queries[0].execute()
+        for q in queries[1:]:
             if self.operator == '+':
                 result_set = result_set.union(q.execute())
             elif self.operator == '^':
