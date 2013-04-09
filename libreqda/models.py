@@ -366,7 +366,9 @@ class SetQuery(models.Model):
         return self.name
 
     def __queries(self):
-        return list(chain(self.boolean_queries.all(), self.proximity_queries.all()))
+        return list(chain(self.boolean_queries.all(),
+                          self.proximity_queries.all(),
+                          self.semantic_queries.all()))
 
     def execute(self):
         queries = self.__queries()
