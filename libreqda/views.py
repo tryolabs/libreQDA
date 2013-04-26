@@ -317,9 +317,15 @@ def new_code(request, pid, template='new_code.html'):
 
     back_or_success = reverse('browse_codes', args=(pid,))
 
+    # Create queryset to filter possible parent codes
+    choices = Code.objects.filter(project=pid)
+
     if request.method == 'POST':
         c = Code()
         form = CodeForm(request.POST, instance=c)
+        # Modify form's queryset for validation
+        form.fields['parent_codes'].queryset = choices
+
         if form.is_valid():
             c.created_by = request.user
             c.project = p
@@ -332,6 +338,8 @@ def new_code(request, pid, template='new_code.html'):
             return redirect(back_or_success)
     else:
         form = CodeForm()
+        # Only display project's codes
+        form.fields['parent_codes'].queryset = choices
 
     form_action = reverse('new_code', args=(pid,))
     return render(request,
