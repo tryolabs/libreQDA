@@ -109,7 +109,7 @@ class Citation(models.Model):
         os = other.start_paragraph * tlen + other.start
         oe = other.end_paragraph * tlen + other.end
 
-        return ss < os < se or ss < oe < ss
+        return ss < os < se or ss < oe < ss or os < ss < oe or os < se < oe
 
     def codes_str(self):
         return ', '.join(self.codes.all().values_list('name', flat=True))
@@ -334,9 +334,8 @@ class ProximityQuery(models.Model):
 
             for c in with_c1:
                 for cc in with_c2:
-                    if c != cc and c.touches(cc):
+                    if c.touches(cc):
                         result_set.add(c)
-                        result_set.add(cc)
 
         return result_set
 
