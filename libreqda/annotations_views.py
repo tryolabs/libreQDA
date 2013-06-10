@@ -19,7 +19,7 @@ from libreqda.models import DocumentInstance, Citation
 def create(request, pid, did):
     user = request.user
     doc = get_object_or_404(DocumentInstance, pk=did)
-    serialized_annotation = ''.join(request.POST.keys())
+    serialized_annotation = request.body
 
     c = populate_citation(Citation(), serialized_annotation, doc, user)
 
