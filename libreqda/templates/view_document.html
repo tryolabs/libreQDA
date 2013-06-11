@@ -118,6 +118,28 @@
         var citation_id_str = Annotator.prototype.citationIdStr;
         var selector_name = '*[name="' + citation_id_str + $(this).data('cid') + '"]';
         positionCitationBar($(this), $(selector_name));            
+        
+        // Display tooltips
+        if ($(this).attr('title') !== undefined) {
+            var code_list = $(this).attr('title').split(", ");
+        } else {
+            var code_list = $(this).attr('data-original-title').split("<br>");
+        }
+        $(this).tooltip({
+            html: true,
+            placement: 'right',
+            delay: 0,
+            animation: false,
+            trigger: 'manual'
+        });
+        $(this).attr('title', code_list.join('<br>'))
+               .tooltip('fixTitle').tooltip('show');
+      });
+
+      // Adjust tooltip styles.
+      $( '.tooltip' ).each(function( idx, value ) {
+        var current_style = $(value).attr('style');
+        $(value).attr( 'style', 'padding-top: 0px;' + current_style );
       });
     }
     
@@ -268,7 +290,6 @@
               // Extra parameters
             },
           });
-        
     });
   </script>
 {% endblock %}

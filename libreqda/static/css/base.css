@@ -128,6 +128,7 @@ body {
     -webkit-box-shadow: 4px 0 10px rgba(0,0,0,0.25);
 }
 
+
 .left {
     left: 0;
     border-right: 3px solid #000000;
@@ -137,6 +138,7 @@ body {
     left: 0 !important;
 }
 
+/*
 .right {
     right: 0;
     border-left: 3px solid #000000;
@@ -145,6 +147,8 @@ body {
 .right:hover, .right:focus {
     right: 0 !important;
 }
+*/
+
 
 .document-container {
     top: 90px;
@@ -225,4 +229,12 @@ body {
 .github-badge {
     width: 32px;
     left: 32px;
+}
+
+.tooltip {
+    z-index: 1;
+}
+
+.tooltip.in {
+    opacity: .6;
 }
