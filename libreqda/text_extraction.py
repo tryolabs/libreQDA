@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
-import pdfminer
 import cStringIO
+from pdfminer.pdfinterp import PDFResourceManager, process_pdf
+from pdfminer.converter import TextConverter
+from pdfminer.layout import LAParams
 
 from docx import opendocx, getdocumenttext
 from pyth.plugins.rtf15.reader import Rtf15Reader
@@ -12,16 +14,19 @@ def txt(f):
 
 
 def pdf(f):
-    rsrcmgr = pdfminer.pdfinterp.PDFResourceManager()
+    rsrcmgr = PDFResourceManager()
     retstr = cStringIO.StringIO()
     codec = 'utf-8'
-    laparams = pdfminer.layout.LAParams()
-    device = pdfminer.converter.TextConverter(
+
+    laparams = LAParams()
+    laparams.all_texts = True
+
+    device = TextConverter(
         rsrcmgr, retstr, codec=codec, laparams=laparams
     )
 
     fp = file(f, 'rb')
-    pdfminer.pdfinterp.process_pdf(rsrcmgr, device, fp)
+    process_pdf(rsrcmgr, device, fp)
     fp.close()
     device.close()
 
