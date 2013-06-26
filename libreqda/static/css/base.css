@@ -233,6 +233,7 @@ body {
 
 .tooltip {
     z-index: 1;
+    pointer-events: none;
 }
 
 .tooltip.in {

@@ -88,7 +88,7 @@
       var bar_separation = 15;
       while (bar.collidesWith('.citation-bar').length > 0) {
         bar.css("left", bar_separation);
-        bar_separation *= 2;
+        bar_separation += 15;
       }
     }
         
@@ -231,7 +231,9 @@
             success: function(data, status) {
               if (data.success) {
                 var selector = '#' + 'bar-id-' + data.cid;
-                $(selector).attr('title', data.codes_str)
+                $(selector).attr('title', data.codes_str);
+                $("#bar-id-"+data.cid).attr('data-original-title', data.codes_str);
+                positionAllBars();
                 $('#codeModal').modal('hide');
               } else {
                 $('#codeModal').html(data.html);
