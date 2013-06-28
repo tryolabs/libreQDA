@@ -272,6 +272,7 @@
                   var selector = '#' + 'bar-id-' + annotation.id;
                   $(selector).remove();
                   Annotator.prototype.hideAllAnnotations();
+                  positionAllBars();
                 });
               }
           }

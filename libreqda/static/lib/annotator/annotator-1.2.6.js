@@ -821,7 +821,9 @@
       for (_l = 0, _len4 = normedRanges.length; _l < _len4; _l++) {
         normed = normedRanges[_l];
         annotation.quote.push($.trim(normed.text()));
-        annotation.ranges.push(normed.serialize(this.wrapper[0], '.annotator-hl'));
+        // .annotator-hl
+        annotation.ranges.push(normed.serialize(this.wrapper[0], 
+                                                '*[name^=cit-id-]'));
         $.merge(annotation.highlights, this.highlightRange(normed, null, annotation.id));
       }
       annotation.quote = annotation.quote.join(' / ');
